@@ -1,4 +1,8 @@
 export default {
+  data: {
+    codeText: "倒计时 60 s",
+    loading: false,
+  },
   methods: {
     timing(second = 60) {
       setTimeout(() => {
