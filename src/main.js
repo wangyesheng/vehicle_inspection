@@ -19,7 +19,7 @@ Vue.prototype.navTo = function(url) {
   });
 };
 
-Vue.prototype.getScreenHeight = function() {
+Vue.prototype.getSysHeight = function() {
   return uni.getSystemInfoSync().windowHeight;
 };
 
