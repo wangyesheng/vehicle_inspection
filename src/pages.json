@@ -1,0 +1,97 @@
+{
+    "easycom": {
+        "^u-(.*)": "@/uview-ui/components/u-$1/u-$1.vue"
+    },
+    "pages": [{
+            "path": "pages/home/index",
+            "style": {
+                "navigationBarTitleText": "川B年检"
+            }
+        }, {
+            "path": "pages/auth/bind-mobile",
+            "style": {
+                "navigationBarTitleText": "绑定手机号"
+            }
+        },
+        {
+            "path": "pages/me/index",
+            "style": {
+                "navigationBarTitleText": "我的"
+            }
+        },
+        {
+            "path": "pages/car/add-form",
+            "style": {
+                "navigationBarTitleText": "添加车辆"
+            }
+        },
+        {
+            "path": "pages/car/edit-form",
+            "style": {
+                "navigationBarTitleText": "编辑车辆"
+            }
+        },
+        {
+            "path": "pages/inspection/success",
+            "style": {
+                "navigationBarTitleText": ""
+            }
+        },
+        {
+            "path": "pages/inspection/car",
+            "style": {
+                "navigationBarTitleText": "预约车检"
+            }
+        },
+        {
+            "path": "pages/me/customer",
+            "style": {
+                "navigationStyle": "custom",
+                "navigationBarTextStyle": "white"
+            }
+        },
+        {
+            "path": "pages/reservation/index",
+            "style": {
+                "navigationBarTitleText": "我的预约单"
+            }
+        },
+        {
+            "path": "pages/inspection/station",
+            "style": {
+                "navigationBarTitleText": "检测站列表"
+            }
+        },
+        {
+            "path": "pages/auth/login-nav",
+            "style": {
+                "navigationBarTitleText": "登录"
+            }
+        }
+    ],
+    "globalStyle": {
+        "navigationBarTextStyle": "white",
+        "navigationBarTitleText": "Fanr",
+        "navigationBarBackgroundColor": "#5E93EC",
+        "backgroundColor": "#F8F8F8"
+    },
+    "tabBar": {
+        "color": "#7A7E83",
+        "selectedColor": "#5E93EC",
+        "borderStyle": "black",
+        "backgroundColor": "#ffffff",
+        "list": [{
+                "pagePath": "pages/home/index",
+                "iconPath": "static/images/tab_bar/home.png",
+                "selectedIconPath": "static/images/tab_bar/home-active.png",
+                "text": "首页"
+            },
+            {
+                "pagePath": "pages/me/index",
+                "iconPath": "static/images/tab_bar/me.png",
+                "selectedIconPath": "static/images/tab_bar/me-active.png",
+                "text": "我的"
+            }
+        ]
+    }
+}
