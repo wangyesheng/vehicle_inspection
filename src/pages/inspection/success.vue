@@ -26,8 +26,7 @@ export default {
     return { sysHeight: 0 };
   },
   onLoad() {
-    const sysHeight = uni.getSystemInfoSync().windowHeight;
-    this.sysHeight = sysHeight;
+    this.sysHeight = this.getSysHeight();
   },
   methods: {},
 };

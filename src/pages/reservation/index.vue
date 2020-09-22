@@ -39,8 +39,7 @@ export default {
   },
 
   onLoad() {
-    const sysHeight = uni.getSystemInfoSync().windowHeight;
-    this.sysHeight = sysHeight;
+    this.sysHeight = this.getSysHeight();
   },
 
   methods: {
@@ -49,7 +48,6 @@ export default {
         type: "wgs84",
         geocode: "true",
         success: (response) => {
-          console.log(response);
           const { latitude, longitude } = response;
           uni.openLocation({
             latitude: latitude,

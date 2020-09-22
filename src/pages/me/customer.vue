@@ -38,8 +38,7 @@ export default {
   },
 
   mounted() {
-    const sysHeight = uni.getSystemInfoSync().windowHeight;
-    this.sysHeight = sysHeight;
+    this.sysHeight = this.getSysHeight();
   },
 
   methods: {},
