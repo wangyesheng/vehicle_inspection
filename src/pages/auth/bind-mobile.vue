@@ -74,7 +74,6 @@ export default {
         code: this.code,
         mobile: this.mobile,
       });
-      console.log(res);
     },
     async handleGetCode() {
       if (this.mobile.length === 11) {

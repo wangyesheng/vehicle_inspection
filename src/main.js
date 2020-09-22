@@ -19,6 +19,10 @@ Vue.prototype.navTo = function(url) {
   });
 };
 
+Vue.prototype.getScreenHeight = function() {
+  return uni.getSystemInfoSync().windowHeight;
+};
+
 Vue.config.productionTip = false;
 
 App.mpType = "app";
