@@ -2,6 +2,7 @@ export default {
   data: {
     codeText: "倒计时 60 s",
     loading: false,
+    test: "111",
   },
   methods: {
     timing(second = 60) {
