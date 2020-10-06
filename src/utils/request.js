@@ -1,5 +1,7 @@
 import qs from "qs";
 
+import { getAppUser } from "./auth";
+
 const BASE_URL =
   process.env.NODE_ENV === "development"
     ? "https://cj.huazhe.work"
@@ -7,7 +9,7 @@ const BASE_URL =
 
 export function request(options) {
   const requestData = {
-    key: uni.getStorageSync("vehicle_inspection_token"),
+    key: getAppUser().token,
     ...options.data,
   };
   let header = {};

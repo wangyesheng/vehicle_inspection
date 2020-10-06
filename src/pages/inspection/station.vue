@@ -1,15 +1,26 @@
 <template>
   <view class="inspection-containner">
-    <view class="station-wrap" v-for="item in 3" :key="item">
-      <image src="../../static/images/inspection/station.jpg" mode="widthFit" />
+    <view
+      class="station-wrap"
+      v-for="item in stations"
+      :key="item"
+    >
+      <image
+        :src="item._img"
+        mode="widthFit"
+      />
       <view class="station-info">
-        <view class="name">锦泰机动车检测站</view>
+        <view class="name">{{item.name}}</view>
         <view class="address">
-          四川省成都市锦江区锦逸南路12号锦江区锦逸南路12号
+          {{item.address}}
         </view>
-        <view class="distance">659m</view>
+        <view class="distance">{{item.juli + item.unit}}</view>
       </view>
-      <u-button type="primary" size="medium" @click="handleSubmit">
+      <u-button
+        type="primary"
+        size="medium"
+        @click="handleSubmit"
+      >
         立即预约
       </u-button>
     </view>
@@ -17,10 +28,44 @@
 </template>
 
 <script>
+import { getInspectionStationsRes } from '../../api';
 export default {
+  data() {
+    return {
+      stations: [],
+    };
+  },
+
+  onLoad() {
+    this.getStations();
+  },
+
   methods: {
+    getStations() {
+      uni.chooseLocation({
+        success: async (res) => {
+          console.log('位置名称：' + res.name);
+          console.log('详细地址：' + res.address);
+          console.log('纬度：' + res.latitude);
+          console.log('经度：' + res.longitude);
+          const {
+            code,
+            data: { carList },
+          } = await getInspectionStationsRes({
+            lng: res.longitude,
+            lat: res.latitude,
+          });
+          if (code === 200) {
+            this.stations = carList.map((x) => ({
+              ...x,
+              _img: `https://cj.huazhe.work/${x.img}`,
+            }));
+          }
+        },
+      });
+    },
     handleSubmit() {
-      this.navTo("/pages/inspection/car");
+      this.navTo('/pages/inspection/car');
     },
   },
 };

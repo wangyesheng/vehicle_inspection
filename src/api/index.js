@@ -63,3 +63,11 @@ export function getCarsRes(data) {
     data,
   });
 }
+
+export function getInspectionStationsRes(data) {
+  return request({
+    url: "/api.php?p=/Pigsar/getPigsarList",
+    method: "GET",
+    data,
+  });
+}

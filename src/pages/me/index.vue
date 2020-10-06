@@ -2,12 +2,25 @@
   <view class="me-container">
     <view class="banner-wrap">
       <view class="user-wrap">
-        <image :src="appUser.member_avatar?appUser.member_avatar:require('../../static/images/me/male.png')" mode="widthFit" />
-        <view class="username" v-if="appUser.token">
+        <image
+          :src="appUser.member_avatar?appUser.member_avatar:require('../../static/images/me/male.png')"
+          mode="widthFit"
+        />
+        <view
+          class="username"
+          v-if="appUser.token"
+        >
           <text>{{appUser.member_name}}</text>
         </view>
-        <view class="login-tips" v-else>
-          <button class="btn-text" open-type="getUserInfo" @tap="handleLogin">
+        <view
+          class="login-tips"
+          v-else
+        >
+          <button
+            class="btn-text"
+            open-type="getUserInfo"
+            @tap="handleLogin"
+          >
             点击登录
           </button>
         </view>
@@ -15,8 +28,14 @@
     </view>
     <view class="me-content">
       <u-cell-group>
-        <u-cell-item title="推荐好友" @click="handleNavTo(1)"></u-cell-item>
-        <u-cell-item title="我的预约单" @click="handleNavTo(2)"></u-cell-item>
+        <u-cell-item
+          title="推荐好友"
+          @click="handleNavTo(1)"
+        ></u-cell-item>
+        <u-cell-item
+          title="我的预约单"
+          @click="handleNavTo(2)"
+        ></u-cell-item>
         <u-cell-item>
           <view slot="title">
             <text>联系客服</text>
@@ -30,32 +49,38 @@
 </template>
 
 <script>
-import loginMixin from "../../mixins/loginMixin";
+import loginMixin from '../../mixins/loginMixin';
 
 export default {
   mixins: [loginMixin],
 
   data() {
-    const appUser = JSON.parse(uni.getStorageSync("app_user") || "{}");
     return {
-      appUser
+      appUser: {},
     };
+  },
+
+  onShow() {
+    const storageAppUser = this.getAppUser();
+    if (storageAppUser.member_mobile) {
+      this.appUser = storageAppUser;
+    }
   },
 
   methods: {
     handleNavTo(flag) {
       if (!this.checkLogin()) {
         uni.navigateTo({
-          url: `/pages/auth/login-nav`
+          url: `/pages/auth/login-nav`,
         });
         return;
       }
       switch (flag) {
         case 1:
-          this.navTo("/pages/me/customer");
+          this.navTo('/pages/me/customer');
           break;
         case 2:
-          this.navTo("/pages/reservation/index");
+          this.navTo('/pages/reservation/index');
           break;
         case 3:
           this.navTo();
@@ -65,9 +90,9 @@ export default {
       }
     },
     handleLogin() {
-      this.login(data => (this.appUser = data));
-    }
-  }
+      this.login(2);
+    },
+  },
 };
 </script>
 
@@ -77,7 +102,7 @@ export default {
   height: 100vh;
   position: relative;
   .banner-wrap {
-    background-image: url("../../static/images/me/banner.png");
+    background-image: url('../../static/images/me/banner.png');
     background-size: 100% 100%;
     height: 420rpx;
     width: 100%;

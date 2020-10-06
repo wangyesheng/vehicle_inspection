@@ -41,7 +41,7 @@ export default {
 
   methods: {
     handleLogin() {
-      this.login();
+      this.login(1);
     },
   },
 };

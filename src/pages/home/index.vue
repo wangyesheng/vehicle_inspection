@@ -1,36 +1,77 @@
 <template>
   <view class="home-container">
     <view class="header">
-      <image src="../../static/images/home/header-bg.png" mode="widthFit" />
+      <image
+        src="../../static/images/home/header-bg.png"
+        mode="widthFit"
+      />
     </view>
     <view class="banner-wrap">
       <view class="banner-top">
-        <u-notice-bar mode="horizontal" type="none" :list="notifies" :volume-icon="false" padding="0">
-          <image slot="speaker" src="../../static/images/home/speaker.png" mode="widthFit" />
+        <u-notice-bar
+          mode="horizontal"
+          type="none"
+          :list="notifies"
+          :volume-icon="false"
+          padding="0"
+        >
+          <image
+            slot="speaker"
+            src="../../static/images/home/speaker.png"
+            mode="widthFit"
+          />
         </u-notice-bar>
       </view>
       <view class="banner-center">
-        <eos-swiper height="336" :autoplay="false" :list="cars" @on-processed="onProcessed" @change="handleSwiperChange" />
+        <eos-swiper
+          height="336"
+          :autoplay="false"
+          :list="cars"
+          @on-processed="onProcessed"
+          @change="handleSwiperChange"
+        />
       </view>
-      <view class="banner-footer" v-for="item in buttonFlags" :key="item.value">
+      <view
+        class="banner-footer"
+        v-for="item in buttonFlags"
+        :key="item.value"
+      >
         <view v-if="buttonFlag===item.value">
-          <u-button type="warning" shape="circle" @click="handleNavTo(item.value)" v-if="item.value!==3&&item.value!==4">
+          <u-button
+            type="warning"
+            shape="circle"
+            @click="handleNavTo(item.value)"
+          >
             {{item.label}}
           </u-button>
-          <view class="btn-disabled" v-else>
+          <!-- <view
+            class="btn-disabled"
+            v-else
+          >
             {{item.label}}
-          </view>
+          </view> -->
         </view>
       </view>
     </view>
     <view class="process-wrap">
-      <image src="../../static/images/home/process.png" mode="widthFit" />
+      <image
+        src="../../static/images/home/process.png"
+        mode="widthFit"
+      />
     </view>
-    <u-modal title="温馨提示" v-model="processedModal.visible" :show-cancel-button="true" :title-style="{ fontSize: 36, fontWeight: 'bold', color: '#000' }">
+    <u-modal
+      title="温馨提示"
+      v-model="processedModal.visible"
+      :show-cancel-button="true"
+      :title-style="{ fontSize: 36, fontWeight: 'bold', color: '#000' }"
+    >
       <view class="content-wrap">
         <view class="c-main">{{ processedModal.content }}</view>
         <view class="c-image">
-          <image src="../../static/images/home/flag.png" mode="widthFit" />
+          <image
+            src="../../static/images/home/flag.png"
+            mode="widthFit"
+          />
         </view>
       </view>
     </u-modal>
@@ -38,18 +79,18 @@
 </template>
 
 <script>
-import EOSSwiper from "../../components/eos-swiper";
-import bannerBg from "../../static/images/home/banner_bg.png";
-import editIcon from "../../static/images/home/edit_icon.png";
-import addCarBg from "../../static/images/home/add_car_bg.png";
+import EOSSwiper from '../../components/eos-swiper';
+import bannerBg from '../../static/images/home/banner_bg.png';
+import editIcon from '../../static/images/home/edit_icon.png';
+import addCarBg from '../../static/images/home/add_car_bg.png';
 
-import { diffMonths, zeroPadding } from "../../utils/time";
-import { getCarsRes } from "../../api";
-import { BUTTON_FLAGS } from "../../constant";
+import { diffMonths, zeroPadding } from '../../utils/time';
+import { getCarsRes } from '../../api';
+import { BUTTON_FLAGS } from '../../constant';
 
 export default {
   components: {
-    "eos-swiper": EOSSwiper
+    'eos-swiper': EOSSwiper,
   },
 
   data() {
@@ -57,12 +98,12 @@ export default {
       processedModal: {
         visible: false,
         content:
-          "系统将为你更新到下次年检时间，请检查是否已办理并领取过2020年机动车检验合格标志"
+          '系统将为你更新到下次年检时间，请检查是否已办理并领取过2020年机动车检验合格标志',
       },
-      notifies: ["年检开始啦...", "优惠大放送...", "快来年检啊..."],
+      notifies: ['年检开始啦...', '优惠大放送...', '快来年检啊...'],
       cars: [],
       buttonFlag: undefined,
-      buttonFlags: BUTTON_FLAGS
+      buttonFlags: BUTTON_FLAGS,
     };
   },
 
@@ -73,11 +114,11 @@ export default {
   methods: {
     async getCars() {
       this.cars = [];
-      if (!uni.getStorageSync("vehicle_inspection_token")) {
+      if (!this.getAppUser().member_mobile) {
         this.cars.push({
           image: addCarBg,
           canAddCar: true,
-          buttonFlag: 0
+          buttonFlag: 0,
         });
         this.buttonFlag = 0;
         return;
@@ -89,44 +130,46 @@ export default {
       const date = `${currentYear}-${zeroPadding(currentMonth)}-${zeroPadding(
         currentDay
       )}`;
-      const { data: { carList } } = await getCarsRes();
-      const cars = carList.map(x => {
+      const {
+        data: { carList },
+      } = await getCarsRes();
+      const cars = carList.map((x) => {
         let layer = {
           ...x,
           image: bannerBg,
-          editIcon
+          editIcon,
         };
 
         const months = diffMonths(x.register_date, date);
         if (months < 70) {
-          layer.status = "六年免检";
+          layer.status = '六年免检';
         } else if (months >= 70) {
-          layer.status = "上线检测";
+          layer.status = '上线检测';
         }
 
         if (x.is_do === 1) {
-          layer.prompt = "年检办理还剩";
+          layer.prompt = '年检办理还剩';
           layer.promptValue = x.days;
           layer.isOverdue = false;
           layer.buttonFlag = 1;
         }
 
         if (x.is_deal === 1) {
-          layer.prompt = "年检办理还剩";
+          layer.prompt = '年检办理还剩';
           layer.promptValue = x.days;
           layer.isOverdue = false;
           layer.buttonFlag = 2;
         }
 
         if (x.is_pass === 1) {
-          layer.prompt = "年检已逾期";
+          layer.prompt = '年检已逾期';
           layer.promptValue = x.days;
           layer.isOverdue = true;
           layer.buttonFlag = 3;
         }
-        
+
         if (x.is_do === 0 && x.is_pass === 0) {
-          layer.prompt = "距离办理还剩";
+          layer.prompt = '距离办理还剩';
           layer.promptValue = x.days;
           layer.isOverdue = false;
           layer.buttonFlag = 4;
@@ -139,7 +182,7 @@ export default {
         this.cars.push({
           image: addCarBg,
           canAddCar: true,
-          buttonFlag: 0
+          buttonFlag: 0,
         });
       }
       this.buttonFlag = this.cars[0].buttonFlag;
@@ -147,21 +190,22 @@ export default {
     handleNavTo(flag) {
       if (!this.checkLogin()) {
         uni.navigateTo({
-          url: `/pages/auth/login-nav`
+          url: `/pages/auth/login-nav`,
         });
         return;
       }
-      switch (flag) {
-        case 0:
-          this.navTo("/pages/car/add-form");
-          break;
-        case 1:
-          this.navTo("/pages/inspection/station");
-          break;
-        case 2:
-          this.navTo("/pages/reservation/index");
-          break;
-      }
+      // switch (flag) {
+      //   case 0:
+      //     this.navTo('/pages/car/add-form');
+      //     break;
+      //   case 1:
+      //     this.navTo('/pages/inspection/station');
+      //     break;
+      //   case 2:
+      //     this.navTo('/pages/reservation/index');
+      //     break;
+      // }
+      this.navTo('/pages/inspection/station');
     },
     onProcessed() {
       this.processedModal.visible = true;
@@ -169,8 +213,8 @@ export default {
     handleSwiperChange(value) {
       const scope = this.cars.find((x, idx) => value === idx);
       this.buttonFlag = scope.buttonFlag;
-    }
-  }
+    },
+  },
 };
 </script>
 

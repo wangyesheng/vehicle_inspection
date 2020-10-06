@@ -2,7 +2,11 @@ import { loginRes } from "../api";
 
 export default {
   methods: {
-    login() {
+    /**
+     *
+     * @param {*} from 1 → 首页，2 → 个人主页
+     */
+    login(from) {
       uni.showLoading({});
       uni.getProvider({
         service: "oauth",
@@ -19,14 +23,12 @@ export default {
                     jmData: encryptedData,
                   });
                   if (data.state === "200") {
-                    // delete data.state;
-                    // delete data.unionid;
-                    // delete data.session_id;
-                    uni.setStorageSync("vehicle_inspection_token", data.token);
-                    uni.setStorageSync("app_user_mobile", data.member_mobile);
-                    // uni.setStorageSync("app_user", JSON.stringify(data));
-                    // callback(data);
-                    this.navTo("/pages/auth/bind-mobile");
+                    delete data.state;
+                    delete data.unionid;
+                    delete data.session_id;
+                    uni.setStorageSync("app_user", JSON.stringify(data));
+                    console.log(from);
+                    this.navTo(`/pages/auth/bind-mobile?from=${from}`);
                   } else {
                     uni.showToast({
                       title: "微信登录授权失败",

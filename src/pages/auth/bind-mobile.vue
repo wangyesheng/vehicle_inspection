@@ -67,12 +67,28 @@ export default {
     this.sysHeight = this.getSysHeight();
   },
 
+  onLoad(options) {
+    this.from = +options.from;
+  },
+
   methods: {
     async handleSubmit() {
-      const res = await bindMobileRes({
+      const { code } = await bindMobileRes({
         code: this.code,
         mobile: this.mobile,
       });
+      if (code === 200) {
+        const appUser = this.getAppUser();
+        appUser.member_mobile = this.mobile;
+        uni.setStorageSync('app_user', JSON.stringify(appUser));
+        this.from === 1
+          ? uni.switchTab({
+              url: '/pages/home/index',
+            })
+          : uni.switchTab({
+              url: '/pages/me/index',
+            });
+      }
     },
     async handleGetCode() {
       if (this.mobile.length === 11) {

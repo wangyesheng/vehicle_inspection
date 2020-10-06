@@ -296,7 +296,6 @@ export default {
       // #endif
     },
     handleNavTo(){
-      console.log('1111')
       this.navTo('/pages/car/form')
     }
   },
