@@ -14,8 +14,7 @@ Vue.filter("formatTimeFilter", function(value) {
 Vue.prototype.getAppUser = getAppUser;
 
 Vue.prototype.checkLogin = function() {
-  const appUser = this.getAppUser();
-  return appUser.member_mobile ? true : false;
+  return getAppUser().member_mobile ? true : false;
 };
 
 Vue.prototype.navTo = function(url) {

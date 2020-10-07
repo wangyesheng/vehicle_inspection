@@ -19,7 +19,7 @@
       <u-button
         type="primary"
         size="medium"
-        @click="handleSubmit"
+        @click="handleSubmit(item.id,item.name)"
       >
         立即预约
       </u-button>
@@ -36,7 +36,8 @@ export default {
     };
   },
 
-  onLoad() {
+  onLoad(options) {
+    this.carId = options.carId;
     this.getStations();
   },
 
@@ -44,10 +45,6 @@ export default {
     getStations() {
       uni.chooseLocation({
         success: async (res) => {
-          console.log('位置名称：' + res.name);
-          console.log('详细地址：' + res.address);
-          console.log('纬度：' + res.latitude);
-          console.log('经度：' + res.longitude);
           const {
             code,
             data: { carList },
@@ -64,8 +61,10 @@ export default {
         },
       });
     },
-    handleSubmit() {
-      this.navTo('/pages/inspection/car');
+    handleSubmit(id, name) {
+      this.navTo(
+        `/pages/inspection/car-reservation?stationId=${id}&stationName=${name}&carId=${this.carId}`
+      );
     },
   },
 };

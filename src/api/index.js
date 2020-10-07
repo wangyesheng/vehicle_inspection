@@ -71,3 +71,11 @@ export function getInspectionStationsRes(data) {
     data,
   });
 }
+
+export function getInspectionStationInfoRes(data) {
+  return request({
+    url: "/api.php?p=/Pigsar/getPigsarInfo",
+    method: "GET",
+    data,
+  });
+}

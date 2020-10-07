@@ -41,15 +41,16 @@
             type="warning"
             shape="circle"
             @click="handleNavTo(item.value)"
+            v-if="item.value!==3&&item.value!==4"
           >
             {{item.label}}
           </u-button>
-          <!-- <view
+          <view
             class="btn-disabled"
             v-else
           >
             {{item.label}}
-          </view> -->
+          </view>
         </view>
       </view>
     </view>
@@ -87,6 +88,7 @@ import addCarBg from '../../static/images/home/add_car_bg.png';
 import { diffMonths, zeroPadding } from '../../utils/time';
 import { getCarsRes } from '../../api';
 import { BUTTON_FLAGS } from '../../constant';
+import { getDiffDate } from '../../utils/time';
 
 export default {
   components: {
@@ -104,6 +106,7 @@ export default {
       cars: [],
       buttonFlag: undefined,
       buttonFlags: BUTTON_FLAGS,
+      selectedCar: undefined,
     };
   },
 
@@ -114,7 +117,7 @@ export default {
   methods: {
     async getCars() {
       this.cars = [];
-      if (!this.getAppUser().member_mobile) {
+      if (!this.checkLogin()) {
         this.cars.push({
           image: addCarBg,
           canAddCar: true,
@@ -138,8 +141,8 @@ export default {
           ...x,
           image: bannerBg,
           editIcon,
+          appointmentDates: getDiffDate(x.start_time, x.end_time),
         };
-
         const months = diffMonths(x.register_date, date);
         if (months < 70) {
           layer.status = '六年免检';
@@ -178,6 +181,8 @@ export default {
         return layer;
       });
       this.cars = cars;
+      uni.setStorageSync('app_user_cars', this.cars);
+
       if (cars.length < 3) {
         this.cars.push({
           image: addCarBg,
@@ -185,6 +190,7 @@ export default {
           buttonFlag: 0,
         });
       }
+      this.selectedCar = this.cars[0];
       this.buttonFlag = this.cars[0].buttonFlag;
     },
     handleNavTo(flag) {
@@ -194,24 +200,24 @@ export default {
         });
         return;
       }
-      // switch (flag) {
-      //   case 0:
-      //     this.navTo('/pages/car/add-form');
-      //     break;
-      //   case 1:
-      //     this.navTo('/pages/inspection/station');
-      //     break;
-      //   case 2:
-      //     this.navTo('/pages/reservation/index');
-      //     break;
-      // }
-      this.navTo('/pages/inspection/station');
+      switch (flag) {
+        case 0:
+          this.navTo('/pages/car/add-form');
+          break;
+        case 1:
+          this.navTo(`/pages/inspection/station?carId=${this.selectedCar.id}`);
+          break;
+        case 2:
+          this.navTo('/pages/reservation/index');
+          break;
+      }
     },
     onProcessed() {
       this.processedModal.visible = true;
     },
     handleSwiperChange(value) {
       const scope = this.cars.find((x, idx) => value === idx);
+      this.selectedCar = scope;
       this.buttonFlag = scope.buttonFlag;
     },
   },

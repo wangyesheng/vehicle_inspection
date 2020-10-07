@@ -1,47 +1,21 @@
-export function formatTime(timespan) {
-  let dateTime = new Date(timespan * 1000);
-  let year = dateTime.getFullYear();
-  let month = dateTime.getMonth() + 1;
-  let day = dateTime.getDate();
-  let millisecond = dateTime.getTime();
-  let now = new Date();
-  let nowNew = now.getTime();
-  let milliseconds = 0;
-  let timeSpanStr;
-  milliseconds = nowNew - millisecond;
-  if (milliseconds <= 1000 * 60 * 1) {
-    timeSpanStr = "刚刚";
-  } else if (1000 * 60 * 1 < milliseconds && milliseconds <= 1000 * 60 * 60) {
-    timeSpanStr = Math.round(milliseconds / (1000 * 60)) + "分钟前";
-  } else if (
-    1000 * 60 * 60 * 1 < milliseconds &&
-    milliseconds <= 1000 * 60 * 60 * 24
-  ) {
-    timeSpanStr = Math.round(milliseconds / (1000 * 60 * 60)) + "小时前";
-  } else if (
-    1000 * 60 * 60 * 24 < milliseconds &&
-    milliseconds <= 1000 * 60 * 60 * 24 * 3
-  ) {
-    timeSpanStr = Math.round(milliseconds / (1000 * 60 * 60 * 24)) + "天前";
-  } else if (
-    milliseconds > 1000 * 60 * 60 * 24 * 3 &&
-    year === now.getFullYear()
-  ) {
-    timeSpanStr = month + "月" + day + "日";
-  } else {
-    timeSpanStr = year + "年" + month + "月" + day + "日";
-  }
-  return timeSpanStr;
-}
-
 const currentDate = new Date();
 const currentYear = currentDate.getFullYear();
-const currentMonth = currentDate.getMonth() + 1;
+const currentMonth = currentDate.getMonth();
 const currentDay = currentDate.getDate();
+const weekdays = [
+  "星期日",
+  "星期一",
+  "星期二",
+  "星期三",
+  "星期四",
+  "星期五",
+  "星期六",
+];
+const holidays = ["2021-01-01"];
 
 export function getDateInterval(
   year = currentYear,
-  month = currentMonth,
+  month = currentMonth + 1,
   day = currentDay
 ) {
   const years = [];
@@ -78,7 +52,7 @@ export function getDateInterval(
   }
   days.push({
     value: 31,
-    label: '31',
+    label: "31",
   });
   return {
     years,
@@ -130,4 +104,53 @@ export function diffMonths(startDate, endDate) {
   endDate = endDate.split("-");
   endDate = parseInt(endDate[0]) * 12 + parseInt(endDate[1]);
   return Math.abs(startDate - endDate);
+}
+
+function getDate(dateStr) {
+  var temp = dateStr.split("-");
+  if (temp[1] === "01") {
+    temp[0] = parseInt(temp[0], 10) - 1;
+    temp[1] = "12";
+  } else {
+    temp[1] = parseInt(temp[1], 10) - 1;
+  }
+  var date = new Date(temp[0], temp[1], temp[2]);
+  return date;
+}
+
+export function getDiffDate(start, end) {
+  var startTime = getDate(start);
+  var endTime = getDate(end);
+  var dates = [];
+  while (endTime.getTime() - startTime.getTime() > 0) {
+    var year = startTime.getFullYear();
+    var month = startTime.getMonth();
+    var day = startTime.getDate();
+
+    function walk() {
+      month = month < 9 ? "0" + (month + 1) : month + 1;
+      day = day < 10 ? "0" + day : day;
+      var date = year + "-" + month + "-" + day;
+      var transformDate = new Date(Date.parse(date));
+      var weekday = weekdays[transformDate.getDay()];
+      if (weekday !== "星期日" && !holidays.includes(date)) {
+        dates.push({ value: date, label: date + " " + weekday });
+      }
+    }
+
+    if (year > currentYear) {
+      walk();
+    } else if ((year = currentYear)) {
+      if (month > currentMonth) {
+        walk();
+      } else if (month === currentMonth) {
+        if (day >= currentDay) {
+          walk();
+        }
+      }
+    }
+
+    startTime.setDate(startTime.getDate() + 1);
+  }
+  return dates;
 }
