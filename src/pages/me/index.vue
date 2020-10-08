@@ -24,19 +24,28 @@
             点击登录
           </button>
         </view>
+        <view
+          class="role-wrap"
+          v-if="hasLogin&&appUser.gid!='1'"
+        >
+          <image
+            :src="appUser.gid=='2'?require('../../static/images/me/salesman.png'):require('../../static/images/me/employe.png')"
+            mode="widthFit"
+          />
+        </view>
       </view>
     </view>
     <view class="me-content">
       <u-cell-group>
         <u-cell-item
-          title="推荐好友"
+          :title="appUser.gid=='1'||!hasLogin?'推荐好友':'我的客户'"
           @click="handleNavTo(1)"
         ></u-cell-item>
         <u-cell-item
           title="我的预约单"
           @click="handleNavTo(2)"
         ></u-cell-item>
-        <u-cell-item>
+        <u-cell-item @click="handleContact">
           <view slot="title">
             <text>联系客服</text>
             <text class="contact-time">（服务时间 08:00-22:00）</text>
@@ -57,6 +66,7 @@ export default {
   data() {
     return {
       appUser: {},
+      hasLogin: false,
     };
   },
 
@@ -64,6 +74,7 @@ export default {
     const storageAppUser = this.getAppUser();
     if (storageAppUser.member_mobile) {
       this.appUser = storageAppUser;
+      this.hasLogin = true;
     }
   },
 
@@ -91,6 +102,12 @@ export default {
     },
     handleLogin() {
       this.login(2);
+    },
+    handleContact() {
+      uni.makePhoneCall({
+        phoneNumber: '15680331333',
+        success: (_) => {},
+      });
     },
   },
 };
@@ -127,6 +144,15 @@ export default {
         font-size: 32rpx;
         font-weight: bold;
         color: #ffffff;
+      }
+      .role-wrap {
+        margin-top: 23rpx;
+        text-align: center;
+        image {
+          width: 114rpx;
+          height: 40rpx;
+          border-radius: 0;
+        }
       }
     }
   }

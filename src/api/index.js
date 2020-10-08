@@ -95,3 +95,27 @@ export function getMyAppointmentsRes(data) {
     data,
   });
 }
+
+export function getNoticesRes(data) {
+  return request({
+    url: "/api.php?p=/Notice/getNoticeList",
+    method: "GET",
+    data,
+  });
+}
+
+export function cancelAppointmentRes(data) {
+  return request({
+    url: "/api.php?p=/Pigsar/cancelReserve",
+    method: "GET",
+    data,
+  });
+}
+
+export function deleteAppointmentRes(data) {
+  return request({
+    url: "/api.php?p=/Pigsar/deleteReserve",
+    method: "GET",
+    data,
+  });
+}

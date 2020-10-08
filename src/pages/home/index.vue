@@ -86,7 +86,7 @@ import editIcon from '../../static/images/home/edit_icon.png';
 import addCarBg from '../../static/images/home/add_car_bg.png';
 
 import { diffMonths, currentFormatDate } from '../../utils/time';
-import { getCarsRes } from '../../api';
+import { getCarsRes, getNoticesRes } from '../../api';
 import { BUTTON_FLAGS } from '../../constant';
 import { getDiffDate } from '../../utils/time';
 
@@ -102,7 +102,7 @@ export default {
         content:
           '系统将为你更新到下次年检时间，请检查是否已办理并领取过2020年机动车检验合格标志',
       },
-      notifies: ['年检开始啦...', '优惠大放送...', '快来年检啊...'],
+      notifies: [],
       cars: [],
       buttonFlag: undefined,
       buttonFlags: BUTTON_FLAGS,
@@ -111,6 +111,7 @@ export default {
   },
 
   onLoad(options) {
+    this.getNotices();
     if (options.sharerId) {
       uni.setStorageSync('sharer_id', options.sharerId);
     }
@@ -121,6 +122,12 @@ export default {
   },
 
   methods: {
+    async getNotices() {
+      const {
+        data: { noticeList },
+      } = await getNoticesRes();
+      this.notifies = noticeList.map((x) => x.note);
+    },
     async getCars() {
       this.cars = [];
       if (!this.checkLogin()) {
@@ -143,7 +150,7 @@ export default {
           appointmentDates: getDiffDate(x.start_time, x.end_time),
         };
         const months = diffMonths(x.register_date, currentFormatDate);
-        
+
         if (months < 70) {
           layer.status = '六年免检';
         } else if (months >= 70) {

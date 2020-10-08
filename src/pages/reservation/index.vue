@@ -1,50 +1,73 @@
 <template>
+  <view v-if="myAppointments.length">
+    <view
+      class="reservation-container"
+      :style="{ minHeight: `${sysHeight}px` }"
+    >
+      <view
+        class="order-wrap"
+        v-for="item in myAppointments"
+        :key="item"
+      >
+        <view class="top-wrap">
+          <view class="header">
+            <text :class="['station-name',item._classname]">{{item.pigsarInfo.name}}</text>
+            <text :class="item._classname">{{item._status}}</text>
+          </view>
+          <view class="content">
+            <view class="info-item mb">
+              <text :class="['label',item._classname]">送检车辆 </text>
+              <text :class="['value',item._classname]">{{item.carInfo.number}}</text>
+            </view>
+            <view class="info-item mb">
+              <text :class="['label',item._classname]">预约时间</text>
+              <text :class="['value',item._classname]">{{item._time}}</text>
+            </view>
+            <view class="info-item">
+              <text :class="['label',item._classname]">机构位置 </text>
+              <text :class="['value',item._classname]">{{item.pigsarInfo.address}}</text>
+            </view>
+          </view>
+        </view>
+        <view class="bottom-wrap">
+          <text
+            :class="['primary-color',item._classname]"
+            @click="handleOpenApp(item)"
+          >一键导航</text>
+          <text
+            :class="['primary-color',item._classname]"
+            @click="handleCallPhone(item)"
+          >联系电话</text>
+          <text
+            :class="item._classname"
+            @click="handleCancel(item)"
+          >{{item.status==='0'?'取消预约':'删除记录'}}</text>
+        </view>
+      </view>
+
+    </view>
+  </view>
   <view
-    class="reservation-container"
+    v-else
+    class="no-data-wrap"
     :style="{ minHeight: `${sysHeight}px` }"
   >
-    <view
-      class="order-wrap"
-      v-for="item in myAppointments"
-      :key="item"
-    >
-      <view class="top-wrap">
-        <view class="header">
-          <text class="station-name">{{item.pigsarInfo.name}}</text>
-          <text>{{item._status}}</text>
-        </view>
-        <view class="content">
-          <view class="info-item mb">
-            <text class="label">送检车辆 </text>
-            <text class="value">{{item.carInfo.number}}</text>
-          </view>
-          <view class="info-item mb">
-            <text class="label">预约时间</text>
-            <text class="value">{{item._time}}</text>
-          </view>
-          <view class="info-item">
-            <text class="label">机构位置 </text>
-            <text class="value">{{item.pigsarInfo.address}}</text>
-          </view>
-        </view>
-      </view>
-      <view class="bottom-wrap">
-        <text
-          class="primary-color"
-          @click="handleOpenApp(item)"
-        >一键导航</text>
-        <text
-          class="primary-color"
-          @click="handleCallPhone(item)"
-        >联系电话</text>
-        <text>取消预约</text>
-      </view>
+    <view>
+      <image
+        src="../../static/images/inspection/no_appointment.png"
+        mode="widthFit"
+      />
+      <view>暂无预约订单~</view>
     </view>
   </view>
 </template>
 
 <script>
-import { getMyAppointmentsRes } from '../../api';
+import {
+  getMyAppointmentsRes,
+  cancelAppointmentRes,
+  deleteAppointmentRes,
+} from '../../api';
 import { APPOINTMENT_TIMES } from '../../constant';
 
 export default {
@@ -62,6 +85,9 @@ export default {
 
   methods: {
     async getMyAppointments() {
+      uni.showLoading({
+        title: '数据加载中...',
+      });
       const {
         data: { reserveList },
       } = await getMyAppointmentsRes();
@@ -69,9 +95,11 @@ export default {
         const scope = APPOINTMENT_TIMES.find((y) => y.key === x.rid);
         x._time = x.date + ' ' + scope.value;
         x._status =
-          x.status === '0' ? '预约中' : x.status === '1' ? '结束' : '取消';
+          x.status === '0' ? '预约中' : x.status === '1' ? '已结束' : '已取消';
+        x._classname = x.status === '0' ? '' : 'gray';
         return x;
       });
+      uni.hideLoading();
     },
     handleOpenApp(item) {
       uni.openLocation({
@@ -86,6 +114,27 @@ export default {
         success: (_) => {},
       });
     },
+    handleCancel(item) {
+      uni.showModal({
+        title: '提示',
+        content: `确定要${item.status === '0' ? '取消预约' : '删除该记录'}吗？`,
+        success: async (res) => {
+          if (res.confirm) {
+            const { code, data } = await (item.status === '0'
+              ? cancelAppointmentRes({ id: item.id })
+              : deleteAppointmentRes({ id: item.id }));
+            if (code === 200) {
+              this.getMyAppointments();
+            } else {
+              uni.showToast({
+                title: data,
+                icon: 'none',
+              });
+            }
+          }
+        },
+      });
+    },
   },
 };
 </script>
@@ -96,6 +145,9 @@ export default {
   .order-wrap {
     background: #fff;
     margin-bottom: 20rpx;
+    .gray {
+      color: #9a9a9a !important;
+    }
     .top-wrap {
       padding: 40rpx 32rpx;
       border-bottom: 2rpx solid #f2f2f2;
@@ -131,6 +183,22 @@ export default {
       justify-content: space-between;
       padding: 26rpx 70rpx;
     }
+  }
+}
+.no-data-wrap {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  image {
+    width: 199rpx;
+    height: 155rpx;
+  }
+  view {
+    font-size: 28rpx;
+    font-weight: 500;
+    color: #9a9a9a;
+    margin-top: 30rpx;
+    text-align: center;
   }
 }
 </style>
