@@ -83,7 +83,7 @@ export default {
     handleCallPhone(item) {
       uni.makePhoneCall({
         phoneNumber: item.pigsarInfo.mobile,
-        success: (res) => console.log(res),
+        success: (_) => {},
       });
     },
   },

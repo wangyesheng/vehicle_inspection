@@ -3,7 +3,7 @@ import { loginRes } from "../api";
 export default {
   methods: {
     /**
-     *
+     * 登录逻辑
      * @param {*} from 1 → 首页，2 → 个人主页
      */
     login(from) {
@@ -17,10 +17,12 @@ export default {
               uni.getUserInfo({
                 provider: "weixin",
                 success: async ({ rawData, encryptedData }) => {
+                  const sharerId = uni.getStorageSync("sharer_id") || "";
                   const { data } = await loginRes({
                     code,
                     userinfo: rawData,
                     jmData: encryptedData,
+                    sharerId,
                   });
                   if (data.state === "200") {
                     delete data.state;

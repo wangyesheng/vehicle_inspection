@@ -1,7 +1,3 @@
-const currentDate = new Date();
-const currentYear = currentDate.getFullYear();
-const currentMonth = currentDate.getMonth();
-const currentDay = currentDate.getDate();
 const weekdays = [
   "星期日",
   "星期一",
@@ -12,6 +8,16 @@ const weekdays = [
   "星期六",
 ];
 const holidays = ["2021-01-01"];
+
+const currentDate = new Date();
+export const currentYear = currentDate.getFullYear();
+export const currentMonth = currentDate.getMonth();
+export const currentDay = currentDate.getDate();
+export const currentHours = currentDate.getHours();
+export const currentMinutes = currentDate.getMinutes();
+export const currentFormatDate = `${currentYear}-${zeroPadding(
+  currentMonth + 1
+)}-${zeroPadding(currentDay)}`;
 
 export function getDateInterval(
   year = currentYear,
@@ -127,6 +133,24 @@ export function getDiffDate(start, end) {
     var month = startTime.getMonth();
     var day = startTime.getDate();
 
+    if (year > currentYear) {
+      walk();
+    } else if (year === currentYear) {
+      if (month > currentMonth) {
+        walk();
+      } else if (month === currentMonth) {
+        if (day > currentDay) {
+          walk();
+        } else if (day === currentDay) {
+          if (currentHours < 16) {
+            walk();
+          } else if (currentHours === 15 && currentMinutes < 1) {
+            walk();
+          }
+        }
+      }
+    }
+
     function walk() {
       month = month < 9 ? "0" + (month + 1) : month + 1;
       day = day < 10 ? "0" + day : day;
@@ -135,18 +159,6 @@ export function getDiffDate(start, end) {
       var weekday = weekdays[transformDate.getDay()];
       if (weekday !== "星期日" && !holidays.includes(date)) {
         dates.push({ value: date, label: date + " " + weekday });
-      }
-    }
-
-    if (year > currentYear) {
-      walk();
-    } else if ((year = currentYear)) {
-      if (month > currentMonth) {
-        walk();
-      } else if (month === currentMonth) {
-        if (day >= currentDay) {
-          walk();
-        }
       }
     }
 

@@ -85,7 +85,7 @@ import bannerBg from '../../static/images/home/banner_bg.png';
 import editIcon from '../../static/images/home/edit_icon.png';
 import addCarBg from '../../static/images/home/add_car_bg.png';
 
-import { diffMonths, zeroPadding } from '../../utils/time';
+import { diffMonths, currentFormatDate } from '../../utils/time';
 import { getCarsRes } from '../../api';
 import { BUTTON_FLAGS } from '../../constant';
 import { getDiffDate } from '../../utils/time';
@@ -111,7 +111,9 @@ export default {
   },
 
   onLoad(options) {
-    console.log('onLoad', options);
+    if (options.sharerId) {
+      uni.setStorageSync('sharer_id', options.sharerId);
+    }
   },
 
   onShow() {
@@ -130,13 +132,6 @@ export default {
         this.buttonFlag = 0;
         return;
       }
-      const currentDate = new Date();
-      const currentYear = currentDate.getFullYear();
-      const currentMonth = currentDate.getMonth() + 1;
-      const currentDay = currentDate.getDate();
-      const date = `${currentYear}-${zeroPadding(currentMonth)}-${zeroPadding(
-        currentDay
-      )}`;
       const {
         data: { carList },
       } = await getCarsRes();
@@ -147,7 +142,8 @@ export default {
           editIcon,
           appointmentDates: getDiffDate(x.start_time, x.end_time),
         };
-        const months = diffMonths(x.register_date, date);
+        const months = diffMonths(x.register_date, currentFormatDate);
+        
         if (months < 70) {
           layer.status = '六年免检';
         } else if (months >= 70) {

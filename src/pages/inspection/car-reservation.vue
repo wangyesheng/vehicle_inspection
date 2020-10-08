@@ -113,6 +113,12 @@ import {
   saveAppointmentRes,
 } from '../../api';
 
+import {
+  currentHours,
+  currentMinutes,
+  currentFormatDate,
+} from '../../utils/time';
+
 export default {
   data() {
     return {
@@ -190,15 +196,50 @@ export default {
     handleShowDateSelect() {
       this.appointmentDateSelect.visible = true;
     },
+    findTimes() {
+      let loopTimes = [...this.times];
+      if (this.appointmentDateSelect.selectedDate === currentFormatDate) {
+        switch (currentHours) {
+          case currentHours <= 8:
+            loopTimes = loopTimes;
+            break;
+          case 9:
+            loopTimes = loopTimes.splice(1);
+            break;
+          case 10:
+            loopTimes = loopTimes.splice(2);
+            break;
+          case 11:
+            loopTimes = loopTimes.splice(3);
+            break;
+          case 12:
+            loopTimes = loopTimes.splice(3);
+            break;
+          case 13:
+            loopTimes = loopTimes.splice(4);
+            break;
+          case 14:
+            loopTimes = loopTimes.splice(5);
+            break;
+          case 15:
+            loopTimes = loopTimes.splice(6);
+            break;
+          default:
+            break;
+        }
+      }
+      return loopTimes;
+    },
     handleDateConfirm(e) {
       this.carForm.date = e[0].label;
       this.appointmentDateSelect.selectedDate = e[0].value;
-      const scope = this.result[this.appointmentDateSelect.selectedDate];
       this.appointmentTimeSelect.times = [];
       this.appointmentTimeSelect.selectedTime = '';
       this.carForm.time = '';
-      for (let i = 0; i < this.times.length; i++) {
-        const layer = this.times[i];
+      const loopTimes = this.findTimes();
+      const scope = this.result[this.appointmentDateSelect.selectedDate];
+      for (let i = 0; i < loopTimes.length; i++) {
+        const layer = loopTimes[i];
         if (scope) {
           const keys = Object.keys(scope);
           let loopIndex = 0;
