@@ -79,3 +79,19 @@ export function getInspectionStationInfoRes(data) {
     data,
   });
 }
+
+export function saveAppointmentRes(data) {
+  return request({
+    url: "/api.php?p=/Pigsar/reservePigsar",
+    method: "POST",
+    data,
+  });
+}
+
+export function getMyAppointmentsRes(data) {
+  return request({
+    url: "/api.php?p=/Pigsar/reserveList",
+    method: "GET",
+    data,
+  });
+}

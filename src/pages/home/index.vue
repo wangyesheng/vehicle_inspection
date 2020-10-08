@@ -110,6 +110,10 @@ export default {
     };
   },
 
+  onLoad(options) {
+    console.log('onLoad', options);
+  },
+
   onShow() {
     this.getCars();
   },

@@ -120,11 +120,11 @@ export default {
         types: [
           {
             value: 1,
-            label: "非营运"
+            label: "小型汽车(非营运)"
           },
           {
             value: 2,
-            label: "营运"
+            label: "小型汽车(营运)"
           }
         ],
         selectedType: 1,
@@ -168,7 +168,7 @@ export default {
     async getCarInfo() {
       const { data: { carInfo } } = await getCarInfoRes({ car_id: this.carId });
       this.carForm.data.number = carInfo.number;
-      this.carForm.data.type = carInfo.type === "1" ? "非营运" : "营运";
+      this.carForm.data.type = carInfo.type === "1" ? "小型汽车(非营运)" : "小型汽车(营运)";
       this.typeSelect.selectedType = +carInfo.type;
       this.typeSelect.defaultSelectTypes = [+carInfo.type - 1];
       this.carForm.data.engine_number = carInfo.engine_number;

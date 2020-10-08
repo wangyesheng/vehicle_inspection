@@ -27,7 +27,6 @@ export default {
                     delete data.unionid;
                     delete data.session_id;
                     uni.setStorageSync("app_user", JSON.stringify(data));
-                    console.log(from);
                     this.navTo(`/pages/auth/bind-mobile?from=${from}`);
                   } else {
                     uni.showToast({

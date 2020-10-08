@@ -1,7 +1,7 @@
 <template>
   <view
     class="car-form-container"
-    :style="{ height: `${sysHeight}px` }"
+    :style="{ minHeight: `${sysHeight}px` }"
   >
     <view class="banner-wrap">
       <view class="b-l">送检车辆</view>
@@ -85,7 +85,11 @@
       <view class="left">
         <text>合计：¥0.00</text>
       </view>
-      <view class="right">
+      <view
+        class="right"
+        :style="{background:canSubmit?'#fb635f':'#ccc'}"
+        @click="handleSubmit"
+      >
         <text>提交预约单</text>
       </view>
     </view>
@@ -103,7 +107,11 @@
 </template>
 
 <script>
-import { getInspectionStationInfoRes, getVerificationCodeRes } from '../../api';
+import {
+  getInspectionStationInfoRes,
+  getVerificationCodeRes,
+  saveAppointmentRes,
+} from '../../api';
 
 export default {
   data() {
@@ -130,6 +138,16 @@ export default {
       codeText: '60秒后重发',
       loading: false,
     };
+  },
+
+  computed: {
+    canSubmit() {
+      return (
+        this.appointmentDateSelect.selectedDate !== '' &&
+        this.appointmentTimeSelect.selectedTime !== '' &&
+        this.carForm.code !== ''
+      );
+    },
   },
 
   onLoad(options) {
@@ -215,6 +233,38 @@ export default {
     handleTimeConfirm(e) {
       this.carForm.time = e[0].label;
       this.appointmentTimeSelect.selectedTime = e[0].value;
+    },
+    async handleSubmit() {
+      if (!this.canSubmit) {
+        uni.showToast({
+          title: '请填写完信息再提交！',
+          icon: 'none',
+        });
+        return;
+      }
+      const reqData = {
+        pid: this.stationId,
+        car_id: this.carId,
+        date: this.appointmentDateSelect.selectedDate,
+        rid: this.appointmentTimeSelect.selectedTime,
+        mobile: this.carForm.mobile,
+        code: this.carForm.code,
+      };
+      const { code, data } = await saveAppointmentRes(reqData);
+      if (code === 200) {
+        const info = `预约时间 ${this.carForm.date.substring(
+          0,
+          14
+        )} ${this.carForm.time.substring(0, 11)}`;
+        this.navTo(
+          `/pages/inspection/success?carNum=${this.carInfo.number}&info=${info}`
+        );
+      } else {
+        uni.showToast({
+          icon: 'none',
+          title: data,
+        });
+      }
     },
     async handleGetCode() {
       if (this.carForm.mobile.length === 11) {
@@ -341,7 +391,6 @@ export default {
     }
     .right {
       width: 40%;
-      background: #ccc;
       font-size: 32rpx;
       font-weight: 500;
       color: #fff;

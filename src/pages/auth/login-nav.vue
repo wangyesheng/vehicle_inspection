@@ -1,7 +1,7 @@
 <template>
   <view
     class="login-nav-wrap"
-    :style="{height:sysHeight+'px'}"
+    :style="{minHeight:sysHeight+'px'}"
   >
     <view class="logo-wrap">
       <view class="header">

@@ -54,7 +54,7 @@
     "usingComponents": true,
     "permission": {
       "scope.userLocation": {
-        "desc": "Location interface!"
+        "desc": "该位置信息用于搜寻附近检测站..."
       }
     }
   },

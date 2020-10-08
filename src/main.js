@@ -4,13 +4,28 @@ import App from "./App";
 
 import { getAppUser } from "./utils/auth";
 import { formatTime } from "./utils/time";
+import shareMixin from "./mixins/shareMixin";
 
+/**
+ * components
+ */
 Vue.use(uView);
 
+/**
+ * mixins
+ */
+Vue.mixin(shareMixin);
+
+/**
+ * filters
+ */
 Vue.filter("formatTimeFilter", function(value) {
   return formatTime(value);
 });
 
+/**
+ * prototypes
+ */
 Vue.prototype.getAppUser = getAppUser;
 
 Vue.prototype.checkLogin = function() {

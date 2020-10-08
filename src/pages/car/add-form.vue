@@ -119,11 +119,11 @@ export default {
         types: [
           {
             value: 1,
-            label: "非营运"
+            label: "小型汽车(非营运)"
           },
           {
             value: 2,
-            label: "营运"
+            label: "小型汽车(营运)"
           }
         ],
         selectedType: 1

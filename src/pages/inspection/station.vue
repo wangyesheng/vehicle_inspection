@@ -43,7 +43,8 @@ export default {
 
   methods: {
     getStations() {
-      uni.chooseLocation({
+      uni.getLocation({
+        type: 'wgs84',
         success: async (res) => {
           const {
             code,

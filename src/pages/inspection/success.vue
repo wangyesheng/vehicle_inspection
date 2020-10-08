@@ -1,19 +1,27 @@
 <template>
-  <view class="success-containner" :style="{ height: `${sysHeight}px` }">
+  <view
+    class="success-containner"
+    :style="{ minHeight: `${sysHeight}px` }"
+  >
     <view class="banner-wrap">
-      <image src="../../static/images/inspection/success.png" mode="" />
+      <image
+        src="../../static/images/inspection/success.png"
+        mode=""
+      />
       <view class="tips-f">预约成功</view>
-      <view class="tips-s">恭喜！您的车辆「川B88888」已成功预约年检</view>
-      <view class="tips-t">预约时间09月04日周六 09:00-10:00</view>
+      <view class="tips-s">恭喜！您的车辆「{{carNum}}」已成功预约年检</view>
+      <view class="tips-t">{{info}}</view>
     </view>
     <view class="content-wrap">
       <image
         src="../../static/images/inspection/btn-view.png"
         mode="widthFit"
+        @click="handleNavTo(1)"
       />
       <image
         src="../../static/images/inspection/btn-back.png"
         mode="widthFit"
+        @click="handleNavTo(2)"
       />
     </view>
     <view class="footer"> 年检前将会以短信方式通知您 </view>
@@ -23,12 +31,26 @@
 <script>
 export default {
   data() {
-    return { sysHeight: 0 };
+    return { sysHeight: 0, carNum: '', info: '' };
   },
-  onLoad() {
+
+  onLoad(options) {
+    this.carNum = options.carNum;
+    this.info = options.info;
     this.sysHeight = this.getSysHeight();
   },
-  methods: {},
+
+  methods: {
+    handleNavTo(flag) {
+      if (flag == 1) {
+        this.navTo('/pages/reservation/index');
+      } else {
+        uni.switchTab({
+          url: '/pages/home/index',
+        });
+      }
+    },
+  },
 };
 </script>
 
