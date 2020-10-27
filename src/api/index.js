@@ -119,3 +119,27 @@ export function deleteAppointmentRes(data) {
     data,
   });
 }
+
+export function getMyCustomersRes(data) {
+  return request({
+    url: "/api.php?p=/Member/myOfflineList",
+    method: "GET",
+    data,
+  });
+}
+
+export function getMyCompaniesRes(data) {
+  return request({
+    url: "/api.php?p=/Member/myCompanyList",
+    method: "GET",
+    data,
+  });
+}
+
+export function getEmployeesByCIdRes(data) {
+  return request({
+    url: "/api.php?p=/Member/companyMemberList",
+    method: "GET",
+    data,
+  });
+}
