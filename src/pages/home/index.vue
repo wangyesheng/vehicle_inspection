@@ -302,7 +302,7 @@ export default {
   .process-wrap {
     image {
       width: 100%;
-      height: 1080rpx;
+      height: 1540rpx;
     }
   }
 }

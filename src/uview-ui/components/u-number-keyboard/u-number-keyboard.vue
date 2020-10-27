@@ -140,7 +140,7 @@
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		height: 110rpx;
+		height: 100rpx;
 		font-weight: 500;
 	}
 

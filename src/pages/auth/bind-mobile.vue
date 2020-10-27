@@ -49,7 +49,8 @@
 </template>
 
 <script>
-import { bindMobileRes, getVerificationCodeRes } from '../../api';
+import { bindMobileRes } from '../../api';
+import timingMixin from '../../mixins/timingMixin';
 
 export default {
   data() {
@@ -57,11 +58,12 @@ export default {
       sysHeight: 0,
       mobile: '',
       code: '',
-      loading: false,
       codeText: '倒计时 60 s',
       hasGet: false,
     };
   },
+
+  mixins: [timingMixin],
 
   mounted() {
     this.sysHeight = this.getSysHeight();
@@ -90,42 +92,8 @@ export default {
             });
       }
     },
-    async handleGetCode() {
-      if (this.mobile.length === 11) {
-        if (this.loading) return;
-        this.hasGet = false;
-        this.loading = true;
-        const { code, data } = await getVerificationCodeRes({
-          mobile: this.mobile,
-        });
-        if (code === 200) {
-          this.timing();
-          this.hasGet = true;
-        } else {
-          uni.showToast({
-            icon: 'none',
-            title: data,
-          });
-          this.loading = false;
-        }
-      } else {
-        uni.showToast({
-          icon: 'none',
-          title: '请填写正确的手机号码',
-        });
-      }
-    },
-    timing(second = 60) {
-      setTimeout(() => {
-        second--;
-        if (second == 0) {
-          this.codeText = `重新获取`;
-          this.loading = false;
-        } else {
-          this.codeText = `倒计时 ${second} s`;
-          this.timing(second);
-        }
-      }, 1000);
+    handleGetCode() {
+      this.getCode(this.mobile, true);
     },
   },
 };

@@ -1,7 +1,11 @@
+import { getVerificationCodeRes } from "../api";
+
 export default {
-  data: {
-    codeText: "倒计时 60 s",
-    loading: false
+  data() {
+    return {
+      codeText: "60秒后重发",
+      loading: false,
+    };
   },
   methods: {
     timing(second = 60) {
@@ -15,6 +19,31 @@ export default {
           this.timing(second);
         }
       }, 1000);
+    },
+    async getCode(mobile, enhancer) {
+      if (mobile.length === 11) {
+        if (this.loading) return;
+        if (enhancer) this.hasGet = false;
+        this.loading = true;
+        const { code, data } = await getVerificationCodeRes({
+          mobile: mobile,
+        });
+        if (code === 200) {
+          this.timing();
+          if (enhancer) this.hasGet = true;
+        } else {
+          uni.showToast({
+            icon: "none",
+            title: data,
+          });
+          this.loading = false;
+        }
+      } else {
+        uni.showToast({
+          icon: "none",
+          title: "请填写正确的手机号码",
+        });
+      }
     },
   },
 };

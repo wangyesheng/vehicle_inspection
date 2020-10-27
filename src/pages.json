@@ -33,13 +33,13 @@
         }, {
             "path": "pages/inspection/station",
             "style": {
-                "navigationBarTitleText": "检测站列表"
+                "navigationBarTitleText": "选择检测站"
             }
         },
         {
             "path": "pages/inspection/car-reservation",
             "style": {
-                "navigationBarTitleText": "预约车检"
+                "navigationBarTitleText": "车检预约单"
             }
         }, {
             "path": "pages/inspection/success",

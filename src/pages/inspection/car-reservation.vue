@@ -30,12 +30,7 @@
           }"
         >
           <u-form-item label="预约检测站">
-            <u-input
-              type="select"
-              placeholder="请选择预约检测站"
-              v-model="carForm.stationName"
-              @click="handleNavTo"
-            />
+            <u-input v-model="carForm.stationName" />
           </u-form-item>
           <u-form-item label="预约日期">
             <u-input
@@ -107,17 +102,15 @@
 </template>
 
 <script>
-import {
-  getInspectionStationInfoRes,
-  getVerificationCodeRes,
-  saveAppointmentRes,
-} from '../../api';
+import { getInspectionStationInfoRes, saveAppointmentRes } from '../../api';
 
 import {
   currentHours,
   currentMinutes,
   currentFormatDate,
 } from '../../utils/time';
+
+import timingMixin from '../../mixins/timingMixin';
 
 export default {
   data() {
@@ -141,10 +134,10 @@ export default {
       },
       sysHeight: 0,
       carInfo: {},
-      codeText: '60秒后重发',
-      loading: false,
     };
   },
+
+  mixins: [timingMixin],
 
   computed: {
     canSubmit() {
@@ -307,40 +300,8 @@ export default {
         });
       }
     },
-    async handleGetCode() {
-      if (this.carForm.mobile.length === 11) {
-        if (this.loading) return;
-        this.loading = true;
-        const { code, data } = await getVerificationCodeRes({
-          mobile: this.carForm.mobile,
-        });
-        if (code === 200) {
-          this.timing();
-        } else {
-          uni.showToast({
-            icon: 'none',
-            title: data,
-          });
-          this.loading = false;
-        }
-      } else {
-        uni.showToast({
-          icon: 'none',
-          title: '请填写正确的手机号码',
-        });
-      }
-    },
-    timing(second = 60) {
-      setTimeout(() => {
-        second--;
-        if (second == 0) {
-          this.codeText = `60秒后重发`;
-          this.loading = false;
-        } else {
-          this.codeText = `${second}秒后重发`;
-          this.timing(second);
-        }
-      }, 1000);
+    handleGetCode() {
+      this.getCode(this.carForm.mobile);
     },
   },
 };
