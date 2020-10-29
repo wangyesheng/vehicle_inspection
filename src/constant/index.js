@@ -1,23 +1,45 @@
+// export const BUTTON_FLAGS = [
+//   {
+//     value: 0,
+//     label: "添加车辆",
+//   },
+//   {
+//     value: 1,
+//     label: "立即办理",
+//   },
+//   {
+//     value: 2,
+//     label: "查看预约详情",
+//   },
+//   {
+//     value: 3,
+//     label: "年检已逾期",
+//   },
+//   {
+//     value: 4,
+//     label: "不可办理",
+//   },
+// ];
+
 export const BUTTON_FLAGS = [
   {
-    value: 0,
+    value: -1,
     label: "添加车辆",
   },
   {
-    value: 1,
-    label: "立即办理",
+    // 0 未到期，不可预约 || 2 已办理
+    value: 0,
+    label: "未到期，不可预约",
   },
   {
-    value: 2,
+    // 已预约
+    value: 1,
     label: "查看预约详情",
   },
   {
-    value: 3,
-    label: "年检已逾期",
-  },
-  {
-    value: 4,
-    label: "不可办理",
+    // 3 可预约 || 4 已逾期
+    value: 2,
+    label: "立即免费预约",
   },
 ];
 

@@ -30,7 +30,10 @@
           }"
         >
           <u-form-item label="预约检测站">
-            <u-input v-model="carForm.stationName" />
+            <u-input
+              disabled
+              v-model="carForm.stationName"
+            />
           </u-form-item>
           <u-form-item label="预约日期">
             <u-input
@@ -71,17 +74,37 @@
           </u-form-item>
         </u-form>
       </view>
-      <view class="service-charge">
+      <!-- <view class="service-charge">
         <text class="label">预约服务费</text>
         <text class="value">限时免费</text>
+      </view> -->
+      <view class="notice-wrap">
+        <view class="title">服务须知</view>
+        <view class="content">
+          <view>
+            1、预约年检的非营运车辆，自完成缴费到领取报告，之间的整个检测过程不超过1小时；
+          </view>
+          <view>
+            2、营运车辆线上检测项目较多，提供平台预约专用通道，无需排队，尽量保证在1小时内完成检测；
+          </view>
+          <view>
+            3、提供现场免费代办跑腿，车主休息等候领取检测报告通知；
+          </view>
+          <view>
+            4、若车辆未在预约时间段内进站，可能会让位已预约该时间段的车辆。
+          </view>
+          <view>
+            5、遇特殊情况，可能导致服务延时。特殊情况一般为突发性断电、突发性网络故障、车管网络故障、检测设备集体故障，突发性自然灾害等其它不可预测的非人为因素。
+          </view>
+        </view>
       </view>
     </view>
     <view class="footer-wrap">
-      <view class="left">
+      <!-- <view class="left">
         <text>合计：¥0.00</text>
-      </view>
+      </view> -->
       <view
-        class="right"
+        class="full"
         :style="{background:canSubmit?'#fb635f':'#ccc'}"
         @click="handleSubmit"
       >
@@ -354,6 +377,24 @@ export default {
       }
     }
 
+    .notice-wrap {
+      padding: 50rpx 40rpx 150rpx;
+      .title {
+        color: #000;
+        font-size: 14px;
+        font-weight: 600;
+        margin-bottom: 30rpx;
+      }
+      .content {
+        font-size: 28rpx;
+        font-weight: 400;
+        color: #666666;
+        view{
+          margin-bottom: 10rpx;
+        }
+      }
+    }
+
     .service-charge {
       width: 750rpx;
       height: 120rpx;
@@ -379,11 +420,11 @@ export default {
     left: 0;
     right: 0;
     z-index: 5;
-    height: 100rpx;
-    line-height: 100rpx;
+    height: 120rpx;
+    padding: 15rpx 30rpx;
     background: #fff;
     border-top: 1rpx solid #f2f2f2;
-    display: flex;
+    // display: flex;
     .left {
       width: 60%;
       font-size: 28rpx;
@@ -397,6 +438,17 @@ export default {
       font-weight: 500;
       color: #fff;
       text-align: center;
+    }
+
+    .full {
+      width: 100%;
+      height: 90rpx;
+      line-height: 90rpx;
+      font-size: 32rpx;
+      font-weight: 500;
+      color: #fff;
+      text-align: center;
+      border-radius: 45rpx;
     }
   }
 }

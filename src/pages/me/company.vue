@@ -1,7 +1,6 @@
 <template>
     <view class="company-container" :style="{ minHeight: sysHeight + 'px' }">
-        <u-navbar title="协议单位列表" title-color="#fff" back-icon-color="#fff" back-icon-name="arrow-left" :background="{ background: '#5e93ec' }" />
-        <view class="polyfill content-wrap" v-if="companies.length" :style="{ minHeight: sysHeight - 112 + 'px' }">
+        <view class="polyfill content-wrap" v-if="companies.length" :style="{ minHeight: sysHeight - 40 + 'px' }">
             <view class="row" v-for="item in companies" :key="item.id" @click="handleNavTo(item)">
                 <view class="label">{{item.name}}</view>
                 <view class="value">
@@ -10,7 +9,7 @@
                 </view>
             </view>
         </view>
-        <view class="polyfill no-data-wrap" :style="{ minHeight: sysHeight - 112 + 'px' }" v-else>
+        <view class="polyfill no-data-wrap" :style="{ minHeight: sysHeight - 40 + 'px' }" v-else>
             <view>
                 <image src="../../static/images/inspection/no_appointment.png" mode="widthFit" />
                 <view>暂无协议单位~</view>

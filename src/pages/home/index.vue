@@ -37,20 +37,20 @@
         :key="item.value"
       >
         <view v-if="buttonFlag===item.value">
+          <view
+            class="btn-disabled"
+            v-if="item.value==0"
+          >
+            {{item.label}}
+          </view>
           <u-button
             type="warning"
             shape="circle"
             @click="handleNavTo(item.value)"
-            v-if="item.value!==3&&item.value!==4"
-          >
-            {{item.label}}
-          </u-button>
-          <view
-            class="btn-disabled"
             v-else
           >
             {{item.label}}
-          </view>
+          </u-button>
         </view>
       </view>
     </view>
@@ -70,7 +70,7 @@
         <view class="c-main">{{ processedModal.content }}</view>
         <view class="c-image">
           <image
-            src="../../static/images/home/flag.png"
+            src="../../static/images/home/flag.jpg"
             mode="widthFit"
           />
         </view>
@@ -99,8 +99,7 @@ export default {
     return {
       processedModal: {
         visible: false,
-        content:
-          '系统将为你更新到下次年检时间，请检查是否已办理并领取过2020年机动车检验合格标志',
+        content: '系统将为你更新到下次年检时间，请确认是否已办理线上年检！',
       },
       notifies: [],
       cars: [],
@@ -111,14 +110,13 @@ export default {
   },
 
   onLoad(options) {
-    this.getNotices();
     if (options.sharerId) {
       uni.setStorageSync('sharer_id', options.sharerId);
     }
   },
 
   onShow() {
-    this.getCars();
+    Promise.all([this.getCars(), this.getNotices()]);
   },
 
   methods: {
@@ -134,7 +132,7 @@ export default {
         this.cars.push({
           image: addCarBg,
           canAddCar: true,
-          buttonFlag: 0,
+          buttonFlag: -1,
         });
         this.buttonFlag = 0;
         return;
@@ -145,56 +143,68 @@ export default {
       const cars = carList.map((x) => {
         let layer = {
           ...x,
-          image: bannerBg,
           editIcon,
+          number: x.number.toUpperCase(),
+          image: bannerBg,
           appointmentDates: getDiffDate(x.start_time, x.end_time),
         };
-        const months = diffMonths(x.register_date, currentFormatDate);
-
-        if (months < 70) {
-          layer.status = '六年免检';
-        } else if (months >= 70) {
-          layer.status = '上线检测';
+        if (x.type == 1) {
+          const months = diffMonths(x.register_date, currentFormatDate);
+          if (months < 70) {
+            layer._status = '六年免检';
+          } else if (months >= 70) {
+            layer._status = '上线检测';
+          }
+        } else {
+          layer._status = '上线检测';
         }
 
-        if (x.is_do === 1) {
-          layer.prompt = '年检办理还剩';
-          layer.promptValue = x.days;
-          layer.isOverdue = false;
-          layer.buttonFlag = 1;
+        switch (x.status) {
+          // 未到期，不可预约
+          case 0:
+            layer.prompt = '距上线年检还剩';
+            layer.promptValue = x.days;
+            layer.isOverdue = false;
+            layer.buttonFlag = 0;
+            break;
+          // 已预约
+          case 1:
+            layer.prompt = '距年检逾期还剩';
+            layer.promptValue = x.days;
+            layer.isOverdue = false;
+            layer.buttonFlag = 1;
+            break;
+          // 已办理
+          case 2:
+            layer.prompt = '距上线年检还剩';
+            layer.promptValue = x.days;
+            layer.isOverdue = false;
+            layer.buttonFlag = 0;
+            break;
+          // 可预约
+          case 3:
+            layer.prompt = '距年检逾期还剩';
+            layer.promptValue = x.days;
+            layer.isOverdue = false;
+            layer.buttonFlag = 2;
+            break;
+          // 已逾期
+          case 4:
+            layer.prompt = '年检已逾期';
+            layer.promptValue = x.days;
+            layer.isOverdue = true;
+            layer.buttonFlag = 2;
+            break;
         }
-
-        if (x.is_deal === 1) {
-          layer.prompt = '年检办理还剩';
-          layer.promptValue = x.days;
-          layer.isOverdue = false;
-          layer.buttonFlag = 2;
-        }
-
-        if (x.is_pass === 1) {
-          layer.prompt = '年检已逾期';
-          layer.promptValue = x.days;
-          layer.isOverdue = true;
-          layer.buttonFlag = 3;
-        }
-
-        if (x.is_do === 0 && x.is_pass === 0) {
-          layer.prompt = '距离办理还剩';
-          layer.promptValue = x.days;
-          layer.isOverdue = false;
-          layer.buttonFlag = 4;
-        }
-
         return layer;
       });
       this.cars = cars;
       uni.setStorageSync('app_user_cars', this.cars);
-
       if (cars.length < 3) {
         this.cars.push({
           image: addCarBg,
           canAddCar: true,
-          buttonFlag: 0,
+          buttonFlag: -1,
         });
       }
       this.selectedCar = this.cars[0];
@@ -208,14 +218,14 @@ export default {
         return;
       }
       switch (flag) {
-        case 0:
+        case -1:
           this.navTo('/pages/car/add-form');
           break;
         case 1:
-          this.navTo(`/pages/inspection/station?carId=${this.selectedCar.id}`);
+          this.navTo('/pages/reservation/index');
           break;
         case 2:
-          this.navTo('/pages/reservation/index');
+          this.navTo(`/pages/inspection/station?carId=${this.selectedCar.id}`);
           break;
       }
     },

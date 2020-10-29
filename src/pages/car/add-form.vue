@@ -51,6 +51,7 @@
         <u-input
           v-model="carForm.data.owner"
           placeholder="请填写所有人姓名或公司名称"
+          @blur="handleBlur"
         />
       </u-form-item>
       <u-form-item
@@ -140,6 +141,7 @@
         @close="handleCloseEnginePopup"
       />
     </u-popup>
+    <u-mask :show="maskVisible"></u-mask>
   </view>
 </template>
 
@@ -257,6 +259,9 @@ export default {
   },
 
   methods: {
+    handleBlur() {
+      console.log('handleBlur');
+    },
     handleShowTypeSelect() {
       this.typeSelect.visible = true;
     },

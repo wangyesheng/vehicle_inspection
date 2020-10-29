@@ -38,7 +38,7 @@
     <view class="me-content">
       <u-cell-group>
         <u-cell-item
-          :title="appUser.gid=='1'||!hasLogin?'推荐好友':'我的客户'"
+          :title="!hasLogin?'推荐好友免费预约':'我的客户'"
           @click="handleNavTo(1)"
         ></u-cell-item>
         <u-cell-item

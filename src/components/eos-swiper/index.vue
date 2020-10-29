@@ -46,7 +46,7 @@
                 <view class="car-desc">小型汽车({{item.type==='1'?'非营运':'营运'}})</view>
               </view>
               <view class="cover-header-r">
-                <view class="tag-default">{{ item.status }}</view>
+                <view class="tag-default">{{ item._status }}</view>
               </view>
             </view>
             <view class="cover-footer">
@@ -58,7 +58,7 @@
                 <text class="prompt-value">{{ `${item.promptValue}天` }}</text>
                 <text
                   class="btn-plain position"
-                  v-if="item.isOverdue"
+                  v-if="item.status==3||item.status==4"
                   @click="handleProcessed"
                 >
                   我已办理

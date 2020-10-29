@@ -1,76 +1,126 @@
 <template>
-  <view class="customer-container" :style="{ minHeight: sysHeight + 'px' }">
-    <u-navbar :title="`${appUser.member_name}的客户`" title-width="400" title-color="#fff" back-icon-color="#fff" back-icon-name="arrow-left" :background="{ background: '#5e93ec' }" />
-    <view class="unit-wrap" v-if="appUser.gid==='2'" @click="handleNavTo">
+  <view
+    class="customer-container"
+    :style="{ minHeight: sysHeight + 'px' }"
+  >
+    <view
+      class="unit-wrap"
+      v-if="appUser.gid==='2'"
+      @click="handleNavTo"
+    >
       <view class="label">已发展协议单位</view>
       <view class="value">
         <text>{{companyLength}}家</text>
         <u-icon name="arrow-right" />
       </view>
     </view>
-    <view class="content-wrap ployfill" v-if="customers.length" :style="{ minHeight: sysHeight - 112 + 'px' }">
-      <view class="record-wrap" v-for="item in customers" :key="item">
-        <image :src="item.headpic?item.headpic:require('../../static/images/me/male.png')" mode="widthFit" />
+    <view
+      class="content-wrap ployfill"
+      v-if="customers.length"
+      :style="{ minHeight: sysHeight - 40 + 'px' }"
+    >
+      <view
+        class="record-wrap"
+        v-for="item in customers"
+        :key="item"
+      >
+        <image
+          :src="item.headpic?item.headpic:require('../../static/images/me/male.png')"
+          mode="widthFit"
+        />
         <view>
           <view class="name">{{item.username}}</view>
           <view class="time">邀请注册时间：{{item.register_time}}</view>
         </view>
       </view>
     </view>
-    <view class="no-data-wrap ployfill" :style="{ minHeight: sysHeight - 112 + 'px' }" v-else>
+    <view
+      class="no-data-wrap ployfill"
+      :style="{ minHeight: sysHeight - 40 + 'px' }"
+      v-else
+    >
       <view>
-        <image src="../../static/images/inspection/no_appointment.png" mode="widthFit" />
-        <view>暂无成员~</view>
+        <image
+          src="../../static/images/inspection/no_appointment.png"
+          mode="widthFit"
+        />
+        <view>暂无邀请的好友~</view>
+        <view class="btn-wrap_wechat">
+          <button
+            open-type="share"
+            @click="handleShare"
+          />
+        </view>
+        <view class="btn-wrap_timeline">
+          <button
+            open-type="share"
+            @click="handleShareToTimeline"
+          />
+        </view>
       </view>
     </view>
     <view class="footer-wrap">
-      <u-button type="warning" shape="circle" open-type="share" @click="handleShare">微信邀请</u-button>
+      <view class="btn-wrap_wechat">
+        <button
+          open-type="share"
+          @click="handleShare"
+        />
+      </view>
+      <view class="btn-wrap_timeline">
+        <button
+          open-type="share"
+          @click="handleShareToTimeline"
+        />
+      </view>
     </view>
   </view>
 </template>
 
 <script>
-import { getMyCustomersRes, getMyCompaniesRes } from "../../api";
+import { getMyCustomersRes, getMyCompaniesRes } from '../../api';
 export default {
   data() {
     return {
       sysHeight: 0,
       customers: [],
       appUser: this.getAppUser(),
-      companyLength: 0
+      companyLength: 0,
     };
   },
 
   mounted() {
     this.sysHeight = this.getSysHeight();
     this.getMyCustomers();
-    if (this.appUser.gid === "2") {
+    if (this.appUser.gid === '2') {
       this.getMyCompanies();
     }
   },
 
   methods: {
     async getMyCustomers() {
-      const { data: { offlineList } } = await getMyCustomersRes();
+      const {
+        data: { offlineList },
+      } = await getMyCustomersRes();
       this.customers = offlineList;
     },
     async getMyCompanies() {
-      const { data: { myCompanyList } } = await getMyCompaniesRes();
+      const {
+        data: { myCompanyList },
+      } = await getMyCompaniesRes();
       this.companyLength = myCompanyList ? myCompanyList.length : 0;
     },
     handleNavTo() {
-      this.navTo("/pages/me/company");
+      this.navTo('/pages/me/company');
     },
     handleShare() {
       const path = `/pages/home/index?sharerId=${this.appUser.member_id}`;
-      console.log(path);
       return {
         path,
-        title: "1小时快速审车，5颗星贴心服务",
-        imageUrl: "https://cj.huazhe.work/static/images/share.png"
+        title: '1小时快速审车，5颗星贴心服务',
+        imageUrl: 'https://cj.huazhe.work/static/images/share.png',
       };
-    }
-  }
+    },
+  },
 };
 </script>
 
@@ -120,6 +170,35 @@ export default {
     height: 120rpx;
     background: #fff;
     padding: 15rpx 30rpx;
+    display: flex;
+    justify-content: space-around;
+    align-items:center;
+  }
+
+  .btn-wrap_wechat {
+    button {
+      width: 330rpx;
+      height: 90rpx;
+      background-image: url('../../static/images/me/wechat.png');
+      background-size: 100% 100%;
+      border-radius: 45rpx;
+    }
+    button::after {
+      border-color: transparent;
+    }
+  }
+
+  .btn-wrap_timeline {
+    button {
+      width: 330rpx;
+      height: 90rpx;
+      background-image: url('../../static/images/me/timeline.png');
+      background-size: 100% 100%;
+      border-radius: 45rpx;
+    }
+    button::after {
+      border-color: transparent;
+    }
   }
 
   .unit-wrap {
@@ -154,6 +233,7 @@ export default {
     display: flex;
     justify-content: center;
     align-items: center;
+
     image {
       width: 199rpx;
       height: 155rpx;

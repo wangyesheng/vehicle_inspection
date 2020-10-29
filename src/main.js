@@ -4,7 +4,8 @@ import App from "./App";
 
 import { getAppUser } from "./utils/auth";
 import { formatTime } from "./utils/time";
-import shareMixin from "./mixins/shareMixin";
+import onShareAppMessageMixin from "./mixins/onShareAppMessageMixin";
+import onShareTimelineMixin from "./mixins/onShareTimelineMixin";
 
 /**
  * components
@@ -14,7 +15,8 @@ Vue.use(uView);
 /**
  * mixins
  */
-Vue.mixin(shareMixin);
+Vue.mixin(onShareAppMessageMixin);
+Vue.mixin(onShareTimelineMixin);
 
 /**
  * filters
