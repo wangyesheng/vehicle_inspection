@@ -51,6 +51,7 @@
         <u-input
           v-model="carForm.data.owner"
           placeholder="请填写所有人姓名或公司名称"
+          @blur="handleBlur"
         />
       </u-form-item>
       <u-form-item
@@ -69,10 +70,9 @@
         prop="mobile"
       >
         <u-input
-          disabled
+          type="number"
           v-model="carForm.data.mobile"
           placeholder="请填写手机号"
-          @click="handleShowMobileKeyboard"
         />
       </u-form-item>
       <u-form-item
@@ -89,6 +89,7 @@
           <text v-else>获取验证码</text>
         </u-button>
         <u-input
+          type="number"
           v-model="carForm.data.sms_vcode"
           placeholder="请填写验证码"
         />
@@ -122,16 +123,9 @@
       @change="handleCarNumChange"
       @backspace="handleCarNumBackspace"
     />
-    <u-keyboard
-      ref="numKeyboard"
-      :tooltip="false"
-      :safe-area-inset-bottom="true"
-      v-model="keyboard.mobileVisible"
-      @change="handleMobileChange"
-      @backspace="handleMobileBackspace"
-    />
     <u-popup
       mode="bottom"
+      :mask="false"
       v-model="keyboard.engineVisible"
     >
       <eos-abc-keyboard

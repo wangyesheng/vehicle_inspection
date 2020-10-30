@@ -134,13 +134,13 @@ export default {
           canAddCar: true,
           buttonFlag: -1,
         });
-        this.buttonFlag = 0;
+        this.buttonFlag = -1;
         return;
       }
       const {
         data: { carList },
       } = await getCarsRes();
-      const cars = carList.map((x) => {
+      this.cars = carList.map((x) => {
         let layer = {
           ...x,
           editIcon,
@@ -198,9 +198,8 @@ export default {
         }
         return layer;
       });
-      this.cars = cars;
       uni.setStorageSync('app_user_cars', this.cars);
-      if (cars.length < 3) {
+      if (this.cars.length < 3) {
         this.cars.push({
           image: addCarBg,
           canAddCar: true,

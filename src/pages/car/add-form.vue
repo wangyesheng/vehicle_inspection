@@ -70,10 +70,9 @@
         prop="mobile"
       >
         <u-input
-          disabled
+          type="number"
           placeholder="请填写手机号"
           v-model="carForm.data.mobile"
-          @click="handleShowMobileKeyboard"
         />
       </u-form-item>
       <u-form-item
@@ -92,6 +91,7 @@
         <u-input
           v-model="carForm.data.sms_vcode"
           placeholder="请填写验证码"
+          type="number"
         />
       </u-form-item>
     </u-form>
@@ -116,22 +116,16 @@
     <u-keyboard
       ref="carNumKeyboard"
       mode="car"
+      :mask="false"
       :tooltip="false"
       :safe-area-inset-bottom="true"
       v-model="keyboard.carVisible"
       @change="handleCarNumChange"
       @backspace="handleCarNumBackspace"
     />
-    <u-keyboard
-      ref="numKeyboard"
-      :tooltip="false"
-      :safe-area-inset-bottom="true"
-      v-model="keyboard.mobileVisible"
-      @change="handleMobileChange"
-      @backspace="handleMobileBackspace"
-    />
     <u-popup
       mode="bottom"
+      :mask="false"
       v-model="keyboard.engineVisible"
     >
       <eos-abc-keyboard
@@ -141,7 +135,6 @@
         @close="handleCloseEnginePopup"
       />
     </u-popup>
-    <u-mask :show="maskVisible"></u-mask>
   </view>
 </template>
 
@@ -259,9 +252,6 @@ export default {
   },
 
   methods: {
-    handleBlur() {
-      console.log('handleBlur');
-    },
     handleShowTypeSelect() {
       this.typeSelect.visible = true;
     },

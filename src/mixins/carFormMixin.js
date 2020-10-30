@@ -4,11 +4,13 @@ export default {
       keyboard: {
         carVisible: false,
         engineVisible: false,
-        mobileVisible: false,
       },
     };
   },
   methods: {
+    handleBlur() {
+      uni.hideKeyboard();
+    },
     handleShowCarKeyboard() {
       this.keyboard.carVisible = true;
     },
@@ -37,20 +39,6 @@ export default {
         this.carForm.data.engine_number = this.carForm.data.engine_number.substr(
           0,
           this.carForm.data.engine_number.length - 1
-        );
-      }
-    },
-    handleShowMobileKeyboard() {
-      this.keyboard.mobileVisible = true;
-    },
-    handleMobileChange(value) {
-      this.carForm.data.mobile += value;
-    },
-    handleMobileBackspace() {
-      if (this.carForm.data.mobile.length) {
-        this.carForm.data.mobile = this.carForm.data.mobile.substr(
-          0,
-          this.carForm.data.mobile.length - 1
         );
       }
     },

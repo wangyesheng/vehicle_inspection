@@ -53,8 +53,10 @@
           </u-form-item>
           <u-form-item label="预约手机号">
             <u-input
+              type="number"
               v-model="carForm.mobile"
               placeholder="请填写手机号"
+              @blur="handleBlur"
             />
           </u-form-item>
           <u-form-item label="验证码">
@@ -68,8 +70,10 @@
               <text v-else>获取验证码</text>
             </u-button>
             <u-input
+              type="number"
               v-model="carForm.code"
               placeholder="请填写验证码"
+              @blur="handleBlur"
             />
           </u-form-item>
         </u-form>
@@ -326,6 +330,10 @@ export default {
     handleGetCode() {
       this.getCode(this.carForm.mobile);
     },
+    handleBlur(e) {
+      console.log(e);
+      uni.hideKeyboard();
+    },
   },
 };
 </script>
@@ -389,7 +397,7 @@ export default {
         font-size: 28rpx;
         font-weight: 400;
         color: #666666;
-        view{
+        view {
           margin-bottom: 10rpx;
         }
       }

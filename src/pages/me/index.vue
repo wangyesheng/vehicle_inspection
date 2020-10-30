@@ -29,7 +29,7 @@
           v-if="hasLogin&&appUser.gid!='1'"
         >
           <image
-            :src="appUser.gid=='2'?require('../../static/images/me/salesman.png'):require('../../static/images/me/employe.png')"
+            :src="appUser.gid=='2'?require('../../static/images/me/salesman.png'):require('../../static/images/me/employee.jpg')"
             mode="widthFit"
           />
         </view>
@@ -149,7 +149,7 @@ export default {
         margin-top: 23rpx;
         text-align: center;
         image {
-          width: 114rpx;
+          width: 90rpx;
           height: 40rpx;
           border-radius: 0;
         }
