@@ -10,10 +10,19 @@
   >
     <view class="u-direction-row">
       <view class="u-icon-wrap">
-        <u-icon class="u-left-icon" v-if="volumeIcon" name="volume-fill" :size="volumeSize" :color="computeColor"></u-icon>
-        <slot v-else/>
+        <u-icon
+          class="u-left-icon"
+          v-if="volumeIcon"
+          name="volume-fill"
+          :size="volumeSize"
+          :color="computeColor"
+        ></u-icon>
+        <slot v-else />
       </view>
-      <view class="u-notice-box" id="u-notice-box">
+      <view
+        class="u-notice-box"
+        id="u-notice-box"
+      >
         <view
           class="u-notice-content"
           id="u-notice-content"
@@ -27,8 +36,9 @@
             @tap="click"
             :style="[textStyle]"
             :class="['u-type-' + type]"
-            >{{ showText }}</text
-          >
+            v-for="(item,idx) in list"
+            :key="idx"
+          >{{ item }}</text>
         </view>
       </view>
       <view class="u-icon-wrap">
@@ -66,7 +76,7 @@ export default {
     // none主题默认为透明背景，黑色(contentColor)字体
     type: {
       type: String,
-      default: "warning",
+      default: 'warning',
     },
     // 是否显示左侧的音量图标
     volumeIcon: {
@@ -91,12 +101,12 @@ export default {
     // 文字颜色，各图标也会使用文字颜色
     color: {
       type: String,
-      default: "",
+      default: '',
     },
     // 背景颜色
     bgColor: {
       type: String,
-      default: "",
+      default: '',
     },
     // 是否显示
     show: {
@@ -121,36 +131,34 @@ export default {
     // 播放状态，play-播放，paused-暂停
     playState: {
       type: String,
-      default: "play",
+      default: 'play',
     },
     // 通知的边距
     padding: {
       type: [Number, String],
-      default: "18rpx 24rpx",
+      default: '18rpx 24rpx',
     },
   },
   data() {
     return {
       textWidth: 0, // 滚动的文字宽度
       boxWidth: 0, // 供文字滚动的父盒子的宽度，和前者一起为了计算滚动速度
-      animationDuration: "10s", // 动画执行时间
-      animationPlayState: "paused", // 动画的开始和结束执行
-      showText: "", // 显示的文本
+      animationDuration: '10s', // 动画执行时间
+      animationPlayState: 'paused', // 动画的开始和结束执行
     };
   },
   watch: {
     list: {
       immediate: true,
       handler(val) {
-        this.showText = val.join("，");
         this.$nextTick(() => {
           this.initSize();
         });
       },
     },
     playState(val) {
-      if (val == "play") this.animationPlayState = "running";
-      else this.animationPlayState = "paused";
+      if (val == 'play') this.animationPlayState = 'running';
+      else this.animationPlayState = 'paused';
     },
     speed(val) {
       this.initSize();
@@ -161,21 +169,21 @@ export default {
     computeColor() {
       if (this.color) return this.color;
       // 如果是无主题，就默认使用content-color
-      else if (this.type == "none") return "#606266";
+      else if (this.type == 'none') return '#606266';
       else return this.type;
     },
     // 文字内容的样式
     textStyle() {
       let style = {};
       if (this.color) style.color = this.color;
-      else if (this.type == "none") style.color = "#606266";
-      style.fontSize = this.fontSize + "rpx";
+      else if (this.type == 'none') style.color = '#606266';
+      style.fontSize = this.fontSize + 'rpx';
       return style;
     },
     // 计算背景颜色
     computeBgColor() {
       if (this.bgColor) return this.bgColor;
-      else if (this.type == "none") return "transparent";
+      else if (this.type == 'none') return 'transparent';
     },
   },
   mounted() {
@@ -205,31 +213,31 @@ export default {
         // 恰巧计算出来的结果中已经包含了#u-notice-box的宽度
         this.animationDuration = `${this.textWidth / uni.upx2px(this.speed)}s`;
         // 这里必须这样开始动画，否则在APP上动画速度不会改变(HX版本2.4.6，IOS13)
-        this.animationPlayState = "paused";
+        this.animationPlayState = 'paused';
         setTimeout(() => {
-          if (this.playState == "play" && this.autoplay)
-            this.animationPlayState = "running";
+          if (this.playState == 'play' && this.autoplay)
+            this.animationPlayState = 'running';
         }, 10);
       });
     },
     // 点击通告栏
     click(index) {
-      this.$emit("click");
+      this.$emit('click');
     },
     // 点击关闭按钮
     close() {
-      this.$emit("close");
+      this.$emit('close');
     },
     // 点击更多箭头按钮
     getMore() {
-      this.$emit("getMore");
+      this.$emit('getMore');
     },
   },
 };
 </script>
 
 <style lang="scss" scoped>
-@import "../../libs/css/style.components.scss";
+@import '../../libs/css/style.components.scss';
 
 .u-notice-bar {
   padding: 18rpx 24rpx;
@@ -273,6 +281,7 @@ export default {
   font-size: 26rpx;
   word-break: keep-all;
   white-space: nowrap;
+  margin-right: 30px;
 }
 
 @keyframes u-loop-animation {

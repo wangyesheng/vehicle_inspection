@@ -11,9 +11,9 @@
         <u-notice-bar
           mode="horizontal"
           type="none"
+          padding="0"
           :list="notifies"
           :volume-icon="false"
-          padding="0"
         >
           <image
             slot="speaker"
