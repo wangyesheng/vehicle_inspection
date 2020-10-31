@@ -7,7 +7,7 @@ export default {
     }
     return {
       path,
-      title: "1小时快速审车，5颗星贴心服务",
+      title: "汽车年审，还可以更快更简单",
       imageUrl: "https://cj.huazhe.work/static/images/share.png",
     };
   },

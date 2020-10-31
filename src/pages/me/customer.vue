@@ -51,33 +51,46 @@
             @click="handleShare"
           />
         </view>
-        <view class="btn-wrap_timeline">
-          <button
-            open-type="share"
-            @click="handleShareToTimeline"
-          />
-        </view>
+        <!-- <view class="btn-wrap_timeline">
+          <button @click="handleShareToTimeline" />
+        </view> -->
       </view>
     </view>
-    <view class="footer-wrap">
-      <view class="btn-wrap_wechat">
+    <view class="footer-wrap" v-if="customers.length">
+      <view class="btn-wrap_wechat_large">
         <button
           open-type="share"
           @click="handleShare"
         />
       </view>
-      <view class="btn-wrap_timeline">
-        <button
-          open-type="share"
-          @click="handleShareToTimeline"
-        />
-      </view>
+      <!-- <view class="btn-wrap_timeline">
+        <button @click="handleShareToTimeline" />
+      </view> -->
     </view>
+    <!-- <u-popup
+      mode="center"
+      v-model="qrcode.visible"
+    >
+      <view class="code-banner-wrap">
+        <image
+          src="../../static/images/me/code_banner.png"
+          mode="widthFit"
+        />
+        <view class="qrcode">
+          <canvas
+            style="width: 200upx;height: 200upx;"
+            canvas-id="couponQrcode"
+          />
+        </view>
+      </view>
+    </u-popup> -->
   </view>
 </template>
 
 <script>
 import { getMyCustomersRes, getMyCompaniesRes } from '../../api';
+import qrCode from '../../utils/qrcode';
+
 export default {
   data() {
     return {
@@ -85,6 +98,9 @@ export default {
       customers: [],
       appUser: this.getAppUser(),
       companyLength: 0,
+      qrcode: {
+        visible: false,
+      },
     };
   },
 
@@ -116,9 +132,25 @@ export default {
       const path = `/pages/home/index?sharerId=${this.appUser.member_id}`;
       return {
         path,
-        title: '1小时快速审车，5颗星贴心服务',
+        title: '汽车年审，还可以更快更简单',
         imageUrl: 'https://cj.huazhe.work/static/images/share.png',
       };
+    },
+    handleShareToTimeline() {
+      uni.showLoading({
+        title: '二维码海报生成中',
+        duration: 2000,
+      });
+
+      new qrCode('couponQrcode', {
+        text: 'https://cj.huazhe.work/pages/home/index',
+        width: 100,
+        height: 100,
+        colorDark: '#333333',
+        colorLight: '#FFFFFF',
+        correctLevel: qrCode.CorrectLevel.H,
+      });
+      this.qrcode.visible = true;
     },
   },
 };
@@ -172,7 +204,7 @@ export default {
     padding: 15rpx 30rpx;
     display: flex;
     justify-content: space-around;
-    align-items:center;
+    align-items: center;
   }
 
   .btn-wrap_wechat {
@@ -180,6 +212,19 @@ export default {
       width: 330rpx;
       height: 90rpx;
       background-image: url('../../static/images/me/wechat.png');
+      background-size: 100% 100%;
+      border-radius: 45rpx;
+    }
+    button::after {
+      border-color: transparent;
+    }
+  }
+
+  .btn-wrap_wechat_large {
+    button {
+      width: 690rpx;
+      height: 90rpx;
+      background-image: url('../../static/images/me/wechat_large.png');
       background-size: 100% 100%;
       border-radius: 45rpx;
     }
@@ -199,6 +244,10 @@ export default {
     button::after {
       border-color: transparent;
     }
+  }
+
+  .full {
+    width: 100%;
   }
 
   .unit-wrap {
@@ -244,6 +293,13 @@ export default {
       color: #9a9a9a;
       margin-top: 30rpx;
       text-align: center;
+    }
+  }
+
+  .code-banner-wrap {
+    image {
+      width: 750rpx;
+      height: 1017rpx;
     }
   }
 }

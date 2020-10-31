@@ -2,7 +2,7 @@
   <view class="home-container">
     <view class="header">
       <image
-        src="../../static/images/home/header-bg.png"
+        src="../../static/images/home/header-bg.jpg"
         mode="widthFit"
       />
     </view>
