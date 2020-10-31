@@ -117,6 +117,7 @@
     <u-keyboard
       ref="carNumKeyboard"
       mode="car"
+      :mask="false"
       :tooltip="false"
       :safe-area-inset-bottom="true"
       v-model="keyboard.carVisible"

@@ -90,6 +90,11 @@ import { getCarsRes, getNoticesRes } from '../../api';
 import { BUTTON_FLAGS } from '../../constant';
 import { getDiffDate } from '../../utils/time';
 
+const fiveYears = 5 * 12;
+const sixYears = 6 * 12;
+const tenYears = 10 * 12;
+const fifteenYears = 15 * 12;
+
 export default {
   components: {
     'eos-swiper': EOSSwiper,
@@ -148,15 +153,25 @@ export default {
           image: bannerBg,
           appointmentDates: getDiffDate(x.start_time, x.end_time),
         };
+        const months = diffMonths(x.register_date, currentFormatDate);
         if (x.type == 1) {
-          const months = diffMonths(x.register_date, currentFormatDate);
+          // 非营运
           if (months < 70) {
             layer._status = '六年免检';
-          } else if (months >= 70) {
-            layer._status = '上线检测';
+          } else if (sixYears <= months <= tenYears) {
+            layer._status = '两年一检';
+          } else if (tenYears < months <= fifteenYears) {
+            layer._status = '一年一检';
+          } else if (months > fifteenYears) {
+            layer._status = '一年两检';
           }
         } else {
-          layer._status = '上线检测';
+          // 营运
+          if (months <= fiveYears) {
+            layer._status = '一年一检';
+          } else {
+            layer._status = '一年两检';
+          }
         }
 
         switch (x.status) {

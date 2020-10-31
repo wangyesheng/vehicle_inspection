@@ -29,7 +29,7 @@
           v-if="hasLogin&&appUser.gid!='1'"
         >
           <image
-            :src="appUser.gid=='2'?require('../../static/images/me/salesman.png'):require('../../static/images/me/employee.jpg')"
+            :src="appUser.gid=='2'?require('../../static/images/me/salesman.png'):require('../../static/images/me/employee.png')"
             mode="widthFit"
           />
         </view>
