@@ -281,7 +281,7 @@ export default {
       this.typeSelect.defaultSelectTypes = [+carInfo.type - 1];
       this.carForm.data.engine_number = carInfo.engine_number;
       this.carForm.data.owner = carInfo.owner;
-      this.carForm.data.register_date = carInfo.register_date;
+      this.carForm.data.register_date = carInfo.register_date.slice(0, 7);
       this.carForm.data.mobile = carInfo.mobile;
       const dates = this.carForm.data.register_date.split('-').slice(0, 2);
       const _dates = [];
@@ -292,7 +292,7 @@ export default {
         _dates.push(+d);
       });
       const { defaultDate } = getDateInterval(_dates[0], _dates[1]);
-      this.dateSelect.defaultDate = defaultDate;
+      this.dateSelect.defaultDate = [defaultDate[0], defaultDate[1]];
     },
     handleGetCode() {
       this.getCode(this.carForm.data.mobile);

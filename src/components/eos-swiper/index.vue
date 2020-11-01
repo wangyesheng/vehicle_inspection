@@ -55,7 +55,7 @@
                 :style="{ color: item.isOverdue ? '#FF474F' : '#fff' }"
               >
                 <text class="prompt-label">{{ item.prompt }}</text>
-                <text class="prompt-value">{{ `${item.promptValue}天` }}</text>
+                <text class="prompt-value">{{ `${item.days}天` }}</text>
                 <text
                   class="btn-plain position"
                   v-if="item.status==3||item.status==4"

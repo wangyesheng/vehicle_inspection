@@ -144,7 +144,7 @@ export function getDiffDate(start, end) {
         } else if (day === currentDay) {
           if (currentHours < 16) {
             walk();
-          } else if (currentHours === 15 && currentMinutes < 1) {
+          } else if (currentHours === 16 && currentMinutes < 1) {
             walk();
           }
         }
@@ -165,4 +165,18 @@ export function getDiffDate(start, end) {
     startTime.setDate(startTime.getDate() + 1);
   }
   return dates;
+}
+
+/**
+ * 根据当前时间往后推多少天之后的日期
+ * @param {*} days
+ */
+export function getDateByDays(days) {
+  var date1 = new Date();
+  var date2 = new Date(date1);
+  date2.setDate(date1.getDate() + days);
+  var year = date2.getFullYear();
+  var month = zeroPadding(date2.getMonth() + 1);
+  var day = zeroPadding(date2.getDate());
+  return `${year}-${month}-${day}`;
 }

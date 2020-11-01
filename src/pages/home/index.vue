@@ -53,6 +53,12 @@
           </u-button>
         </view>
       </view>
+      <view
+        class="reserve-time"
+        v-if="canShowReserveTime"
+      >
+        已预约年检时间：{{reserveTime}}
+      </view>
     </view>
     <view class="process-wrap">
       <image
@@ -65,6 +71,7 @@
       v-model="processedModal.visible"
       :show-cancel-button="true"
       :title-style="{ fontSize: 36, fontWeight: 'bold', color: '#000' }"
+      @confirm="handleConfirm"
     >
       <view class="content-wrap">
         <view class="c-main">{{ processedModal.content }}</view>
@@ -85,10 +92,14 @@ import bannerBg from '../../static/images/home/banner_bg.png';
 import editIcon from '../../static/images/home/edit_icon.png';
 import addCarBg from '../../static/images/home/add_car_bg.png';
 
-import { diffMonths, currentFormatDate } from '../../utils/time';
-import { getCarsRes, getNoticesRes } from '../../api';
+import {
+  diffMonths,
+  currentFormatDate,
+  getDateByDays,
+  getDiffDate,
+} from '../../utils/time';
+import { getCarsRes, getNoticesRes, setCarDealRes } from '../../api';
 import { BUTTON_FLAGS } from '../../constant';
-import { getDiffDate } from '../../utils/time';
 
 const fiveYears = 5 * 12;
 const sixYears = 6 * 12;
@@ -111,6 +122,8 @@ export default {
       buttonFlag: undefined,
       buttonFlags: BUTTON_FLAGS,
       selectedCar: undefined,
+      canShowReserveTime: false,
+      reserveTime: '',
     };
   },
 
@@ -151,7 +164,6 @@ export default {
           editIcon,
           number: x.number.toUpperCase(),
           image: bannerBg,
-          appointmentDates: getDiffDate(x.start_time, x.end_time),
         };
         const months = diffMonths(x.register_date, currentFormatDate);
         if (x.type == 1) {
@@ -178,37 +190,41 @@ export default {
           // 未到期，不可预约
           case 0:
             layer.prompt = '距上线年检还剩';
-            layer.promptValue = x.days;
             layer.isOverdue = false;
             layer.buttonFlag = 0;
             break;
           // 已预约
           case 1:
-            layer.prompt = '距年检逾期还剩';
-            layer.promptValue = x.days;
-            layer.isOverdue = false;
+            if (layer.is_pass == 0) {
+              // 未逾期
+              layer.prompt = '距年检逾期还剩';
+              layer.isOverdue = false;
+            } else {
+              layer.prompt = '年检已逾期';
+              layer.isOverdue = true;
+            }
             layer.buttonFlag = 1;
             break;
           // 已办理
           case 2:
             layer.prompt = '距上线年检还剩';
-            layer.promptValue = x.days;
             layer.isOverdue = false;
             layer.buttonFlag = 0;
             break;
           // 可预约
           case 3:
             layer.prompt = '距年检逾期还剩';
-            layer.promptValue = x.days;
             layer.isOverdue = false;
             layer.buttonFlag = 2;
+            layer.appointmentDates = getDiffDate(x.start_time, x.end_time);
             break;
           // 已逾期
           case 4:
             layer.prompt = '年检已逾期';
-            layer.promptValue = x.days;
             layer.isOverdue = true;
             layer.buttonFlag = 2;
+            const date = getDateByDays(x.days);
+            layer.appointmentDates = getDiffDate(currentFormatDate, date);
             break;
         }
         return layer;
@@ -223,6 +239,8 @@ export default {
       }
       this.selectedCar = this.cars[0];
       this.buttonFlag = this.cars[0].buttonFlag;
+      this.canShowReserveTime = this.selectedCar.status == 1 ? true : false;
+      this.reserveTime = this.selectedCar.reserve_time;
     },
     handleNavTo(flag) {
       if (!this.checkLogin()) {
@@ -250,6 +268,19 @@ export default {
       const scope = this.cars.find((x, idx) => value === idx);
       this.selectedCar = scope;
       this.buttonFlag = scope.buttonFlag;
+      this.canShowReserveTime = scope.status == 1 ? true : false;
+      this.reserveTime = scope.reserve_time;
+    },
+    async handleConfirm() {
+      const { code, data } = await setCarDealRes({
+        car_id: this.selectedCar.id,
+      });
+      if (code == 200) {
+        uni.showToast({
+          title: data,
+        });
+        this.getCars();
+      }
     },
   },
 };
@@ -284,9 +315,16 @@ export default {
     border-radius: 8rpx;
     margin-bottom: 30rpx;
     padding: 32rpx 0;
+    .reserve-time {
+      text-align: center;
+      font-size: 24rpx;
+      font-weight: 400;
+      color: #666666;
+      padding: 10rpx 0;
+    }
     .banner-top {
       padding: 0 28rpx;
-      margin-bottom: 30rpx;
+      margin-bottom: 20rpx;
       image {
         width: 32rpx;
         height: 29rpx;

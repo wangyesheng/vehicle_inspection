@@ -32,7 +32,7 @@ export const BUTTON_FLAGS = [
     label: "未到期，不可预约",
   },
   {
-    // 已预约
+    // 已预约 is_pass = 1   当前日期 + 30 - days
     value: 1,
     label: "查看预约详情",
   },
