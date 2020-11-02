@@ -144,6 +144,7 @@ import { addCarRes } from '../../api';
 import EOSABCKeyboard from '../../components/eos-abc-keyboard';
 import carFormMixin from '../../mixins/carFormMixin';
 import timingMixin from '../../mixins/timingMixin';
+import { debounce } from '../../utils/tool';
 
 const { years, months, defaultDate } = getDateInterval();
 
@@ -268,27 +269,31 @@ export default {
     handleGetCode() {
       this.getCode(this.carForm.data.mobile);
     },
-    handleSubmit() {
-      this.$refs.carForm.validate(async (valid) => {
-        if (valid) {
-          const reqData = {
-            ...this.carForm.data,
-            type: this.typeSelect.selectedType,
-          };
-          const { code, data } = await addCarRes(reqData);
-          if (code === 200) {
-            uni.switchTab({
-              url: '/pages/home/index',
-            });
-          } else {
-            uni.showToast({
-              icon: 'none',
-              title: data,
-            });
+    handleSubmit: debounce(
+      function () {
+        this.$refs.carForm.validate(async (valid) => {
+          if (valid) {
+            const reqData = {
+              ...this.carForm.data,
+              type: this.typeSelect.selectedType,
+            };
+            const { code, data } = await addCarRes(reqData);
+            if (code === 200) {
+              uni.switchTab({
+                url: '/pages/home/index',
+              });
+            } else {
+              uni.showToast({
+                icon: 'none',
+                title: data,
+              });
+            }
           }
-        }
-      });
-    },
+        });
+      },
+      3000,
+      true
+    )
   },
 };
 </script>

@@ -128,7 +128,7 @@ export function getDiffDate(start, end) {
   var startTime = getDate(start);
   var endTime = getDate(end);
   var dates = [];
-  while (endTime.getTime() - startTime.getTime() > 0) {
+  while (endTime.getTime() - startTime.getTime() >= 0) {
     var year = startTime.getFullYear();
     var month = startTime.getMonth();
     var day = startTime.getDate();

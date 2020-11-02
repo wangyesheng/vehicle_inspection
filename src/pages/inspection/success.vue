@@ -3,6 +3,7 @@
     class="success-containner"
     :style="{ minHeight: `${sysHeight}px` }"
   >
+  <u-navbar :is-back="false" :background="{ background: '#5e93ec' }" />
     <view class="banner-wrap">
       <image
         src="../../static/images/inspection/success.png"
@@ -38,6 +39,19 @@ export default {
     this.carNum = options.carNum;
     this.info = options.info;
     this.sysHeight = this.getSysHeight();
+  },
+  
+  onShow() {
+    uni.hideHomeButton();
+  },
+
+  onBackPress(options) {
+    // 这里可以自定义返回逻辑，比如下面跳转其他页面
+    uni.redirectTo({
+      url: '/pages/center_home/order/goods_lst?sta=all',
+    });
+    // return true 表示禁止默认返回
+    return true;
   },
 
   methods: {

@@ -223,7 +223,7 @@ export default {
             layer.prompt = '年检已逾期';
             layer.isOverdue = true;
             layer.buttonFlag = 2;
-            const date = getDateByDays(x.days);
+            const date = getDateByDays(30 - x.days);
             layer.appointmentDates = getDiffDate(currentFormatDate, date);
             break;
         }
@@ -240,7 +240,7 @@ export default {
       this.selectedCar = this.cars[0];
       this.buttonFlag = this.cars[0].buttonFlag;
       this.canShowReserveTime = this.selectedCar.status == 1 ? true : false;
-      this.reserveTime = this.selectedCar.reserve_time;
+      this.reserveTime = this.selectedCar.reserve_date;
     },
     handleNavTo(flag) {
       if (!this.checkLogin()) {
@@ -269,16 +269,13 @@ export default {
       this.selectedCar = scope;
       this.buttonFlag = scope.buttonFlag;
       this.canShowReserveTime = scope.status == 1 ? true : false;
-      this.reserveTime = scope.reserve_time;
+      this.reserveTime = scope.reserve_date;
     },
     async handleConfirm() {
       const { code, data } = await setCarDealRes({
         car_id: this.selectedCar.id,
       });
       if (code == 200) {
-        uni.showToast({
-          title: data,
-        });
         this.getCars();
       }
     },

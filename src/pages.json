@@ -61,7 +61,8 @@
         }, {
             "path": "pages/inspection/success",
             "style": {
-                "navigationBarTitleText": ""
+                "navigationStyle": "custom",
+                "navigationBarTextStyle": "white"
             }
         },
         {
