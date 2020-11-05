@@ -265,7 +265,7 @@ export default {
         if (scope) {
           const keys = Object.keys(scope);
           let loopIndex = 0;
-          for (let j = 0; j < keys.length; j++) {
+          for (let j = 0, length = keys.length; j < length; j++) {
             const key = keys[j];
             if (layer.id == key) {
               this.appointmentTimeSelect.times.push({

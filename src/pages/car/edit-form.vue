@@ -309,9 +309,9 @@ export default {
             };
             const { code, data } = await editCarRes(reqData);
             if (code === 200) {
-              // uni.switchTab({
-              //   url: '/pages/home/index',
-              // });
+              uni.switchTab({
+                url: '/pages/home/index',
+              });
             } else {
               uni.showToast({
                 icon: 'none',

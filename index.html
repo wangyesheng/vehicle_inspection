@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        #container {
+            width: 100%;
+            height: 300px;
+            background: #333;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="container"></div>
+    <script>
+        // var count = 0;
+
+        // function getUserAction() {
+        //     container.innerHtml = count++
+        // }
+        // container.addEventListener('onmouseover', getUserAction)
+
+        // function debounce() {
+        //     let timeout;
+        //     return function () {
+        //         if (timeout) clearTimeout(timeout)
+        //         timeout = setTimeout(() => {
+        //             console.log('init');
+        //         }, 3000);
+        //     }
+        //     console.log(timeout);
+        // }
+
+        function Animal(type) {
+            // 构造函数（类）上的 this 都是指向其创建的实例
+            this.type = type;
+        }
+
+        Animal.prototype.say = function () {
+            console.log('say: ' + this.type);
+        }
+
+        console.log(Animal.prototype.__proto__);
+
+        function create() {
+            var Con = [].shift.call(arguments);
+            var obj = {};
+            obj.__proto__ = Con.prototype;
+            var ret = Con.apply(obj, arguments);
+            return ret instanceof Object ? ret : obj;
+        }
+
+        var animal = create(Animal, 'Tiger');
+        console.log(animal);
+        console.log(animal.type);
+        animal.say()
+    </script>
+</body>
+
+</html>
