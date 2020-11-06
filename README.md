@@ -1,4 +1,4 @@
-# fanr-app
+# vehicle_inspection
 
 ## Project setup
 ```
