@@ -165,9 +165,9 @@ export default {
           // 非营运
           if (months < 70) {
             layer._status = '六年免检';
-          } else if (70 <= months < 118) {
+          } else if (months >= 70 && months < 118) {
             layer._status = '两年一检';
-          } else if (118 <= months < 178) {
+          } else if (months >= 118 && months < 178) {
             layer._status = '一年一检';
           } else if (months >= 178) {
             layer._status = '一年两检';
