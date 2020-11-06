@@ -101,11 +101,6 @@ import {
 import { getCarsRes, getNoticesRes, setCarDealRes } from '../../api';
 import { BUTTON_FLAGS } from '../../constant';
 
-const fiveYears = 5 * 12;
-const sixYears = 6 * 12;
-const tenYears = 10 * 12;
-const fifteenYears = 15 * 12;
-
 export default {
   components: {
     'eos-swiper': EOSSwiper,
