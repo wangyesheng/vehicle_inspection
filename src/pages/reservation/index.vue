@@ -94,8 +94,20 @@ export default {
       this.myAppointments = reserveList.map((x) => {
         const scope = APPOINTMENT_TIMES.find((y) => y.key === x.rid);
         x._time = x.date + ' ' + scope.value;
-        x._status =
-          x.status === '0' ? '预约中' : x.status === '1' ? '已结束' : '已取消';
+        switch (x.status) {
+          case '0':
+            x._status = '预约中';
+            break;
+          case '1':
+            x._status = '已完成';
+            break;
+          case '2':
+            x._status = '已取消';
+            break;
+          case '3':
+            x._status = '已到站';
+            break;
+        }
         x._classname = x.status === '0' ? '' : 'gray';
         return x;
       });

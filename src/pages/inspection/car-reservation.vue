@@ -221,32 +221,33 @@ export default {
     findTimes() {
       let loopTimes = [...this.times];
       if (this.appointmentDateSelect.selectedDate === currentFormatDate) {
-        switch (currentHours) {
+        switch (true) {
           case currentHours <= 8:
             loopTimes = loopTimes;
             break;
-          case 9:
-            loopTimes = loopTimes.splice(1);
-            break;
-          case 10:
+          case currentHours == 9:
             loopTimes = loopTimes.splice(2);
             break;
-          case 11:
+          case currentHours == 10:
             loopTimes = loopTimes.splice(3);
             break;
-          case 12:
-            loopTimes = loopTimes.splice(3);
-            break;
-          case 13:
+          case currentHours == 11:
             loopTimes = loopTimes.splice(4);
             break;
-          case 14:
+          case currentHours == 12:
+            loopTimes = loopTimes.splice(4);
+            break;
+          case currentHours == 13:
             loopTimes = loopTimes.splice(5);
             break;
-          case 15:
+          case currentHours == 14:
             loopTimes = loopTimes.splice(6);
             break;
+          case currentHours == 15:
+            loopTimes = loopTimes.splice(7);
+            break;
           default:
+            loopTimes = [];
             break;
         }
       }
