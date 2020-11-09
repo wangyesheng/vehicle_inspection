@@ -231,6 +231,7 @@ export default {
           case currentHours == 10:
             loopTimes = loopTimes.splice(3);
             break;
+          // 无 12-13 的时间段
           case currentHours == 11:
             loopTimes = loopTimes.splice(4);
             break;
