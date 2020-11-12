@@ -40,5 +40,60 @@ export default {
   font-weight: bold;
 }
 
+.popup-wrap {
+  button {
+    font-size: 32rpx;
+    height: 100%;
+    line-height: 80rpx;
+    background: transparent;
+    border-radius: 80rpx;
+    color: #000;
+    margin: 20rpx 0;
+  }
+  button::after {
+    border-color: transparent;
+  }
+  .btn-plain {
+    width: 50%;
+    border-radius: 0;
+    border: 1rpx solid $u-border-color;
+    font-size: 26rpx;
+    margin: 0;
+    font-weight: 500;
+  }
 
+  .btn-plain_success {
+    color: $u-type-success;
+  }
+  .title {
+    padding: 20rpx;
+    text-align: center;
+    font-size: 32rpx;
+    color: #000;
+    font-weight: 500;
+    border-bottom: 1rpx solid $u-border-color;
+  }
+  .content {
+    text-align: center;
+    padding: 20rpx 0;
+    .success-icon {
+      width: 96rpx;
+      height: 96rpx;
+    }
+    .tips {
+      font-size: 28rpx;
+      color: #000;
+      font-weight: 500;
+      padding: 20rpx 0;
+    }
+    .mobile-auth {
+      font-size: 24rpx;
+      color: #999;
+      padding: 20rpx 0;
+    }
+  }
+  .footer {
+    display: flex;
+  }
+}
 </style>
