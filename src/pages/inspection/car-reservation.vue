@@ -102,6 +102,7 @@
           </view>
         </view>
       </view>
+
     </view>
     <view class="footer-wrap">
       <!-- <view class="left">
@@ -198,16 +199,38 @@ export default {
       this.result = result;
       this.times = times;
       const appointmentDates = this.carInfo.appointmentDates;
+      const getCurrentDayCount = (index) => {
+        const count = this.times.reduce((memo, current, idx) => {
+          if (idx >= index) {
+            return memo;
+          }
+          memo += Number(current.surplus);
+          return memo;
+        }, 0);
+        return count;
+      };
       for (let i = 0; i < appointmentDates.length; i++) {
+        let currentDayCount = 0;
+        if (appointmentDates[i].value === currentFormatDate) {
+          this.switchTime((num) => {
+            if (num == -1) {
+              currentDayCount = getCurrentDayCount(8);
+            } else if (num == 8) {
+              currentDayCount = this.times[0].surplus;
+            } else {
+              currentDayCount = getCurrentDayCount(num);
+            }
+          });
+        }
         const scope = result[appointmentDates[i].value];
         if (scope) {
           appointmentDates[i].label = `${appointmentDates[i].label}（余量${
-            count - scope.count
+            count - scope.count - currentDayCount
           }） `;
         } else {
-          appointmentDates[
-            i
-          ].label = `${appointmentDates[i].label}（余量${count}） `;
+          appointmentDates[i].label = `${appointmentDates[i].label}（余量${
+            count - currentDayCount
+          }） `;
         }
       }
       this.appointmentDateSelect.dates = appointmentDates;
@@ -218,39 +241,51 @@ export default {
     handleShowDateSelect() {
       this.appointmentDateSelect.visible = true;
     },
+    switchTime(callback) {
+      switch (true) {
+        case currentHours < 8:
+          break;
+        case currentHours == 8:
+          callback(1);
+          break;
+        case currentHours == 9:
+          callback(2);
+          break;
+        case currentHours == 10:
+          callback(3);
+          break;
+        // 无 12-13 的时间段
+        case currentHours == 11:
+          callback(4);
+          break;
+        case currentHours == 12:
+          callback(4);
+          break;
+        case currentHours == 13:
+          callback(5);
+          break;
+        case currentHours == 14:
+          callback(6);
+          break;
+        case currentHours == 15:
+          callback(7);
+          break;
+        default:
+          callback(-1);
+          break;
+      }
+    },
     findTimes() {
       let loopTimes = [...this.times];
       if (this.appointmentDateSelect.selectedDate === currentFormatDate) {
-        switch (true) {
-          case currentHours <= 8:
-            loopTimes = loopTimes;
-            break;
-          case currentHours == 9:
-            loopTimes = loopTimes.splice(2);
-            break;
-          case currentHours == 10:
-            loopTimes = loopTimes.splice(3);
-            break;
-          // 无 12-13 的时间段
-          case currentHours == 11:
-            loopTimes = loopTimes.splice(4);
-            break;
-          case currentHours == 12:
-            loopTimes = loopTimes.splice(4);
-            break;
-          case currentHours == 13:
-            loopTimes = loopTimes.splice(5);
-            break;
-          case currentHours == 14:
-            loopTimes = loopTimes.splice(6);
-            break;
-          case currentHours == 15:
-            loopTimes = loopTimes.splice(7);
-            break;
-          default:
+        debugger
+        this.switchTime((num) => {
+          if (num == -1) {
             loopTimes = [];
-            break;
-        }
+          } else {
+            loopTimes = loopTimes.splice(num);
+          }
+        });
       }
       return loopTimes;
     },

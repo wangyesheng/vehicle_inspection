@@ -16,6 +16,14 @@ export function bindMobileRes(data) {
   });
 }
 
+export function autoBindMobileRes(data) {
+  return request({
+    url: "/api.php?p=/Member/wxUpdateMobile",
+    method: "GET",
+    data,
+  });
+}
+
 /**
  * 新增
  * @param {*} data

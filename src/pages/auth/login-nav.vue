@@ -20,6 +20,42 @@
       />
     </view>
     <view class="copyright">本服务由川B年检提供</view>
+    <u-popup
+      v-model="mobilePopup.visible"
+      mode="center"
+      border-radius="5"
+      class="popup-wrap"
+      width="500"
+    >
+      <view class="title">
+        微信授权
+      </view>
+      <view class="content">
+        <image
+          src="../../static/images/success.png"
+          mode="widthFit"
+          class="success-icon"
+        />
+        <view class="tips">微信授权成功</view>
+        <u-divider :use-slot="false" />
+        <view class="mobile-auth">授权绑定你的手机号码</view>
+      </view>
+      <view class="footer">
+        <button
+          class="btn-plain"
+          @click="mobilePopup.visible = false"
+        >
+          拒绝
+        </button>
+        <button
+          open-type="getPhoneNumber"
+          @getphonenumber="handleGetPhoneNumber"
+          class="btn-plain btn-plain_success"
+        >
+          允许
+        </button>
+      </view>
+    </u-popup>
   </view>
 </template>
 
@@ -101,63 +137,6 @@ export default {
     font-weight: 400;
     color: #ccc;
     text-align: center;
-  }
-
-  .popup-wrap {
-    button {
-      font-size: 32rpx;
-      height: 100%;
-      line-height: 80rpx;
-      background: transparent;
-      border-radius: 80rpx;
-      color: #000;
-      margin: 20rpx 0;
-    }
-    button::after {
-      border-color: transparent;
-    }
-    .btn-plain {
-      width: 50%;
-      border-radius: 0;
-      border: 1rpx solid $u-border-color;
-      font-size: 26rpx;
-      margin: 0;
-      font-weight: 500;
-    }
-
-    .btn-plain_success {
-      color: $u-type-success;
-    }
-    .title {
-      padding: 20rpx;
-      text-align: center;
-      font-size: 32rpx;
-      color: #000;
-      font-weight: 500;
-      border-bottom: 1rpx solid $u-border-color;
-    }
-    .content {
-      text-align: center;
-      padding: 20rpx 0;
-      .success-icon {
-        width: 96rpx;
-        height: 96rpx;
-      }
-      .tips {
-        font-size: 28rpx;
-        color: #000;
-        font-weight: 500;
-        padding: 20rpx 0;
-      }
-      .mobile-auth {
-        font-size: 24rpx;
-        color: #999;
-        padding: 20rpx 0;
-      }
-    }
-    .footer {
-      display: flex;
-    }
   }
 }
 </style>

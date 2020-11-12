@@ -1,6 +1,14 @@
-import { loginRes } from "../api";
+import { loginRes, autoBindMobileRes } from "../api";
 
 export default {
+  data() {
+    return {
+      mobilePopup: {
+        visible: false,
+        wxCode: "",
+      },
+    };
+  },
   methods: {
     /**
      * 登录逻辑
@@ -25,11 +33,10 @@ export default {
                     sharerId,
                   });
                   if (data.state === "200") {
-                    delete data.state;
-                    delete data.unionid;
-                    delete data.session_id;
                     uni.setStorageSync("app_user", JSON.stringify(data));
-                    this.navTo(`/pages/auth/bind-mobile?from=${from}`);
+                    // this.navTo(`/pages/auth/bind-mobile?from=${from}`);
+                    this.mobilePopup.visible = true;
+                    this.mobilePopup.wxCode = code;
                   } else {
                     uni.showToast({
                       title: "微信登录授权失败",
@@ -55,6 +62,19 @@ export default {
           });
         },
       });
+    },
+    async handleGetPhoneNumber(e) {
+      const {
+        detail: { encryptedData, iv },
+      } = e;
+      if (encryptedData && iv) {
+        const data = await autoBindMobileRes({
+          code: this.mobilePopup.wxCode,
+          phonedata: encryptedData,
+          phonedataiv: iv,
+        });
+        console.log(data);
+      }
     },
   },
 };
