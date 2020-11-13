@@ -1,5 +1,4 @@
 import qs from "qs";
-
 import { getAppUser } from "./auth";
 
 const BASE_URL =
