@@ -35,7 +35,6 @@ export default {
                     sharerId,
                   });
                   if (data.state === "200") {
-                    console.log(data);
                     uni.setStorageSync("app_user", JSON.stringify(data));
                     this.mobilePopup.visible = true;
                     this.mobilePopup.wxCode = code;
@@ -79,6 +78,10 @@ export default {
           session_key: this.mobilePopup.session_key,
         });
         if (code == 200) {
+          uni.showToast({
+            title: "绑定成功",
+            icon: "none",
+          });
           const appUser = this.getAppUser();
           appUser.member_mobile = data.mobile;
           uni.setStorageSync("app_user", JSON.stringify(appUser));
@@ -89,6 +92,11 @@ export default {
             : uni.switchTab({
                 url: "/pages/me/index",
               });
+        } else {
+          uni.showToast({
+            title: "请勿重复绑定同一手机号",
+            icon: "none",
+          });
         }
       }
     },

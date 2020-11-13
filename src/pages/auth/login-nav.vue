@@ -71,13 +71,17 @@ export default {
     };
   },
 
+  onLoad(options) {
+    this.from = options.from;
+  },
+
   mounted() {
     this.sysHeight = this.getSysHeight();
   },
 
   methods: {
     handleLogin() {
-      this.login(1);
+      this.login(this.from);
     },
   },
 };

@@ -18,8 +18,7 @@
         >
           <button
             class="btn-text"
-            open-type="getUserInfo"
-            @tap="handleLogin"
+            @click="handleLogin"
           >
             点击登录
           </button>
@@ -82,7 +81,7 @@ export default {
     handleNavTo(flag) {
       if (!this.checkLogin()) {
         uni.navigateTo({
-          url: `/pages/auth/login-nav`,
+          url: '/pages/auth/login-nav?from=2',
         });
         return;
       }
@@ -93,15 +92,14 @@ export default {
         case 2:
           this.navTo('/pages/reservation/index');
           break;
-        case 3:
-          this.navTo();
-          break;
         default:
           break;
       }
     },
     handleLogin() {
-      this.login(2);
+      uni.navigateTo({
+        url: '/pages/auth/login-nav?from=2',
+      });
     },
     handleContact() {
       uni.makePhoneCall({
