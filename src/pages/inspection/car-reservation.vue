@@ -278,7 +278,6 @@ export default {
     findTimes() {
       let loopTimes = [...this.times];
       if (this.appointmentDateSelect.selectedDate === currentFormatDate) {
-        debugger
         this.switchTime((num) => {
           if (num == -1) {
             loopTimes = [];

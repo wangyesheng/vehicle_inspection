@@ -6,6 +6,8 @@ export default {
       mobilePopup: {
         visible: false,
         wxCode: "",
+        session_key: "",
+        from: -1,
       },
     };
   },
@@ -34,9 +36,10 @@ export default {
                   });
                   if (data.state === "200") {
                     uni.setStorageSync("app_user", JSON.stringify(data));
-                    // this.navTo(`/pages/auth/bind-mobile?from=${from}`);
                     this.mobilePopup.visible = true;
                     this.mobilePopup.wxCode = code;
+                    this.mobilePopup.session_key = data.session_key;
+                    this.mobilePopup.from = from;
                   } else {
                     uni.showToast({
                       title: "微信登录授权失败",
@@ -68,12 +71,33 @@ export default {
         detail: { encryptedData, iv },
       } = e;
       if (encryptedData && iv) {
-        const data = await autoBindMobileRes({
+        const { code, data } = await autoBindMobileRes({
           code: this.mobilePopup.wxCode,
           phonedata: encryptedData,
           phonedataiv: iv,
+          session_key: this.mobilePopup.session_key,
         });
-        console.log(data);
+        if (code == 200) {
+          uni.showToast({
+            title: "绑定成功",
+            icon: "none",
+          });
+          const appUser = this.getAppUser();
+          appUser.member_mobile = data.mobile;
+          uni.setStorageSync("app_user", JSON.stringify(appUser));
+          this.mobilePopup.from == 1
+            ? uni.switchTab({
+                url: "/pages/home/index",
+              })
+            : uni.switchTab({
+                url: "/pages/me/index",
+              });
+        } else {
+          uni.showToast({
+            title: "请勿重复绑定同一手机号",
+            icon: "none",
+          });
+        }
       }
     },
   },

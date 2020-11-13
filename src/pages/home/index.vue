@@ -240,7 +240,7 @@ export default {
     handleNavTo(flag) {
       if (!this.checkLogin()) {
         uni.navigateTo({
-          url: `/pages/auth/login-nav`,
+          url: '/pages/auth/login-nav?from=1',
         });
         return;
       }

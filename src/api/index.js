@@ -152,7 +152,6 @@ export function getEmployeesByCIdRes(data) {
   });
 }
 
-
 export function setCarDealRes(data) {
   return request({
     url: "/api.php?p=/Car/setCarDeal",
@@ -160,5 +159,3 @@ export function setCarDealRes(data) {
     data,
   });
 }
-
-
