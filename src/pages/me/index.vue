@@ -50,9 +50,26 @@
             <text class="contact-time">（服务时间 08:00-22:00）</text>
           </view>
         </u-cell-item>
+        <u-cell-item
+          title="客服微信"
+          @click="handleShowWechat(2)"
+        ></u-cell-item>
       </u-cell-group>
       <view class="copyright">本服务由川B年检提供</view>
     </view>
+    <u-popup
+      v-model="wechatPopupVisible"
+      mode="center"
+      border-radius="5"
+    >
+      <view class="wechat-popup">
+        <image
+          src="../../static/images/me/wechat.jpg"
+          mode="aspectFit"
+          @click="handlePreview"
+        />
+      </view>
+    </u-popup>
   </view>
 </template>
 
@@ -66,6 +83,7 @@ export default {
     return {
       appUser: {},
       hasLogin: false,
+      wechatPopupVisible: false,
     };
   },
 
@@ -107,6 +125,16 @@ export default {
         success: (_) => {},
       });
     },
+    handleShowWechat() {
+      this.wechatPopupVisible = true;
+    },
+    handlePreview(e) {
+      console.log(e);
+      wx.previewImage({
+        current: e.target.dataset.src,
+        urls: [e.target.dataset.src],
+      });
+    },
   },
 };
 </script>
@@ -116,6 +144,14 @@ export default {
   background: #f6f6f6;
   height: 100vh;
   position: relative;
+
+  // .wechat-popup {
+  //   image {
+  //     width: 505rpx;
+  //     height: 1344rpx;
+  //   }
+  // }
+
   .banner-wrap {
     background-image: url('../../static/images/me/banner.png');
     background-size: 100% 100%;

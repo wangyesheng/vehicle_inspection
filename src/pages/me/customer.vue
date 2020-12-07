@@ -51,45 +51,81 @@
             @click="handleShare"
           />
         </view>
-        <!-- <view class="btn-wrap_timeline">
+        <view class="btn-wrap_timeline">
           <button @click="handleShareToTimeline" />
-        </view> -->
+        </view>
       </view>
     </view>
-    <view class="footer-wrap" v-if="customers.length">
+    <view
+      class="footer-wrap"
+      v-if="customers.length"
+    >
       <view class="btn-wrap_wechat_large">
         <button
           open-type="share"
           @click="handleShare"
         />
       </view>
-      <!-- <view class="btn-wrap_timeline">
+      <view class="btn-wrap_timeline">
         <button @click="handleShareToTimeline" />
-      </view> -->
-    </view>
-    <!-- <u-popup
-      mode="center"
-      v-model="qrcode.visible"
-    >
-      <view class="code-banner-wrap">
-        <image
-          src="../../static/images/me/code_banner.png"
-          mode="widthFit"
-        />
-        <view class="qrcode">
-          <canvas
-            style="width: 200upx;height: 200upx;"
-            canvas-id="couponQrcode"
-          />
-        </view>
       </view>
-    </u-popup> -->
+    </view>
+
+    <canvas
+      :style="{width:posterWidth,height:posterHeight,position:'fixed',left:'9999px',top:'0'}"
+      canvas-id="posterCanvas"
+      id="posterCanvas"
+      class="canvas"
+    ></canvas>
+    <!-- 遮罩层 -->
+    <view
+      class="mask"
+      v-if="showMask"
+      @click="showMask=false"
+    >
+      <!-- 生成的海报图 -->
+      <image
+        :style="{width:posterWidth,height:posterHeight}"
+        :src="lastPoster"
+        mode="aspectFill"
+      ></image>
+      <u-button
+        type="warning"
+        shape="circle"
+        @click="saveToAlbum"
+      >
+        保存至相册
+      </u-button>
+    </view>
   </view>
 </template>
 
 <script>
 import { getMyCustomersRes, getMyCompaniesRes } from '../../api';
-import qrCode from '../../utils/qrcode';
+import {
+  loadImage,
+  createPoster,
+  canvasToTempFilePath,
+  saveImageToPhotosAlbum,
+} from '../../utils/poster';
+
+const savePathToLocal = function (buffer, ext) {
+  const fs = uni.getFileSystemManager();
+  return new Promise((resolve, reject) => {
+    const filePath = `${wx.env.USER_DATA_PATH}/temp_qrcode.${ext}`;
+    fs.writeFile({
+      filePath,
+      data: buffer,
+      encoding: 'binary',
+      success() {
+        resolve(filePath);
+      },
+      fail() {
+        reject(new Error('ERROR_PATH_SAVE'));
+      },
+    });
+  });
+};
 
 export default {
   data() {
@@ -98,9 +134,20 @@ export default {
       customers: [],
       appUser: this.getAppUser(),
       companyLength: 0,
-      qrcode: {
-        visible: false,
-      },
+
+      // 海报图和canvas的宽高
+      posterWidth: '750rpx',
+      posterHeight: '1017rpx',
+      ready: false,
+      showMask: false,
+      imageUrl:
+        'https://fanr.oss-cn-shanghai.aliyuncs.com/data/20201205170756.png',
+      // 存本地缓存图片
+      bgImage: '',
+      // 存本地二维码图片
+      code: '',
+      // 最后生成的海报缓存图片
+      lastPoster: '',
     };
   },
 
@@ -137,20 +184,87 @@ export default {
       };
     },
     handleShareToTimeline() {
-      uni.showLoading({
-        title: '二维码海报生成中',
-        duration: 2000,
-      });
-
-      new qrCode('couponQrcode', {
-        text: 'https://cj.huazhe.work/pages/home/index',
-        width: 100,
-        height: 100,
-        colorDark: '#333333',
-        colorLight: '#FFFFFF',
-        correctLevel: qrCode.CorrectLevel.H,
-      });
-      this.qrcode.visible = true;
+      const appUser = this.getAppUser();
+      if (appUser.member_mobile) {
+        uni.showLoading({
+          title: '海报生成中...',
+        });
+        wx.cloud.init();
+        wx.cloud.callFunction({
+          name: 'getQRCode',
+          data: {
+            sharerId: appUser.member_id,
+          },
+          complete: async ({ result }) => {
+            const ext = result.contentType.split('/')[1];
+            const qrcode = await savePathToLocal(result.buffer, ext);
+            const state = await this.loadingResources(this.imageUrl);
+            if (qrcode && state) {
+              this.ready = true;
+              this.createImage(qrcode);
+            }
+          },
+        });
+      }
+    },
+    // 加载图片资源
+    async loadingResources(imgurl) {
+      this.bgImage = await loadImage(imgurl);
+      return true;
+    },
+    // 保存至相册
+    saveToAlbum() {
+      saveImageToPhotosAlbum(this.lastPoster)
+        .then((res) => {
+          uni.showToast({
+            title: '保存成功，快去朋友圈分享吧！',
+            icon: 'none',
+          });
+          setTimeout(() => {
+            this.showMask = false;
+          }, 3000);
+        })
+        .catch((err) => {
+          uni.showToast({
+            title: '保存失败！',
+            icon: 'none',
+          });
+        });
+    },
+    // 生成海报
+    async createImage(code) {
+      if (!this.ready || !code) return;
+      // 获取上下文对象
+      const ctx = uni.createCanvasContext('posterCanvas');
+      // 创建海报
+      // 图片需设置x,y,width,height
+      // 文字需要设置 text, x,y
+      await createPoster(ctx, [
+        {
+          type: 'image',
+          url: this.bgImage,
+          config: {
+            x: 0,
+            y: 0,
+            w: 375,
+            h: 508,
+          },
+        },
+        {
+          type: 'image',
+          url: code,
+          config: {
+            x: 140,
+            y: 240,
+            w: 100,
+            h: 100,
+          },
+        },
+      ]);
+      const imagePath = await canvasToTempFilePath('posterCanvas', this);
+      this.lastPoster = imagePath;
+      uni.hideLoading();
+      this.showMask = true;
     },
   },
 };
@@ -162,6 +276,35 @@ export default {
   padding: 30rpx;
   position: relative;
   z-index: 1;
+
+  .container {
+    width: 100vw;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  .canvas {
+    border: 1px solid;
+  }
+  .image {
+    width: 550rpx;
+    height: 980rpx;
+  }
+  .mask {
+    width: 100vw;
+    height: 100vh;
+    position: fixed;
+    background-color: rgba($color: #000000, $alpha: 0.4);
+    left: 0;
+    top: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+  }
+
   .ployfill {
     background: #ffffff;
     box-shadow: 0rpx 0rpx 20rpx 0rpx rgba(94, 148, 236, 0.2);

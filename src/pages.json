@@ -2,7 +2,12 @@
     "easycom": {
         "^u-(.*)": "@/uview-ui/components/u-$1/u-$1.vue"
     },
-    "pages": [{
+    "pages": [ {
+            "path": "pages/me/index",
+            "style": {
+                "navigationBarTitleText": "我的"
+            }
+        }, {
             "path": "pages/home/index",
             "style": {
                 "navigationBarTitleText": "川B年检"
@@ -29,11 +34,10 @@
             "style": {
                 "navigationBarTitleText": "绑定手机号"
             }
-        },
-        {
-            "path": "pages/me/index",
+        }, {
+            "path": "pages/auth/user-protocol",
             "style": {
-                "navigationBarTitleText": "我的"
+                "navigationBarTitleText": "用户服务协议"
             }
         },
         {

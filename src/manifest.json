@@ -48,6 +48,7 @@
   "quickapp": {},
   "mp-weixin": {
     "appid": "wx519a6c79aeaccce5",
+    "cloudfunctionRoot": "./cloudfunctions/",
     "setting": {
       "urlCheck": false
     },

@@ -19,6 +19,13 @@
         @tap="handleLogin"
       />
     </view>
+    <view class="user-protocol-wrap">
+      <text>点击登录即表示同意川B年检</text>
+      <text
+        class="link"
+        @click="handleToUserProtocol"
+      >《用户服务协议》</text>
+    </view>
     <view class="copyright">本服务由川B年检提供</view>
     <u-popup
       v-model="mobilePopup.visible"
@@ -68,6 +75,7 @@ export default {
   data() {
     return {
       sysHeight: 0,
+      protocolVisible: false,
     };
   },
 
@@ -83,6 +91,11 @@ export default {
     handleLogin() {
       this.login(this.from);
     },
+    handleToUserProtocol() {
+      uni.navigateTo({
+        url: '/pages/auth/user-protocol',
+      });
+    },
   },
 };
 </script>
@@ -93,6 +106,19 @@ export default {
   flex-direction: column;
   align-items: center;
   position: relative;
+
+  .user-protocol-wrap {
+    margin-top: 20rpx;
+
+    font-size: 26rpx;
+    font-family: PingFang SC;
+    font-weight: 400;
+    color: #333333;
+
+    .link {
+      color: #5e93ec;
+    }
+  }
 
   .logo-wrap {
     margin-top: 300rpx;

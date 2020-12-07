@@ -201,10 +201,9 @@ export default {
       const appointmentDates = this.carInfo.appointmentDates;
       const getCurrentDayCount = (index) => {
         const count = this.times.reduce((memo, current, idx) => {
-          if (idx >= index) {
-            return memo;
+          if (idx < index) {
+            memo += Number(current.surplus);
           }
-          memo += Number(current.surplus);
           return memo;
         }, 0);
         return count;

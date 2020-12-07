@@ -123,6 +123,7 @@ export default {
   },
 
   onLoad(options) {
+    console.log(options);
     if (options.sharerId) {
       uni.setStorageSync('sharer_id', options.sharerId);
     }
