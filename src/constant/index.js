@@ -1,3 +1,6 @@
+/**
+ * 首页车辆按钮状态
+ */
 export const BUTTON_FLAGS = [
   {
     value: -1,
@@ -20,6 +23,9 @@ export const BUTTON_FLAGS = [
   },
 ];
 
+/**
+ * 预约时间段
+ */
 export const APPOINTMENT_TIMES = [
   { key: "1", value: "08:00-09:00" },
   { key: "2", value: "09:00-10:00" },
@@ -29,4 +35,13 @@ export const APPOINTMENT_TIMES = [
   { key: "6", value: "14:00-15:00" },
   { key: "7", value: "15:00-16:00" },
   { key: "8", value: "16:00-17:00" },
+];
+
+/**
+ * 消息模板 ids
+ */
+export const TEMPLATE_IDS = [
+  "YZlKfIqox-YWvyugCuUffRKAr_s_99mEmx-d2esn2u8",
+  "jkPfJyD8mWVSQ5FLRDZBQD1xzdEbepx4gRIRPPvHks8",
+  "D_1ekaCR_kT-UB-NrS4dQkeKothh4NkkfcVR1GRNLS8",
 ];

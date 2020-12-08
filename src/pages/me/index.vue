@@ -50,10 +50,10 @@
             <text class="contact-time">（服务时间 08:00-22:00）</text>
           </view>
         </u-cell-item>
-        <u-cell-item
+        <!-- <u-cell-item
           title="客服微信"
           @click="handleShowWechat(2)"
-        ></u-cell-item>
+        ></u-cell-item> -->
       </u-cell-group>
       <view class="copyright">本服务由川B年检提供</view>
     </view>

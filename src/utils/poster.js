@@ -1,14 +1,13 @@
 // 获取图片信息，这里主要要获取图片缓存地址
 export function loadImage(url) {
   return new Promise((resolve, reject) => {
-    wx.getImageInfo({
+    uni.getImageInfo({
       src: url,
       success(res) {
-        console.log("执行", res);
         resolve(res.path);
       },
       fail(err) {
-        reject("海报图资源加载失败");
+        reject("海报图资源加载失败" + JSON.stringify(err) + url);
       },
     });
   });

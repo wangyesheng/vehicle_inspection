@@ -2,15 +2,15 @@
     "easycom": {
         "^u-(.*)": "@/uview-ui/components/u-$1/u-$1.vue"
     },
-    "pages": [ {
-            "path": "pages/me/index",
-            "style": {
-                "navigationBarTitleText": "我的"
-            }
-        }, {
+    "pages": [{
             "path": "pages/home/index",
             "style": {
                 "navigationBarTitleText": "川B年检"
+            }
+        }, {
+            "path": "pages/me/index",
+            "style": {
+                "navigationBarTitleText": "我的"
             }
         }, {
             "path": "pages/me/employee",

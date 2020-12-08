@@ -21,17 +21,36 @@
     >
       <view
         class="record-wrap"
-        v-for="item in customers"
-        :key="item"
+        v-for="(item,index) in customers"
+        :key="index"
       >
-        <image
-          :src="item.headpic?item.headpic:require('../../static/images/me/male.png')"
-          mode="widthFit"
-        />
-        <view>
-          <view class="name">{{item.username}}</view>
-          <view class="time">邀请注册时间：{{item.register_time}}</view>
+        <view class="user-header">
+          <image
+            :src="item.headpic?item.headpic:require('../../static/images/me/male.png')"
+            mode="widthFit"
+          />
+          <text class="name">{{item.username}}</text>
         </view>
+        <view v-if="item.clist.length>0">
+          <view
+            class="car-wrap"
+            v-for="carItem in item.clist"
+            :key="carItem.id"
+          >
+            <text class="car-num">{{carItem.number}}</text>
+            <text class="car-status red">{{carItem.status_desc}}</text>
+            <text class="car-prompt">{{carItem.prompt }}</text>
+            <text class="red">{{carItem.days}}</text>
+            <text>天</text>
+          </view>
+        </view>
+        <view
+          class="car-wrap"
+          v-else
+        >
+          <text>暂未绑定车辆~</text>
+        </view>
+
       </view>
     </view>
     <view
@@ -40,6 +59,7 @@
       v-else
     >
       <view>
+        {{err}}
         <image
           src="../../static/images/inspection/no_appointment.png"
           mode="widthFit"
@@ -60,7 +80,7 @@
       class="footer-wrap"
       v-if="customers.length"
     >
-      <view class="btn-wrap_wechat_large">
+      <view class="btn-wrap_wechat">
         <button
           open-type="share"
           @click="handleShare"
@@ -102,6 +122,7 @@
 
 <script>
 import { getMyCustomersRes, getMyCompaniesRes } from '../../api';
+
 import {
   loadImage,
   createPoster,
@@ -109,7 +130,7 @@ import {
   saveImageToPhotosAlbum,
 } from '../../utils/poster';
 
-const savePathToLocal = function (buffer, ext) {
+function savePathToLocal(buffer, ext) {
   const fs = uni.getFileSystemManager();
   return new Promise((resolve, reject) => {
     const filePath = `${wx.env.USER_DATA_PATH}/temp_qrcode.${ext}`;
@@ -125,7 +146,7 @@ const savePathToLocal = function (buffer, ext) {
       },
     });
   });
-};
+}
 
 export default {
   data() {
@@ -141,11 +162,9 @@ export default {
       ready: false,
       showMask: false,
       imageUrl:
-        'https://fanr.oss-cn-shanghai.aliyuncs.com/data/20201205170756.png',
+        'https://cj.huazhe.work/template/default/images/20201205170756.png',
       // 存本地缓存图片
       bgImage: '',
-      // 存本地二维码图片
-      code: '',
       // 最后生成的海报缓存图片
       lastPoster: '',
     };
@@ -164,7 +183,40 @@ export default {
       const {
         data: { offlineList },
       } = await getMyCustomersRes();
-      this.customers = offlineList;
+      this.customers = offlineList
+        .filter((x) => x.usermobile !== '')
+        .map((y) => {
+          y.clist.forEach((z) => {
+            switch (z.status) {
+              // 未到期，不可预约
+              case 0:
+                z.prompt = '距上线年检还剩';
+                break;
+              // 已预约
+              case 1:
+                if (z.is_pass == 0) {
+                  // 未逾期
+                  z.prompt = '距年检逾期还剩';
+                } else {
+                  z.prompt = '年检已逾期';
+                }
+                break;
+              // 已办理
+              case 2:
+                z.prompt = '距上线年检还剩';
+                break;
+              // 可预约
+              case 3:
+                z.prompt = '距年检逾期还剩';
+                break;
+              // 已逾期
+              case 4:
+                z.prompt = '年检已逾期';
+                break;
+            }
+          });
+          return y;
+        });
     },
     async getMyCompanies() {
       const {
@@ -197,12 +249,25 @@ export default {
           },
           complete: async ({ result }) => {
             const ext = result.contentType.split('/')[1];
-            const qrcode = await savePathToLocal(result.buffer, ext);
-            const state = await this.loadingResources(this.imageUrl);
-            if (qrcode && state) {
-              this.ready = true;
-              this.createImage(qrcode);
+            try {
+              const qrcode = await savePathToLocal(result.buffer, ext);
+              const state = await this.loadingResources(this.imageUrl);
+              if (qrcode && state) {
+                this.ready = true;
+                this.createImage(qrcode);
+              }
+            } catch (error) {
+              uni.showToast({
+                title: '海报生成失败~',
+                icon: 'none',
+              });
             }
+          },
+          fail: (err) => {
+            uni.showToast({
+              title: '云函数调用失败~',
+              icon: 'none',
+            });
           },
         });
       }
@@ -232,8 +297,8 @@ export default {
         });
     },
     // 生成海报
-    async createImage(code) {
-      if (!this.ready || !code) return;
+    async createImage(qrcode) {
+      if (!this.ready) return;
       // 获取上下文对象
       const ctx = uni.createCanvasContext('posterCanvas');
       // 创建海报
@@ -252,7 +317,7 @@ export default {
         },
         {
           type: 'image',
-          url: code,
+          url: qrcode,
           config: {
             x: 140,
             y: 240,
@@ -261,10 +326,17 @@ export default {
           },
         },
       ]);
-      const imagePath = await canvasToTempFilePath('posterCanvas', this);
-      this.lastPoster = imagePath;
-      uni.hideLoading();
-      this.showMask = true;
+      try {
+        const imagePath = await canvasToTempFilePath('posterCanvas', this);
+        this.lastPoster = imagePath;
+        uni.hideLoading();
+        this.showMask = true;
+      } catch (error) {
+        uni.showToast({
+          title: '海报生成失败~',
+          icon: 'none',
+        });
+      }
     },
   },
 };
@@ -299,6 +371,7 @@ export default {
     background-color: rgba($color: #000000, $alpha: 0.4);
     left: 0;
     top: 0;
+    z-index: 20;
     display: flex;
     flex-direction: column;
     justify-content: space-around;
@@ -309,29 +382,49 @@ export default {
     background: #ffffff;
     box-shadow: 0rpx 0rpx 20rpx 0rpx rgba(94, 148, 236, 0.2);
     border-radius: 8rpx;
+    padding-bottom: 90rpx;
   }
   .content-wrap {
     .record-wrap {
       border-bottom: 1rpx solid #f2f2f2;
       padding: 35rpx 30rpx;
-      display: flex;
-      align-items: center;
-      image {
-        width: 90rpx;
-        height: 90rpx;
-        border-radius: 50%;
-        margin-right: 20rpx;
+      .user-header {
+        display: flex;
+        height: 60rpx;
+        line-height: 60rpx;
+        margin-bottom: 10rpx;
+
+        image {
+          width: 56rpx;
+          height: 56rpx;
+          border-radius: 50%;
+          margin-right: 20rpx;
+        }
+        .name {
+          font-size: 28rpx;
+          font-weight: 500;
+          color: #343434;
+          margin-bottom: 25rpx;
+        }
       }
-      .name {
-        font-size: 32rpx;
-        font-weight: 500;
-        color: #343434;
-        margin-bottom: 25rpx;
-      }
-      .time {
-        font-size: 24rpx;
+
+      .car-wrap {
+        font-size: 26rpx;
         font-weight: 400;
         color: rgba(120, 120, 120, 0.8);
+
+        .car-num {
+          color: #343434;
+          margin-right: 10rpx;
+        }
+
+        .car-status {
+          margin-right: 10rpx;
+        }
+
+        .red {
+          color: #ff0000;
+        }
       }
     }
   }
@@ -348,6 +441,7 @@ export default {
     display: flex;
     justify-content: space-around;
     align-items: center;
+    box-shadow: 0px -2px 10px rgba(0, 0, 0, 0.05);
   }
 
   .btn-wrap_wechat {

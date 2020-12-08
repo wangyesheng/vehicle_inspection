@@ -145,6 +145,7 @@ import EOSABCKeyboard from '../../components/eos-abc-keyboard';
 import carFormMixin from '../../mixins/carFormMixin';
 import timingMixin from '../../mixins/timingMixin';
 import { debounce } from '../../utils/tool';
+import { TEMPLATE_IDS } from '../../constant/index';
 
 const { years, months, defaultDate } = getDateInterval();
 
@@ -271,53 +272,56 @@ export default {
     },
     handleSubmit: debounce(
       function () {
+        const addCar = () => {
+          this.$refs.carForm.validate(async (valid) => {
+            if (valid) {
+              const reqData = {
+                ...this.carForm.data,
+                type: this.typeSelect.selectedType,
+              };
+              const { code, data } = await addCarRes(reqData);
+              if (code === 200) {
+                uni.switchTab({
+                  url: '/pages/home/index',
+                });
+              } else {
+                uni.showToast({
+                  icon: 'none',
+                  title: data,
+                });
+              }
+            }
+          });
+        };
         wx.getSetting({
           withSubscriptions: true, //是否获取用户订阅消息的订阅状态，默认false不返回
-          success(res) {
+          success: (res) => {
             if (res.authSetting['scope.subscribeMessage']) {
               //用户点击了“总是保持以上，不再询问”
               uni.openSetting({
                 // 打开设置页
-                success(res) {
-                  console.log(res.authSetting);
+                success: (res) => {
+                  // console.log('all: ' + res.authSetting);
+                  addCar();
                 },
               });
             } else {
               // 用户没有点击“总是保持以上，不再询问”则每次都会调起订阅消息
-              var templateid = this.setting.templateid.map(
-                (item) => item.tempid
-              );
               uni.requestSubscribeMessage({
-                tmplIds: templateid,
-                success(res) {
-                  console.log(res);
+                tmplIds: TEMPLATE_IDS,
+                success: (res) => {
+                  addCar();
                 },
                 fail: (res) => {
-                  console.log(res);
+                  uni.showToast({
+                    icon: 'none',
+                    title: '授权消息推送失败！',
+                  });
                 },
               });
             }
           },
         });
-        // this.$refs.carForm.validate(async (valid) => {
-        //   if (valid) {
-        //     const reqData = {
-        //       ...this.carForm.data,
-        //       type: this.typeSelect.selectedType,
-        //     };
-        //     const { code, data } = await addCarRes(reqData);
-        //     if (code === 200) {
-        //       uni.switchTab({
-        //         url: '/pages/home/index',
-        //       });
-        //     } else {
-        //       uni.showToast({
-        //         icon: 'none',
-        //         title: data,
-        //       });
-        //     }
-        //   }
-        // });
       },
       3000,
       true
