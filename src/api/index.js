@@ -159,3 +159,11 @@ export function setCarDealRes(data) {
     data,
   });
 }
+
+export function getCustomerRes(data) {
+  return request({
+    url: "/api.php?p=/Notice/getCustomer",
+    method: "GET",
+    data,
+  });
+}

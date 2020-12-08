@@ -47,7 +47,7 @@
         <u-cell-item @click="handleContact">
           <view slot="title">
             <text>联系客服</text>
-            <text class="contact-time">（服务时间 08:00-22:00）</text>
+            <text class="contact-time">（服务时间 {{customer_times}}）</text>
           </view>
         </u-cell-item>
         <!-- <u-cell-item
@@ -75,6 +75,8 @@
 
 <script>
 import loginMixin from '../../mixins/loginMixin';
+import { currentDay, currentHours } from '../../utils/time';
+import { getCustomerRes } from '../../api';
 
 export default {
   mixins: [loginMixin],
@@ -84,10 +86,15 @@ export default {
       appUser: {},
       hasLogin: false,
       wechatPopupVisible: false,
+      customer_times: '',
+      customer_phone: '',
     };
   },
 
   onShow() {
+    if (!this.customer_phone || !this.customer_times) {
+      this.getCustomer();
+    }
     const storageAppUser = this.getAppUser();
     if (storageAppUser.member_mobile) {
       this.appUser = storageAppUser;
@@ -119,17 +126,31 @@ export default {
         url: '/pages/auth/login-nav?from=2',
       });
     },
+    async getCustomer() {
+      const {
+        data: { customer_phone, customer_times },
+      } = await getCustomerRes();
+      this.customer_phone = customer_phone;
+      this.customer_times = customer_times;
+    },
     handleContact() {
-      uni.makePhoneCall({
-        phoneNumber: '15680331333',
-        success: (_) => {},
-      });
+      const [start, , end] = this.customer_times.match(/\d+/g);
+      if (start <= currentHours && currentHours <= end) {
+        uni.makePhoneCall({
+          phoneNumber: this.customer_phone,
+          success: (_) => {},
+        });
+      } else {
+        uni.showToast({
+          title: '请在服务时间内拨打电话~',
+          icon: 'none',
+        });
+      }
     },
     handleShowWechat() {
       this.wechatPopupVisible = true;
     },
     handlePreview(e) {
-      console.log(e);
       wx.previewImage({
         current: e.target.dataset.src,
         urls: [e.target.dataset.src],

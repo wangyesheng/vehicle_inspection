@@ -59,7 +59,6 @@
       v-else
     >
       <view>
-        {{err}}
         <image
           src="../../static/images/inspection/no_appointment.png"
           mode="widthFit"
@@ -248,6 +247,7 @@ export default {
             sharerId: appUser.member_id,
           },
           complete: async ({ result }) => {
+            console.log(result);
             const ext = result.contentType.split('/')[1];
             try {
               const qrcode = await savePathToLocal(result.buffer, ext);
@@ -412,6 +412,7 @@ export default {
         font-size: 26rpx;
         font-weight: 400;
         color: rgba(120, 120, 120, 0.8);
+        margin-bottom: 5rpx;
 
         .car-num {
           color: #343434;
@@ -441,7 +442,7 @@ export default {
     display: flex;
     justify-content: space-around;
     align-items: center;
-    box-shadow: 0px -2px 10px rgba(0, 0, 0, 0.05);
+    box-shadow: 0px -2px 10px rgba(0, 0, 0, 0.1);
   }
 
   .btn-wrap_wechat {

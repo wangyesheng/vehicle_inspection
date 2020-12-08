@@ -123,7 +123,15 @@ export default {
   },
 
   onLoad(options) {
-    console.log(options);
+    // 海报分享二维码
+    if (options.scene) {
+      const scene = decodeURIComponent(options.scene);
+      console.log(scene);
+      const sharerId = scene.split('=')[1];
+      console.log(sharerId);
+      uni.setStorageSync('sharer_id', sharerId);
+    }
+    // 邀请微信好友
     if (options.sharerId) {
       uni.setStorageSync('sharer_id', options.sharerId);
     }
