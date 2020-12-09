@@ -247,7 +247,6 @@ export default {
             sharerId: appUser.member_id,
           },
           complete: async ({ result }) => {
-            console.log(result);
             const ext = result.contentType.split('/')[1];
             try {
               const qrcode = await savePathToLocal(result.buffer, ext);
@@ -278,23 +277,22 @@ export default {
       return true;
     },
     // 保存至相册
-    saveToAlbum() {
-      saveImageToPhotosAlbum(this.lastPoster)
-        .then((res) => {
-          uni.showToast({
-            title: '保存成功，快去朋友圈分享吧！',
-            icon: 'none',
-          });
-          setTimeout(() => {
-            this.showMask = false;
-          }, 3000);
-        })
-        .catch((err) => {
-          uni.showToast({
-            title: '保存失败！',
-            icon: 'none',
-          });
+    async saveToAlbum() {
+      try {
+        await saveImageToPhotosAlbum(this.lastPoster);
+        uni.showToast({
+          title: '保存成功，快去朋友圈分享吧！',
+          icon: 'none',
         });
+        setTimeout(() => {
+          this.showMask = false;
+        }, 3000);
+      } catch (error) {
+        uni.showToast({
+          title: '保存失败！',
+          icon: 'none',
+        });
+      }
     },
     // 生成海报
     async createImage(qrcode) {
@@ -386,8 +384,10 @@ export default {
   }
   .content-wrap {
     .record-wrap {
-      border-bottom: 1rpx solid #f2f2f2;
       padding: 35rpx 30rpx;
+      &:not(:last-child) {
+        border-bottom: 1rpx solid #f2f2f2;
+      }
       .user-header {
         display: flex;
         height: 60rpx;
