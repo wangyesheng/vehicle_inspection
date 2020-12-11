@@ -91,7 +91,7 @@
     </view>
 
     <canvas
-      :style="{width:posterWidth,height:posterHeight,position:'fixed',left:'9999px',top:'0'}"
+      :style="{width:posterWidth, height:posterHeight, position:'fixed', left:'9999px', top:'0'}"
       canvas-id="posterCanvas"
       id="posterCanvas"
       class="canvas"
