@@ -171,18 +171,29 @@ export default {
 
   mounted() {
     this.sysHeight = this.getSysHeight();
-    this.getMyCustomers();
+    this.pageIndex = 1;
+    this.total = 0;
+    this.getMyCustomers(this.pageIndex++);
     if (this.appUser.gid === '2') {
       this.getMyCompanies();
     }
   },
 
+  onReachBottom() {
+    if (this.rowtotal != this.total) {
+      this.getMyCustomers(this.pageIndex++);
+    }
+  },
+
   methods: {
-    async getMyCustomers() {
+    async getMyCustomers(pageIndex) {
       const {
         data: { offlineList },
-      } = await getMyCustomersRes();
-      this.customers = offlineList
+        rowtotal,
+      } = await getMyCustomersRes({ page: pageIndex });
+      this.rowtotal = rowtotal;
+      this.total += offlineList.length;
+      const _customers = offlineList
         .filter((x) => x.usermobile !== '')
         .map((y) => {
           y.clist.forEach((z) => {
@@ -216,6 +227,8 @@ export default {
           });
           return y;
         });
+      this.customers =
+        this.pageIndex == 1 ? _customers : [...this.customers, ..._customers];
     },
     async getMyCompanies() {
       const {

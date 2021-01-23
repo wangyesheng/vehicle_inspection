@@ -308,7 +308,7 @@ export default {
             } else {
               // 用户没有点击“总是保持以上，不再询问”则每次都会调起订阅消息
               uni.requestSubscribeMessage({
-                tmplIds: TEMPLATE_IDS,
+                tmplIds: TEMPLATE_IDS.slice(2, 3),
                 success: (res) => {
                   addCar();
                 },

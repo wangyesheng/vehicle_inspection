@@ -142,6 +142,8 @@ import timingMixin from '../../mixins/timingMixin';
 
 import { debounce } from '../../utils/tool';
 
+import { TEMPLATE_IDS } from '../../constant/index';
+
 export default {
   data() {
     return {
@@ -333,7 +335,32 @@ export default {
       this.appointmentTimeSelect.selectedTime = e[0].value;
     },
     handleSubmit: debounce(
-      async function () {
+      function () {
+        const submit = async () => {
+          const reqData = {
+            pid: this.stationId,
+            car_id: this.carId,
+            date: this.appointmentDateSelect.selectedDate,
+            rid: this.appointmentTimeSelect.selectedTime,
+            mobile: this.carForm.mobile,
+            code: this.carForm.code,
+          };
+          const { code, data } = await saveAppointmentRes(reqData);
+          if (code === 200) {
+            const info = `预约时间 ${this.carForm.date.substring(
+              0,
+              14
+            )} ${this.carForm.time.substring(0, 11)}`;
+            this.navTo(
+              `/pages/inspection/success?carNum=${this.carInfo.number}&info=${info}`
+            );
+          } else {
+            uni.showToast({
+              icon: 'none',
+              title: data,
+            });
+          }
+        };
         if (!this.canSubmit) {
           uni.showToast({
             title: '请填写完信息再提交！',
@@ -341,29 +368,38 @@ export default {
           });
           return;
         }
-        const reqData = {
-          pid: this.stationId,
-          car_id: this.carId,
-          date: this.appointmentDateSelect.selectedDate,
-          rid: this.appointmentTimeSelect.selectedTime,
-          mobile: this.carForm.mobile,
-          code: this.carForm.code,
-        };
-        const { code, data } = await saveAppointmentRes(reqData);
-        if (code === 200) {
-          const info = `预约时间 ${this.carForm.date.substring(
-            0,
-            14
-          )} ${this.carForm.time.substring(0, 11)}`;
-          this.navTo(
-            `/pages/inspection/success?carNum=${this.carInfo.number}&info=${info}`
-          );
-        } else {
-          uni.showToast({
-            icon: 'none',
-            title: data,
-          });
-        }
+        wx.getSetting({
+          withSubscriptions: true, //是否获取用户订阅消息的订阅状态，默认false不返回
+          success: (res) => {
+            if (res.authSetting['scope.subscribeMessage']) {
+              //用户点击了“总是保持以上，不再询问”
+              uni.openSetting({
+                // 打开设置页
+                success: (res) => {
+                  // console.log('all: ' + res.authSetting);
+                  addCar();
+                },
+              });
+            } else {
+              // 用户没有点击“总是保持以上，不再询问”则每次都会调起订阅消息
+              uni.requestSubscribeMessage({
+                tmplIds: [
+                  ...TEMPLATE_IDS.slice(0, 2),
+                  ...TEMPLATE_IDS.slice(3, 4),
+                ],
+                success: (res) => {
+                  submit();
+                },
+                fail: (res) => {
+                  uni.showToast({
+                    icon: 'none',
+                    title: '授权消息推送失败！',
+                  });
+                },
+              });
+            }
+          },
+        });
       },
       3000,
       true

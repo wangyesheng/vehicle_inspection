@@ -3,6 +3,16 @@
         "^u-(.*)": "@/uview-ui/components/u-$1/u-$1.vue"
     },
     "pages": [{
+            "path": "pages/order/index",
+            "style": {
+                "navigationBarTitleText": "年检代办订单"
+            }
+        }, {
+            "path": "pages/order/status",
+            "style": {
+                "navigationBarTitleText": "订单状态"
+            }
+        }, {
             "path": "pages/home/index",
             "style": {
                 "navigationBarTitleText": "川B年检"

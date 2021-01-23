@@ -226,6 +226,8 @@ export default {
             layer.isOverdue = true;
             layer.buttonFlag = 2;
             const date = getDateByDays(30 - x.days);
+            console.log(date, currentFormatDate);
+            // 2020-12-29 2020-12-29
             layer.appointmentDates = getDiffDate(currentFormatDate, date);
             break;
         }
