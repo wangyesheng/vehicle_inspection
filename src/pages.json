@@ -2,7 +2,33 @@
     "easycom": {
         "^u-(.*)": "@/uview-ui/components/u-$1/u-$1.vue"
     },
+
     "pages": [{
+            "path": "pages/shifting-code/enable",
+            "style": {
+                "navigationBarTitleText": "挪车码"
+            }
+        }, {
+            "path": "pages/shifting-code/enable-success",
+            "style": {
+                "navigationBarTitleText": "启用挪车码"
+            }
+        }, {
+            "path": "pages/shifting-code/add-car",
+            "style": {
+                "navigationBarTitleText": "添加车辆"
+            }
+        }, {
+            "path": "pages/home/index",
+            "style": {
+                "navigationBarTitleText": "川B年检"
+            }
+        }, {
+            "path": "pages/service/owner",
+            "style": {
+                "navigationBarTitleText": "车主服务"
+            }
+        }, {
             "path": "pages/order/index",
             "style": {
                 "navigationBarTitleText": "年检代办订单"
@@ -11,11 +37,6 @@
             "path": "pages/order/status",
             "style": {
                 "navigationBarTitleText": "订单状态"
-            }
-        }, {
-            "path": "pages/home/index",
-            "style": {
-                "navigationBarTitleText": "川B年检"
             }
         }, {
             "path": "pages/me/index",
@@ -108,6 +129,11 @@
                 "iconPath": "static/images/tab_bar/home.png",
                 "selectedIconPath": "static/images/tab_bar/home-active.png",
                 "text": "首页"
+            }, {
+                "pagePath": "pages/service/owner",
+                "iconPath": "static/images/tab_bar/service.png",
+                "selectedIconPath": "static/images/tab_bar/service-active.png",
+                "text": "车主服务"
             },
             {
                 "pagePath": "pages/me/index",

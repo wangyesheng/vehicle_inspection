@@ -45,11 +45,17 @@
               @click="handleShowTimeSelect"
             />
           </u-form-item>
-          <u-form-item label="预约手机号">
+          <u-form-item label="联系人">
+            <u-input
+              v-model="orderForm.mobile"
+              placeholder="请填写联系人"
+            />
+          </u-form-item>
+          <u-form-item label="联系电话">
             <u-input
               type="number"
               v-model="orderForm.mobile"
-              placeholder="请填写手机号"
+              placeholder="请填写联系电话"
               @blur="handleBlur"
             />
           </u-form-item>
@@ -68,6 +74,27 @@
               v-model="orderForm.code"
               placeholder="请填写验证码"
               @blur="handleBlur"
+            />
+          </u-form-item>
+          <u-form-item label="取车位置">
+            <u-input
+              v-model="orderForm.mobile"
+              placeholder="请填写取车位置"
+            />
+          </u-form-item>
+          <u-form-item label="还车位置">
+            <u-button
+              slot="left"
+              size="medium"
+              :custom-style="{padding:'18rpx 20rpx'}"
+              @click="handleGetCode"
+            >
+              <text v-if="loading">{{ codeText }}</text>
+              <text v-else>一键同上</text>
+            </u-button>
+            <u-input
+              v-model="orderForm.mobile"
+              placeholder="请填写还车位置"
             />
           </u-form-item>
         </u-form>
