@@ -1,19 +1,19 @@
 <script>
 export default {
   onLaunch: function () {
-    console.log('App Launch');
+    console.log("App Launch");
   },
   onShow: function () {
-    console.log('App Show');
+    console.log("App Show");
   },
   onHide: function () {
-    console.log('App Hide');
+    console.log("App Hide");
   },
 };
 </script>
 
 <style lang="scss">
-@import 'uview-ui/index.scss';
+@import "uview-ui/index.scss";
 
 .flex {
   display: flex;
@@ -38,6 +38,17 @@ export default {
   color: #fff;
   background: transparent;
   font-weight: bold;
+}
+
+.flex-center {
+  display: flex;
+  align-items: center;
+}
+
+.flex-vc {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .popup-wrap {

@@ -1,146 +1,174 @@
 {
-    "easycom": {
-        "^u-(.*)": "@/uview-ui/components/u-$1/u-$1.vue"
-    },
+  "easycom": {
+    "^u-(.*)": "@/uview-ui/components/u-$1/u-$1.vue"
+  },
 
-    "pages": [{
-            "path": "pages/shifting-code/enable",
-            "style": {
-                "navigationBarTitleText": "挪车码"
-            }
-        }, {
-            "path": "pages/shifting-code/enable-success",
-            "style": {
-                "navigationBarTitleText": "启用挪车码"
-            }
-        }, {
-            "path": "pages/shifting-code/add-car",
-            "style": {
-                "navigationBarTitleText": "添加车辆"
-            }
-        }, {
-            "path": "pages/home/index",
-            "style": {
-                "navigationBarTitleText": "川B年检"
-            }
-        }, {
-            "path": "pages/service/owner",
-            "style": {
-                "navigationBarTitleText": "车主服务"
-            }
-        }, {
-            "path": "pages/order/index",
-            "style": {
-                "navigationBarTitleText": "年检代办订单"
-            }
-        }, {
-            "path": "pages/order/status",
-            "style": {
-                "navigationBarTitleText": "订单状态"
-            }
-        }, {
-            "path": "pages/me/index",
-            "style": {
-                "navigationBarTitleText": "我的"
-            }
-        }, {
-            "path": "pages/me/employee",
-            "style": {
-                "navigationStyle": "custom",
-                "navigationBarTextStyle": "white"
-
-            }
-        }, {
-            "path": "pages/me/company",
-            "style": {
-                "navigationBarTitleText": "协议单位列表"
-            }
-        }, {
-            "path": "pages/me/customer",
-            "style": {
-                "navigationBarTitleText": "受邀的好友"
-            }
-        }, {
-            "path": "pages/auth/bind-mobile",
-            "style": {
-                "navigationBarTitleText": "绑定手机号"
-            }
-        }, {
-            "path": "pages/auth/user-protocol",
-            "style": {
-                "navigationBarTitleText": "用户服务协议"
-            }
-        },
-        {
-            "path": "pages/car/add-form",
-            "style": {
-                "navigationBarTitleText": "添加车辆"
-            }
-        },
-        {
-            "path": "pages/car/edit-form",
-            "style": {
-                "navigationBarTitleText": "编辑车辆"
-            }
-        }, {
-            "path": "pages/inspection/station",
-            "style": {
-                "navigationBarTitleText": "选择检测站"
-            }
-        },
-        {
-            "path": "pages/inspection/car-reservation",
-            "style": {
-                "navigationBarTitleText": "车检预约单"
-            }
-        }, {
-            "path": "pages/inspection/success",
-            "style": {
-                "navigationStyle": "custom",
-                "navigationBarTextStyle": "white"
-            }
-        },
-        {
-            "path": "pages/reservation/index",
-            "style": {
-                "navigationBarTitleText": "我的预约单"
-            }
-        },
-        {
-            "path": "pages/auth/login-nav",
-            "style": {
-                "navigationBarTitleText": "登录"
-            }
-        }
-    ],
-    "globalStyle": {
-        "navigationBarTextStyle": "white",
-        "navigationBarTitleText": "Fanr",
-        "navigationBarBackgroundColor": "#5E93EC",
-        "backgroundColor": "#F8F8F8"
+  "pages": [
+    {
+      "path": "pages/shifting-code/contact",
+      "style": {
+        "navigationBarTitleText": "联系车主挪车"
+      }
     },
-    "tabBar": {
-        "color": "#7A7E83",
-        "selectedColor": "#5E93EC",
-        "borderStyle": "black",
-        "backgroundColor": "#ffffff",
-        "list": [{
-                "pagePath": "pages/home/index",
-                "iconPath": "static/images/tab_bar/home.png",
-                "selectedIconPath": "static/images/tab_bar/home-active.png",
-                "text": "首页"
-            }, {
-                "pagePath": "pages/service/owner",
-                "iconPath": "static/images/tab_bar/service.png",
-                "selectedIconPath": "static/images/tab_bar/service-active.png",
-                "text": "车主服务"
-            },
-            {
-                "pagePath": "pages/me/index",
-                "iconPath": "static/images/tab_bar/me.png",
-                "selectedIconPath": "static/images/tab_bar/me-active.png",
-                "text": "我的"
-            }
-        ]
+    {
+      "path": "pages/shifting-code/index",
+      "style": {
+        "navigationBarTitleText": "我的挪车码"
+      }
+    },
+    {
+      "path": "pages/shifting-code/enable",
+      "style": {
+        "navigationBarTitleText": "启用挪车码"
+      }
+    },
+    {
+      "path": "pages/shifting-code/enable-success",
+      "style": {
+        "navigationBarTitleText": "启用挪车码"
+      }
+    },
+    {
+      "path": "pages/shifting-code/add-car",
+      "style": {
+        "navigationBarTitleText": "添加车辆"
+      }
+    },
+    {
+      "path": "pages/home/index",
+      "style": {
+        "navigationBarTitleText": "川B年检"
+      }
+    },
+    {
+      "path": "pages/service/owner",
+      "style": {
+        "navigationBarTitleText": "车主服务"
+      }
+    },
+    {
+      "path": "pages/order/index",
+      "style": {
+        "navigationBarTitleText": "年检代办订单"
+      }
+    },
+    {
+      "path": "pages/order/status",
+      "style": {
+        "navigationBarTitleText": "订单状态"
+      }
+    },
+    {
+      "path": "pages/me/index",
+      "style": {
+        "navigationBarTitleText": "我的"
+      }
+    },
+    {
+      "path": "pages/me/employee",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTextStyle": "white"
+      }
+    },
+    {
+      "path": "pages/me/company",
+      "style": {
+        "navigationBarTitleText": "协议单位列表"
+      }
+    },
+    {
+      "path": "pages/me/customer",
+      "style": {
+        "navigationBarTitleText": "受邀的好友"
+      }
+    },
+    {
+      "path": "pages/auth/bind-mobile",
+      "style": {
+        "navigationBarTitleText": "绑定手机号"
+      }
+    },
+    {
+      "path": "pages/auth/user-protocol",
+      "style": {
+        "navigationBarTitleText": "用户服务协议"
+      }
+    },
+    {
+      "path": "pages/car/add-form",
+      "style": {
+        "navigationBarTitleText": "添加车辆"
+      }
+    },
+    {
+      "path": "pages/car/edit-form",
+      "style": {
+        "navigationBarTitleText": "编辑车辆"
+      }
+    },
+    {
+      "path": "pages/inspection/station",
+      "style": {
+        "navigationBarTitleText": "选择检测站"
+      }
+    },
+    {
+      "path": "pages/inspection/car-reservation",
+      "style": {
+        "navigationBarTitleText": "车检预约单"
+      }
+    },
+    {
+      "path": "pages/inspection/success",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTextStyle": "white"
+      }
+    },
+    {
+      "path": "pages/reservation/index",
+      "style": {
+        "navigationBarTitleText": "我的预约单"
+      }
+    },
+    {
+      "path": "pages/auth/login-nav",
+      "style": {
+        "navigationBarTitleText": "登录"
+      }
     }
+  ],
+  "globalStyle": {
+    "navigationBarTextStyle": "white",
+    "navigationBarTitleText": "Fanr",
+    "navigationBarBackgroundColor": "#5E93EC",
+    "backgroundColor": "#F8F8F8"
+  },
+  "tabBar": {
+    "color": "#7A7E83",
+    "selectedColor": "#5E93EC",
+    "borderStyle": "black",
+    "backgroundColor": "#ffffff",
+    "list": [
+      {
+        "pagePath": "pages/home/index",
+        "iconPath": "static/images/tab_bar/home.png",
+        "selectedIconPath": "static/images/tab_bar/home-active.png",
+        "text": "首页"
+      },
+      {
+        "pagePath": "pages/service/owner",
+        "iconPath": "static/images/tab_bar/service.png",
+        "selectedIconPath": "static/images/tab_bar/service-active.png",
+        "text": "车主服务"
+      },
+      {
+        "pagePath": "pages/me/index",
+        "iconPath": "static/images/tab_bar/me.png",
+        "selectedIconPath": "static/images/tab_bar/me-active.png",
+        "text": "我的"
+      }
+    ]
+  }
 }

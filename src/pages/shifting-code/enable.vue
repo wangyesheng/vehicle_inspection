@@ -3,7 +3,7 @@
   position: relative;
   .bg-wrap {
     height: 480rpx;
-    background: url('../../static/images/shifting-code/bg.png');
+    background: url("../../static/images/shifting-code/bg.png");
     background-size: 100% 100%;
   }
   .form-wrap {
@@ -52,15 +52,6 @@
         flex-direction: column;
         justify-content: center;
         padding-left: 48rpx;
-
-        .number {
-          font-size: 40rpx;
-          font-weight: bold;
-        }
-        .type {
-          font-size: 26rpx;
-          font-weight: 400;
-        }
       }
     }
   }
@@ -89,14 +80,71 @@
       line-height: 100rpx;
     }
   }
+
+  .popup-wrap {
+    .car-wrap {
+      padding: 0 30rpx;
+      .car-header {
+        height: 90rpx;
+        display: flex;
+        justify-content: space-between;
+        font-size: 32rpx;
+        padding: 40rpx 0 18rpx 0;
+
+        text:first-child {
+          font-weight: bold;
+          color: #000000;
+        }
+        text:last-child {
+          font-weight: 500;
+          color: #5e93ec;
+        }
+      }
+      .car-content {
+        margin-top: 30rpx;
+        .row {
+          height: 180rpx;
+          background: #ffffff;
+          box-shadow: 0 0 20rpx 0 rgba(0, 0, 0, 0.12);
+          border-radius: 10rpx;
+          margin-bottom: 30rpx;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          padding: 0 50rpx;
+          .col-left {
+          }
+          .col-right {
+            image {
+              width: 32rpx;
+              height: 32rpx;
+            }
+            image:first-child {
+              margin-right: 50rpx;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .number {
+    font-size: 40rpx;
+    font-weight: bold;
+  }
+  .type {
+    font-size: 26rpx;
+    font-weight: 400;
+  }
+  .gray {
+    color: #666666;
+  }
 }
 </style>
 
 <template>
   <view class="enable-wrap">
-    <view class="bg-wrap">
-
-    </view>
+    <view class="bg-wrap"> </view>
     <view class="form-wrap">
       <u-form
         :model="mobileForm.data"
@@ -104,7 +152,7 @@
         :label-style="{
           fontSize: '28rpx',
           fontWeight: 500,
-          color: '#222'
+          color: '#222',
         }"
       >
         <u-form-item label="绑定手机号">
@@ -120,10 +168,7 @@
             placeholder="请输入验证码"
             type="number"
           />
-          <view
-            slot="right"
-            class="code"
-          >获取验证码</view>
+          <view slot="right" class="code">获取验证码</view>
         </u-form-item>
       </u-form>
       <view class="carinfo">
@@ -132,7 +177,8 @@
           <image
             src="../../static/images/shifting-code/car.png"
             mode="widthFit"
-          ></image>
+            @click="handleShowCarPopup"
+          />
         </view>
         <view class="c-content">
           <view class="number">川B·88888</view>
@@ -142,7 +188,11 @@
     </view>
     <view class="user-protocol-wrap">
       <image
-        :src="agreement ? require('../../static/images/shifting-code/selected.png') : require('../../static/images/shifting-code/unselected.png')"
+        :src="
+          agreement
+            ? require('../../static/images/shifting-code/selected.png')
+            : require('../../static/images/shifting-code/unselected.png')
+        "
         mode="widthFit"
         @click="handleAgree"
       />
@@ -152,6 +202,48 @@
     <view class="btn-wrap">
       <u-button type="warning">启用挪车码</u-button>
     </view>
+    <u-popup mode="bottom " v-model="carPopup.visible" class="popup-wrap">
+      <view class="car-wrap">
+        <view class="car-header">
+          <text>我的车库</text>
+          <text>添加车辆</text>
+        </view>
+        <view class="car-content">
+          <view class="row">
+            <view class="col-left">
+              <view class="number">川B·88888</view>
+              <view class="type gray">小型汽车/非营运</view>
+            </view>
+            <view class="col-right">
+              <image
+                src="../../static/images/shifting-code/edit.png"
+                mode="widthFit"
+              />
+              <image
+                src="../../static/images/shifting-code/delete.png"
+                mode="widthFit"
+              />
+            </view>
+          </view>
+          <view class="row">
+            <view class="col-left">
+              <view class="number">川B·88888</view>
+              <view class="type gray">小型汽车/非营运</view>
+            </view>
+            <view class="col-right">
+              <image
+                src="../../static/images/shifting-code/edit.png"
+                mode="widthFit"
+              />
+              <image
+                src="../../static/images/shifting-code/delete.png"
+                mode="widthFit"
+              />
+            </view>
+          </view>
+        </view>
+      </view>
+    </u-popup>
   </view>
 </template>
 
@@ -161,17 +253,23 @@ export default {
     return {
       mobileForm: {
         data: {
-          phone: '',
-          code: '',
+          phone: "",
+          code: "",
         },
       },
       agreement: false,
+      carPopup: {
+        visible: false,
+      },
     };
   },
 
   methods: {
     handleAgree() {
       this.agreement = !this.agreement;
+    },
+    handleShowCarPopup() {
+      this.carPopup.visible = true;
     },
   },
 };
