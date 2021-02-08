@@ -10,7 +10,6 @@
     position: absolute;
     top: 50rpx;
     left: 30rpx;
-    // height: 530rpx;
     width: 690rpx;
     background: #fff;
     box-shadow: 0 0 20rpx 0 rgba(0, 0, 0, 0.1);
