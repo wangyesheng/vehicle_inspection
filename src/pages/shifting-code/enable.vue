@@ -15,7 +15,7 @@
     background: #fff;
     box-shadow: 0 0 20rpx 0 rgba(0, 0, 0, 0.1);
     border-radius: 12rpx;
-    padding: 50rpx;
+    padding: 30rpx 50rpx 50rpx;
     & /deep/ input {
       font-size: 42rpx;
       font-weight: bold;
@@ -83,6 +83,8 @@
 
   .popup-wrap {
     .car-wrap {
+      height: 800rpx;
+      max-height: 800rpx;
       padding: 0 30rpx;
       .car-header {
         height: 90rpx;
@@ -112,8 +114,6 @@
           align-items: center;
           justify-content: space-between;
           padding: 0 50rpx;
-          .col-left {
-          }
           .col-right {
             image {
               width: 32rpx;
@@ -209,34 +209,18 @@
           <text>添加车辆</text>
         </view>
         <view class="car-content">
-          <view class="row">
+          <view class="row" v-for="item in 3" :key="item">
             <view class="col-left">
               <view class="number">川B·88888</view>
               <view class="type gray">小型汽车/非营运</view>
             </view>
             <view class="col-right">
               <image
-                src="../../static/images/shifting-code/edit.png"
+                src="../../static/images/shifting-code/edit_draw.png"
                 mode="widthFit"
               />
               <image
-                src="../../static/images/shifting-code/delete.png"
-                mode="widthFit"
-              />
-            </view>
-          </view>
-          <view class="row">
-            <view class="col-left">
-              <view class="number">川B·88888</view>
-              <view class="type gray">小型汽车/非营运</view>
-            </view>
-            <view class="col-right">
-              <image
-                src="../../static/images/shifting-code/edit.png"
-                mode="widthFit"
-              />
-              <image
-                src="../../static/images/shifting-code/delete.png"
+                src="../../static/images/shifting-code/delete_draw.png"
                 mode="widthFit"
               />
             </view>
