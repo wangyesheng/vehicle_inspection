@@ -1,7 +1,7 @@
 <style lang="scss" scoped>
 .add-car-wrap {
   height: 480rpx;
-  background: url("../../static/images/shifting-code/bg.png");
+  background: url('../../static/images/shifting-code/bg.png');
   background-size: 100% 100%;
   padding: 50rpx 30rpx;
   & /deep/ .u-form-item {
@@ -12,7 +12,7 @@
   }
   .driver-license-wrap {
     height: 300rpx;
-    background: url("../../static/images/shifting-code/scan.png");
+    background: url('../../static/images/shifting-code/scan.png');
     background-size: 100% 100%;
   }
   .photo-wrap {
@@ -76,9 +76,18 @@
 
 <template>
   <view class="add-car-wrap">
-    <view class="photo-wrap flex-center" v-if="driverLicenseSrc">
-      <view class="image-wrap" @click="handlePreview">
-        <image :src="driverLicenseSrc" mode="widthFit" />
+    <view
+      class="photo-wrap flex-center"
+      v-if="driverLicenseSrc"
+    >
+      <view
+        class="image-wrap"
+        @click="handlePreview"
+      >
+        <image
+          :src="driverLicenseSrc"
+          mode="widthFit"
+        />
         <view class="shadow">查看大图</view>
       </view>
       <view class="ext">
@@ -86,7 +95,11 @@
         <text>识别信息有误可手动调整</text>
       </view>
     </view>
-    <view v-else class="driver-license-wrap" @click="handleTakePhoto" />
+    <view
+      v-else
+      class="driver-license-wrap"
+      @click="handleTakePhoto"
+    />
     <view class="form-wrap">
       <u-form
         ref="carForm"
@@ -99,7 +112,10 @@
           fontWeight: 600,
         }"
       >
-        <u-form-item label="车牌号码" prop="number">
+        <u-form-item
+          label="车牌号码"
+          prop="number"
+        >
           <u-input
             disabled
             placeholder="请填写车牌号码"
@@ -108,7 +124,10 @@
           />
         </u-form-item>
 
-        <u-form-item label="发动机号" prop="engine_number">
+        <u-form-item
+          label="发动机号"
+          prop="engine_number"
+        >
           <u-input
             disabled
             placeholder="请填写发动机号"
@@ -116,7 +135,10 @@
             @click="handleShowEngineKeyboard"
           />
         </u-form-item>
-        <u-form-item label="注册日期" prop="register_date">
+        <u-form-item
+          label="注册日期"
+          prop="register_date"
+        >
           <u-input
             type="select"
             placeholder="请选择注册日期"
@@ -124,7 +146,10 @@
             @click="handleShowDateSelect"
           />
         </u-form-item>
-        <u-form-item label="所有人" prop="owner">
+        <u-form-item
+          label="所有人"
+          prop="owner"
+        >
           <u-input
             v-model="carForm.data.owner"
             placeholder="请填写所有人"
@@ -134,7 +159,10 @@
       </u-form>
     </view>
     <view class="btn-wrap">
-      <u-button type="warning" disabled>保存</u-button>
+      <u-button
+        type="warning"
+        disabled
+      >保存</u-button>
     </view>
     <u-select
       mode="mutil-column"
@@ -153,7 +181,11 @@
       @change="handleCarNumChange"
       @backspace="handleCarNumBackspace"
     />
-    <u-popup mode="bottom" :mask="false" v-model="keyboard.engineVisible">
+    <u-popup
+      mode="bottom"
+      :mask="false"
+      v-model="keyboard.engineVisible"
+    >
       <eos-abc-keyboard
         ref="abcKeyboard"
         @change="handleEngineNumChange"
@@ -165,15 +197,16 @@
 </template>
 
 <script>
-import { getDateInterval } from "../../utils/time";
-import EOSABCKeyboard from "../../components/eos-abc-keyboard";
-import carFormMixin from "../../mixins/carFormMixin";
+import { getDateInterval } from '../../utils/time';
+import { getAppUser } from '../../utils/auth';
+import EOSABCKeyboard from '../../components/eos-abc-keyboard';
+import carFormMixin from '../../mixins/carFormMixin';
 
 const { years, months, defaultDate } = getDateInterval();
 
 export default {
   components: {
-    "eos-abc-keyboard": EOSABCKeyboard,
+    'eos-abc-keyboard': EOSABCKeyboard,
   },
 
   mixins: [carFormMixin],
@@ -182,38 +215,38 @@ export default {
     return {
       carForm: {
         data: {
-          number: "",
-          engine_number: "",
-          owner: "",
-          register_date: "",
+          number: '',
+          engine_number: '',
+          owner: '',
+          register_date: '',
         },
         rules: {
           number: [
             {
               required: true,
-              message: "请填写车牌号码",
-              trigger: "change",
+              message: '请填写车牌号码',
+              trigger: 'change',
             },
           ],
           engine_number: [
             {
               required: true,
-              message: "请填写发动机号",
-              trigger: "change",
+              message: '请填写发动机号',
+              trigger: 'change',
             },
           ],
           owner: [
             {
               required: true,
-              message: "请填写所有人",
-              trigger: "change",
+              message: '请填写所有人',
+              trigger: 'change',
             },
           ],
           register_date: [
             {
               required: true,
-              message: "请选择注册日期",
-              trigger: "change",
+              message: '请选择注册日期',
+              trigger: 'change',
             },
           ],
         },
@@ -223,7 +256,7 @@ export default {
         dateSource: [years, months],
         defaultDate,
       },
-      driverLicenseSrc: "",
+      driverLicenseSrc: '',
     };
   },
 
@@ -241,9 +274,35 @@ export default {
     handleTakePhoto() {
       uni.chooseImage({
         count: 1,
-        sizeType: ["original", "compressed"],
+        sizeType: ['original', 'compressed'],
         success: ({ tempFilePaths }) => {
           this.driverLicenseSrc = tempFilePaths[0];
+          const errFn = () =>
+            uni.showToast({
+              title: '行驶证识别失败~',
+              icon: 'none',
+            });
+          uni.uploadFile({
+            url: `https://cj.huazhe.work/api.php?p=/code/uploadCarCard`,
+            filePath: this.driverLicenseSrc,
+            name: 'cardFile',
+            success: ({ statusCode, data }) => {
+              if (statusCode == 200) {
+                const response = JSON.parse(data);
+                if (response.code == 200) {
+                  const info = response.data;
+                  console.log(info);
+                } else {
+                  errFn();
+                }
+              } else {
+                errFn();
+              }
+            },
+            res: (err) => {
+              errFn();
+            },
+          });
         },
       });
     },

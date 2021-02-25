@@ -5,13 +5,13 @@
 
   "pages": [
     {
-      "path": "pages/shifting-code/enable",
+      "path": "pages/shifting-code/add-car",
       "style": {
         "navigationBarTitleText": "启用挪车码"
       }
     },
     {
-      "path": "pages/shifting-code/add-car",
+      "path": "pages/shifting-code/enable",
       "style": {
         "navigationBarTitleText": "添加车辆"
       }
