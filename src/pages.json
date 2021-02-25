@@ -5,6 +5,12 @@
 
   "pages": [
     {
+      "path": "pages/home/index",
+      "style": {
+        "navigationBarTitleText": "川B年检"
+      }
+    },
+    {
       "path": "pages/shifting-code/add-car",
       "style": {
         "navigationBarTitleText": "启用挪车码"
@@ -32,12 +38,6 @@
       "path": "pages/shifting-code/enable-success",
       "style": {
         "navigationBarTitleText": "启用挪车码"
-      }
-    },
-    {
-      "path": "pages/home/index",
-      "style": {
-        "navigationBarTitleText": "川B年检"
       }
     },
     {

@@ -1,5 +1,8 @@
 <template>
-  <view class="home-container">
+  <view
+    class="home-container"
+    :style="{ minHeight: sysHeight+'px'}"
+  >
     <view class="header">
       <image
         src="../../static/images/home/header-bg.jpg"
@@ -60,9 +63,27 @@
         已预约年检时间：{{reserveTime}}
       </view>
     </view>
-    <view class="process-wrap">
+    <!-- <view class="process-wrap">
       <image
         src="../../static/images/home/process.png"
+        mode="widthFit"
+      />
+    </view> -->
+    <view class="code-wrap flex-01">
+      <image
+        src="../../static/images/home/code.png"
+        mode="widthFit"
+      />
+      <view class="tips">
+        <view>我的挪车码</view>
+        <view>
+          <text>虚拟呼叫</text>
+          <text>隐私保护</text>
+          <text>永久免费</text>
+        </view>
+      </view>
+      <image
+        src="../../static/images/home/arrow_right.png"
         mode="widthFit"
       />
     </view>
@@ -119,10 +140,12 @@ export default {
       selectedCar: undefined,
       canShowReserveTime: false,
       reserveTime: '',
+      sysHeight: 0,
     };
   },
 
   onLoad(options) {
+    this.sysHeight = this.getSysHeight();
     // 海报分享二维码
     if (options.scene) {
       const scene = decodeURIComponent(options.scene);
@@ -366,6 +389,38 @@ export default {
     image {
       width: 100%;
       height: 1540rpx;
+    }
+  }
+  .code-wrap {
+    height: 200rpx;
+    background: #ffffff;
+    box-shadow: 0 0 20rpx 0 rgba(94, 147, 236, 0.2);
+    border-radius: 8rpx;
+    image:first-child {
+      width: 100rpx;
+      height: 100rpx;
+    }
+
+    .tips {
+      view:first-child {
+        font-size: 42rpx;
+        font-weight: bold;
+        color: #333333;
+        margin-bottom: 10rpx;
+      }
+      view:last-child {
+        font-size: 26rpx;
+        font-weight: 400;
+        color: #666666;
+        text {
+          margin-right: 20rpx;
+        }
+      }
+    }
+
+    image:last-child {
+      width: 16rpx;
+      height: 26rpx;
     }
   }
 }

@@ -1,19 +1,19 @@
 <script>
 export default {
   onLaunch: function () {
-    console.log("App Launch");
+    console.log('App Launch');
   },
   onShow: function () {
-    console.log("App Show");
+    console.log('App Show');
   },
   onHide: function () {
-    console.log("App Hide");
+    console.log('App Hide');
   },
 };
 </script>
 
 <style lang="scss">
-@import "uview-ui/index.scss";
+@import 'uview-ui/index.scss';
 
 .flex {
   display: flex;
@@ -51,6 +51,11 @@ export default {
   justify-content: center;
 }
 
+.flex-01 {
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+}
 .popup-wrap {
   button {
     font-size: 32rpx;

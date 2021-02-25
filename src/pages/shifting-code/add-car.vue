@@ -275,34 +275,44 @@ export default {
       uni.chooseImage({
         count: 1,
         sizeType: ['original', 'compressed'],
-        success: ({ tempFilePaths }) => {
-          this.driverLicenseSrc = tempFilePaths[0];
-          const errFn = () =>
+        success: (res) => {
+          const limitSize = 300 * 1024;
+          const { tempFiles } = res;
+          const { path, size } = tempFiles[0];
+          this.driverLicenseSrc = path;
+          if (size > limitSize) {
             uni.showToast({
-              title: '行驶证识别失败~',
+              title: '行驶证大小不得大于300kb',
               icon: 'none',
             });
-          uni.uploadFile({
-            url: `https://cj.huazhe.work/api.php?p=/code/uploadCarCard`,
-            filePath: this.driverLicenseSrc,
-            name: 'cardFile',
-            success: ({ statusCode, data }) => {
-              if (statusCode == 200) {
-                const response = JSON.parse(data);
-                if (response.code == 200) {
-                  const info = response.data;
-                  console.log(info);
-                } else {
-                  errFn();
-                }
-              } else {
-                errFn();
-              }
-            },
-            res: (err) => {
-              errFn();
-            },
-          });
+          } else {
+            const errFn = () =>
+              uni.showToast({
+                title: '行驶证识别失败~',
+                icon: 'none',
+              });
+            // uni.uploadFile({
+            //   url: `https://cj.huazhe.work/api.php?p=/code/uploadCarCard`,
+            //   name: 'cardFile',
+            //   filePath: this.driverLicenseSrc,
+            //   success: ({ statusCode, data }) => {
+            //     if (statusCode == 200) {
+            //       const response = JSON.parse(data);
+            //       if (response.code == 200) {
+            //         const info = response.data;
+            //         console.log(info);
+            //       } else {
+            //         errFn();
+            //       }
+            //     } else {
+            //       errFn();
+            //     }
+            //   },
+            //   res: (err) => {
+            //     errFn();
+            //   },
+            // });
+          }
         },
       });
     },
