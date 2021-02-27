@@ -1,25 +1,18 @@
 <template>
   <view class="inspection-containner">
-    <view
-      class="station-wrap"
-      v-for="item in stations"
-      :key="item"
-    >
-      <image
-        :src="item._img"
-        mode="widthFit"
-      />
+    <view class="station-wrap" v-for="item in stations" :key="item">
+      <image :src="item._img" mode="widthFit" />
       <view class="station-info">
-        <view class="name">{{item.name}}</view>
+        <view class="name">{{ item.name }}</view>
         <view class="address">
-          {{item.address}}
+          {{ item.address }}
         </view>
-        <view class="distance">{{item.juli + item.unit}}</view>
+        <view class="distance">{{ item.juli + item.unit }}</view>
       </view>
       <u-button
         type="primary"
         size="medium"
-        @click="handleSubmit(item.id,item.name)"
+        @click="handleSubmit(item.id, item.name)"
       >
         立即预约
       </u-button>
@@ -28,7 +21,7 @@
 </template>
 
 <script>
-import { getInspectionStationsRes } from '../../api';
+import { getInspectionStationsRes } from "../../api";
 export default {
   data() {
     return {
@@ -44,7 +37,7 @@ export default {
   methods: {
     getStations() {
       uni.getLocation({
-        type: 'wgs84',
+        type: "wgs84",
         success: async (res) => {
           const {
             code,

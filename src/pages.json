@@ -5,21 +5,27 @@
 
   "pages": [
     {
+      "path": "pages/shifting-code/enable",
+      "style": {
+        "navigationBarTitleText": "启用挪车码"
+      }
+    },
+    {
+      "path": "pages/shifting-code/add-car",
+      "style": {
+        "navigationBarTitleText": "添加车辆"
+      }
+    },
+    {
       "path": "pages/home/index",
       "style": {
         "navigationBarTitleText": "川B年检"
       }
     },
     {
-      "path": "pages/shifting-code/add-car",
+      "path": "pages/shifting-code/apply",
       "style": {
-        "navigationBarTitleText": "启用挪车码"
-      }
-    },
-    {
-      "path": "pages/shifting-code/enable",
-      "style": {
-        "navigationBarTitleText": "添加车辆"
+        "navigationBarTitleText": "申领挪车码"
       }
     },
     {
@@ -41,7 +47,7 @@
       }
     },
     {
-      "path": "pages/service/owner",
+      "path": "pages/service/outlets",
       "style": {
         "navigationBarTitleText": "车主服务"
       }
@@ -156,12 +162,6 @@
         "iconPath": "static/images/tab_bar/home.png",
         "selectedIconPath": "static/images/tab_bar/home-active.png",
         "text": "首页"
-      },
-      {
-        "pagePath": "pages/service/owner",
-        "iconPath": "static/images/tab_bar/service.png",
-        "selectedIconPath": "static/images/tab_bar/service-active.png",
-        "text": "车主服务"
       },
       {
         "pagePath": "pages/me/index",

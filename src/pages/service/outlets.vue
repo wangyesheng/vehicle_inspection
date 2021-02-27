@@ -36,7 +36,7 @@ export default {
     };
   },
 
-  onLoad(options) {
+  onLoad() {
     this.getStations();
   },
 
@@ -45,19 +45,19 @@ export default {
       uni.getLocation({
         type: 'wgs84',
         success: async (res) => {
-        //   const {
-        //     code,
-        //     data: { carList },
-        //   } = await getInspectionStationsRes({
-        //     lng: res.longitude,
-        //     lat: res.latitude,
-        //   });
-        //   if (code === 200) {
-        //     this.stations = carList.map((x) => ({
-        //       ...x,
-        //       _img: `https://cj.huazhe.work/${x.img}`,
-        //     }));
-        //   }
+          const {
+            code,
+            data: { carList },
+          } = await getInspectionStationsRes({
+            lng: res.longitude,
+            lat: res.latitude,
+          });
+          if (code === 200) {
+            this.stations = carList.map((x) => ({
+              ...x,
+              _img: `https://cj.huazhe.work/${x.img}`,
+            }));
+          }
         },
       });
     },

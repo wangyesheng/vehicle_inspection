@@ -51,6 +51,9 @@
         flex-direction: column;
         justify-content: center;
         padding-left: 48rpx;
+        .number {
+          margin-bottom: 5rpx;
+        }
       }
     }
   }
@@ -199,13 +202,13 @@
       <text class="link">《用户须知》</text>
     </view>
     <view class="btn-wrap">
-      <u-button type="warning">启用挪车码</u-button>
+      <u-button type="warning" shape="circle">启用挪车码</u-button>
     </view>
     <u-popup mode="bottom " v-model="carPopup.visible" class="popup-wrap">
       <view class="car-wrap">
         <view class="car-header">
           <text>我的车库</text>
-          <text>添加车辆</text>
+          <text @click="navTo('/pages/shifting-code/add-car')">添加车辆</text>
         </view>
         <view class="car-content">
           <view class="row" v-for="item in 3" :key="item">

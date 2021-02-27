@@ -69,7 +69,7 @@
         mode="widthFit"
       />
     </view> -->
-    <view class="code-wrap flex-01">
+    <view class="code-wrap flex-01" @click="navTo('/pages/shifting-code/apply');">
       <image
         src="../../static/images/home/code.png"
         mode="widthFit"

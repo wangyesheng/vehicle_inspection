@@ -28,6 +28,7 @@
             width: 108rpx;
             height: 48rpx;
             margin-right: 50rpx;
+            transition: all .3s;
           }
           .edit {
             width: 36rpx;
@@ -116,7 +117,7 @@
       </view>
     </view>
     <view class="btn-wrap">
-      <u-button>免费领取挪车码</u-button>
+      <u-button @click="navTo('/pages/service/outlets')">免费领取挪车码</u-button>
     </view>
   </view>
 </template>

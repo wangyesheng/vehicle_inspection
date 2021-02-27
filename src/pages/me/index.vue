@@ -75,7 +75,7 @@
 
 <script>
 import loginMixin from '../../mixins/loginMixin';
-import { currentDay, currentHours } from '../../utils/time';
+import { currentHours } from '../../utils/time';
 import { getCustomerRes } from '../../api';
 
 export default {
@@ -116,8 +116,6 @@ export default {
           break;
         case 2:
           this.navTo('/pages/reservation/index');
-          break;
-        default:
           break;
       }
     },
