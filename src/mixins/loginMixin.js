@@ -14,7 +14,7 @@ export default {
   methods: {
     /**
      * 登录逻辑
-     * @param {*} from 1 → 首页，2 → 个人主页
+     * @param {*} from 1 → 首页，2 → 个人主页，3 -> 挪车码
      */
     login(from) {
       uni.showLoading({});
@@ -85,13 +85,20 @@ export default {
           const appUser = this.getAppUser();
           appUser.member_mobile = data.mobile;
           uni.setStorageSync("app_user", JSON.stringify(appUser));
-          this.mobilePopup.from == 1
-            ? uni.switchTab({
+          switch (this.mobilePopup.from) {
+            case 1:
+              uni.switchTab({
                 url: "/pages/home/index",
-              })
-            : uni.switchTab({
+              });
+            case 2:
+              uni.switchTab({
                 url: "/pages/me/index",
               });
+            case 3:
+              uni.switchTab({
+                url: "pages/shifting-code/add-car",
+              });
+          }
         } else {
           uni.showToast({
             title: "请勿重复绑定同一手机号",

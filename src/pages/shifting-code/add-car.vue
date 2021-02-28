@@ -123,7 +123,17 @@
             @click="handleShowCarKeyboard"
           />
         </u-form-item>
-
+        <u-form-item
+          label="号牌种类"
+          prop="type"
+        >
+          <u-input
+            type="select"
+            placeholder="请选择号牌种类"
+            v-model="carForm.data.type"
+            @click="handleShowTypeSelect"
+          />
+        </u-form-item>
         <u-form-item
           label="发动机号"
           prop="engine_number"
@@ -160,10 +170,16 @@
     </view>
     <view class="btn-wrap">
       <u-button
-        type="warning"
         disabled
+        type="warning"
+        shape="circle"
       >保存</u-button>
     </view>
+    <u-select
+      v-model="typeSelect.visible"
+      :list="typeSelect.types"
+      @confirm="handleTypeConfirm"
+    />
     <u-select
       mode="mutil-column"
       v-model="dateSelect.visible"
@@ -215,9 +231,10 @@ export default {
     return {
       carForm: {
         data: {
+          type: '',
+          owner: '',
           number: '',
           engine_number: '',
-          owner: '',
           register_date: '',
         },
         rules: {
@@ -225,6 +242,13 @@ export default {
             {
               required: true,
               message: '请填写车牌号码',
+              trigger: 'change',
+            },
+          ],
+          type: [
+            {
+              required: true,
+              message: '请选择号牌种类',
               trigger: 'change',
             },
           ],
@@ -251,6 +275,20 @@ export default {
           ],
         },
       },
+      typeSelect: {
+        visible: false,
+        types: [
+          {
+            value: 1,
+            label: '小型汽车(非营运)',
+          },
+          {
+            value: 2,
+            label: '小型汽车(营运)',
+          },
+        ],
+        selectedType: 1,
+      },
       dateSelect: {
         visible: false,
         dateSource: [years, months],
@@ -271,14 +309,27 @@ export default {
     handledDateConfirm(e) {
       this.carForm.data.register_date = `${e[0].label}-${e[1].label}`;
     },
+    handleShowTypeSelect() {
+      this.typeSelect.visible = true;
+    },
+    handleTypeConfirm(e) {
+      this.carForm.data.type = e[0].label;
+      this.typeSelect.selectedType = e[0].value;
+    },
     handleTakePhoto() {
+      console.log(this.checkLogin());
+      if (!this.checkLogin()) {
+        uni.navigateTo({
+          url: '/pages/auth/login-nav?from=2',
+        });
+        return;
+      }
       uni.chooseImage({
         count: 1,
         sizeType: ['original', 'compressed'],
         success: (res) => {
           const limitSize = 300 * 1024;
-          const { tempFiles } = res;
-          const { path, size } = tempFiles[0];
+          const { path, size } = res.tempFiles[0];
           this.driverLicenseSrc = path;
           if (size > limitSize) {
             uni.showToast({
@@ -291,27 +342,33 @@ export default {
                 title: '行驶证识别失败~',
                 icon: 'none',
               });
-            // uni.uploadFile({
-            //   url: `https://cj.huazhe.work/api.php?p=/code/uploadCarCard`,
-            //   name: 'cardFile',
-            //   filePath: this.driverLicenseSrc,
-            //   success: ({ statusCode, data }) => {
-            //     if (statusCode == 200) {
-            //       const response = JSON.parse(data);
-            //       if (response.code == 200) {
-            //         const info = response.data;
-            //         console.log(info);
-            //       } else {
-            //         errFn();
-            //       }
-            //     } else {
-            //       errFn();
-            //     }
-            //   },
-            //   res: (err) => {
-            //     errFn();
-            //   },
-            // });
+            uni.uploadFile({
+              url: `https://cj.huazhe.work/api.php?p=/code/uploadCarCard&key=${
+                getAppUser().token
+              }`,
+              name: 'cardFile',
+              filePath: this.driverLicenseSrc,
+              success: ({ statusCode, data }) => {
+                if (statusCode == 200) {
+                  const response = JSON.parse(data);
+                  if (response.code == 200) {
+                    const info = response.data;
+                    this.carForm.data = {
+                      number: info.lsprefix + info.lsnum,
+                      engine_number: info.engineno,
+                      register_date: info.regdate.slice(0, 6),
+                    };
+                  } else {
+                    errFn();
+                  }
+                } else {
+                  errFn();
+                }
+              },
+              res: (err) => {
+                errFn();
+              },
+            });
           }
         },
       });

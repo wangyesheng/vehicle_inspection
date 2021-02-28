@@ -114,11 +114,11 @@
       @confirm="handledDateConfirm"
     />
     <u-keyboard
-      ref="carNumKeyboard"
       mode="car"
       :mask="false"
       :tooltip="false"
       :safe-area-inset-bottom="true"
+      ref="carNumKeyboard"
       v-model="keyboard.carVisible"
       @change="handleCarNumChange"
       @backspace="handleCarNumBackspace"
@@ -139,7 +139,7 @@
 </template>
 
 <script>
-import { getDateInterval, getMaxDay } from '../../utils/time';
+import { getDateInterval } from '../../utils/time';
 import { addCarRes } from '../../api';
 import EOSABCKeyboard from '../../components/eos-abc-keyboard';
 import carFormMixin from '../../mixins/carFormMixin';

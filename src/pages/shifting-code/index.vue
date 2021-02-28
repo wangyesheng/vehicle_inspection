@@ -3,7 +3,7 @@
   padding: 15rpx;
   .row {
     height: 392rpx;
-    background: url("../../static/images/shifting-code/main_bg.png");
+    background: url('../../static/images/shifting-code/main_bg.png');
     background-size: 100% 100%;
     padding: 46rpx 60rpx;
     .header {
@@ -28,7 +28,7 @@
             width: 108rpx;
             height: 48rpx;
             margin-right: 50rpx;
-            transition: all .3s;
+            transition: all 0.3s;
           }
           .edit {
             width: 36rpx;
@@ -40,7 +40,6 @@
         font-size: 40rpx;
         font-weight: bold;
         color: #fefefe;
-        opacity: 0.6;
         margin-top: 20rpx;
       }
     }
@@ -117,7 +116,10 @@
       </view>
     </view>
     <view class="btn-wrap">
-      <u-button @click="navTo('/pages/service/outlets')">免费领取挪车码</u-button>
+      <u-button
+        shape="circle"
+        @click="navTo('/pages/service/outlets')"
+      >免费领取挪车码</u-button>
     </view>
   </view>
 </template>
