@@ -3,7 +3,7 @@
   position: relative;
   .bg-wrap {
     height: 480rpx;
-    background: url("../../static/images/shifting-code/bg.png");
+    background: url('../../static/images/shifting-code/bg.png');
     background-size: 100% 100%;
   }
   .form-wrap {
@@ -170,7 +170,14 @@
             placeholder="请输入验证码"
             type="number"
           />
-          <view slot="right" class="code">获取验证码</view>
+          <view
+            slot="right"
+            class="code"
+            @click="handleGetCode"
+          >
+            <text v-if="loading">{{ codeText }}</text>
+            <text v-else>获取验证码</text>
+          </view>
         </u-form-item>
       </u-form>
       <view class="carinfo">
@@ -202,16 +209,27 @@
       <text class="link">《用户须知》</text>
     </view>
     <view class="btn-wrap">
-      <u-button type="warning" shape="circle">启用挪车码</u-button>
+      <u-button
+        type="warning"
+        shape="circle"
+      >启用挪车码</u-button>
     </view>
-    <u-popup mode="bottom " v-model="carPopup.visible" class="popup-wrap">
+    <u-popup
+      mode="bottom "
+      v-model="carPopup.visible"
+      class="popup-wrap"
+    >
       <view class="car-wrap">
         <view class="car-header">
           <text>我的车库</text>
           <text @click="navTo('/pages/shifting-code/add-car')">添加车辆</text>
         </view>
         <view class="car-content">
-          <view class="row" v-for="item in 3" :key="item">
+          <view
+            class="row"
+            v-for="item in 3"
+            :key="item"
+          >
             <view class="col-left">
               <view class="number">川B·88888</view>
               <view class="type gray">小型汽车/非营运</view>
@@ -234,13 +252,17 @@
 </template>
 
 <script>
+import timingMixin from '../../mixins/timingMixin';
+
 export default {
+  mixins: [timingMixin],
+
   data() {
     return {
       mobileForm: {
         data: {
-          phone: "",
-          code: "",
+          phone: '',
+          code: '',
         },
       },
       agreement: false,
@@ -250,12 +272,19 @@ export default {
     };
   },
 
+  onLoad() {
+    this.mobileForm.data.phone = this.getAppUser().member_mobile;
+  },
+
   methods: {
     handleAgree() {
       this.agreement = !this.agreement;
     },
     handleShowCarPopup() {
       this.carPopup.visible = true;
+    },
+    handleGetCode() {
+      this.getCode(this.mobileForm.data.phone);
     },
   },
 };

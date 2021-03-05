@@ -173,6 +173,7 @@
         disabled
         type="warning"
         shape="circle"
+        @click="handleSubmit"
       >保存</u-button>
     </view>
     <u-select
@@ -213,10 +214,12 @@
 </template>
 
 <script>
+import { addCarRes } from '../../api';
 import { getDateInterval } from '../../utils/time';
 import { getAppUser } from '../../utils/auth';
 import EOSABCKeyboard from '../../components/eos-abc-keyboard';
 import carFormMixin from '../../mixins/carFormMixin';
+import { debounce } from '../../utils/tool';
 
 const { years, months, defaultDate } = getDateInterval();
 
@@ -317,7 +320,6 @@ export default {
       this.typeSelect.selectedType = e[0].value;
     },
     handleTakePhoto() {
-      console.log(this.checkLogin());
       if (!this.checkLogin()) {
         uni.navigateTo({
           url: '/pages/auth/login-nav?from=2',
@@ -353,11 +355,28 @@ export default {
                   const response = JSON.parse(data);
                   if (response.code == 200) {
                     const info = response.data;
-                    this.carForm.data = {
-                      number: info.lsprefix + info.lsnum,
-                      engine_number: info.engineno,
-                      register_date: info.regdate.slice(0, 6),
-                    };
+                    if (info.lstypename.indexOf('小型') != -1) {
+                      // 识别有值
+                      let type = '';
+                      if (info.usetype == '非营运') {
+                        type = '小型汽车(非营运)';
+                        this.typeSelect.selectedType = 1;
+                      } else {
+                        type = '小型汽车(营运)';
+                        this.typeSelect.selectedType = 2;
+                      }
+                      this.carForm.data = {
+                        type,
+                        engine_number: info.engineno,
+                        number: info.lsprefix + info.lsnum,
+                        register_date: info.regdate.slice(0, 6),
+                      };
+                    } else {
+                      uni.showToast({
+                        title: '行驶证识别失败~',
+                        icon: 'none',
+                      });
+                    }
                   } else {
                     errFn();
                   }
@@ -379,6 +398,31 @@ export default {
         urls: [this.driverLicenseSrc],
       });
     },
+    handleSubmit: debounce(
+      function () {
+        this.$refs.carForm.validate(async (valid) => {
+          if (valid) {
+            const reqData = {
+              ...this.carForm.data,
+              type: this.typeSelect.selectedType,
+            };
+            const { code, data } = await addCarRes(reqData);
+            if (code === 200) {
+              uni.switchTab({
+                url: '/pages/home/index',
+              });
+            } else {
+              uni.showToast({
+                icon: 'none',
+                title: data,
+              });
+            }
+          }
+        });
+      },
+      3000,
+      true
+    ),
   },
 };
 </script>
