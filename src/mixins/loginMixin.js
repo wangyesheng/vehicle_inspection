@@ -17,7 +17,10 @@ export default {
      * @param {*} from 1 → 首页，2 → 个人主页，3 -> 挪车码
      */
     login(from) {
-      uni.showLoading({});
+      uni.showLoading({
+        title: '授权登录中...',
+        mask: true
+      })
       uni.getProvider({
         service: "oauth",
         success: (_) => {

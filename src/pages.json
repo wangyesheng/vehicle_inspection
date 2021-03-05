@@ -5,15 +5,21 @@
 
   "pages": [
     {
-      "path": "pages/home/index",
-      "style": {
-        "navigationBarTitleText": "川B年检"
-      }
-    },
-    {
       "path": "pages/shifting-code/enable",
       "style": {
         "navigationBarTitleText": "启用挪车码"
+      }
+    },
+    {
+      "path": "pages/shifting-code/add-car",
+      "style": {
+        "navigationBarTitleText": "添加车辆"
+      }
+    },
+    {
+      "path": "pages/home/index",
+      "style": {
+        "navigationBarTitleText": "川B年检"
       }
     },
     {
@@ -26,12 +32,6 @@
       "path": "pages/shifting-code/index",
       "style": {
         "navigationBarTitleText": "我的挪车码"
-      }
-    },
-    {
-      "path": "pages/shifting-code/add-car",
-      "style": {
-        "navigationBarTitleText": "添加车辆"
       }
     },
     {
