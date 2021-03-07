@@ -17,8 +17,8 @@
         <view class="distance">{{item.juli + item.unit}}</view>
       </view>
       <u-button
-        shape="shape"
         size="medium"
+        shape="circle"
         @click="handleOpenApp(item)"
       >
         一键导航
@@ -63,9 +63,9 @@ export default {
     },
     handleOpenApp(item) {
       uni.openLocation({
-        latitude: Number(item.pigsarInfo.lat),
-        longitude: Number(item.pigsarInfo.lng),
-        name: item.pigsarInfo.address,
+        latitude: Number(item.lat),
+        longitude: Number(item.lng),
+        name: item.address,
       });
     },
   },

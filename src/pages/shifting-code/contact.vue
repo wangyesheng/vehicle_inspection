@@ -5,7 +5,7 @@
         src="../../static/images/shifting-code/mind-tips.png"
         mode="widthFit"
       />
-      <view class="carnum">川B·88888</view>
+      <view class="carnum">{{carNum}}</view>
     </view>
     <view class="btn-wrap">
       <u-button
@@ -23,6 +23,59 @@
     </view>
   </view>
 </template>
+
+<script>
+import { getCodeInfoRes } from '../../api';
+
+export default {
+  data() {
+    return {
+      carNum: '',
+    };
+  },
+
+  onLoad(options) {
+    let code;
+    if (Object.keys(options).length == 0) {
+      code = uni.getStorageSync('shifting_code_value');
+    } else {
+      const urls = decodeURIComponent(options.q).split('/');
+      code = urls[urls.length - 1];
+      uni.setStorageSync('shifting_code_value', code);
+    }
+    this.getCodeInfo(code);
+  },
+
+  methods: {
+    async getCodeInfo(code) {
+      uni.showLoading({
+        title: '正在识别中...',
+      });
+      const appUser = this.getAppUser();
+      if (!appUser.member_mobile) {
+        this.navTo('/pages/auth/login-nav?from=3');
+      }
+      const { code: _code, data } = await getCodeInfoRes({
+        code,
+      });
+      console.log('===========', data);
+      if (_code == 200) {
+        const {
+          codeInfo: { uid, id, car_id, number },
+        } = data;
+        this.carNum = number;
+        uni.setStorageSync('shifting_code_id', id);
+        if (car_id == 0) {
+          this.navTo('/pages/shifting-code/enable');
+        } else if (car_id != 0 && uid == appUser.member_id) {
+          this.navTo('/pages/shifting-code/index');
+        }
+      }
+      uni.hideLoading();
+    },
+  },
+};
+</script>
 
 <style lang="scss" scoped>
 .contact-wrap {

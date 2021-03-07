@@ -18,9 +18,9 @@ export default {
      */
     login(from) {
       uni.showLoading({
-        title: '授权登录中...',
-        mask: true
-      })
+        title: "授权登录中...",
+        mask: true,
+      });
       uni.getProvider({
         service: "oauth",
         success: (_) => {
@@ -88,26 +88,30 @@ export default {
           const appUser = this.getAppUser();
           appUser.member_mobile = data.mobile;
           uni.setStorageSync("app_user", JSON.stringify(appUser));
-          switch (this.mobilePopup.from) {
-            case 1:
-              uni.switchTab({
-                url: "/pages/home/index",
-              });
-            case 2:
-              uni.switchTab({
-                url: "/pages/me/index",
-              });
-            case 3:
-              uni.switchTab({
-                url: "pages/shifting-code/add-car",
-              });
-          }
         } else {
           uni.showToast({
             title: "请勿重复绑定同一手机号",
             icon: "none",
           });
         }
+        this.redirect();
+      }
+    },
+    redirect() {
+      switch (this.mobilePopup.from) {
+        case "1":
+          uni.switchTab({
+            url: "/pages/home/index",
+          });
+          break;
+        case "2":
+          uni.switchTab({
+            url: "/pages/me/index",
+          });
+          break;
+        case "3":
+          this.navTo("/pages/shifting-code/contact");
+          break;
       }
     },
   },

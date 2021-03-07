@@ -3,7 +3,7 @@
   position: relative;
   .bg-wrap {
     height: 480rpx;
-    background: url("../../static/images/shifting-code/bg.png");
+    background: url('../../static/images/shifting-code/bg.png');
     background-size: 100% 100%;
   }
   .form-wrap {
@@ -53,6 +53,13 @@
         padding-left: 48rpx;
         .number {
           margin-bottom: 5rpx;
+        }
+      }
+      .no-car {
+        margin-top: 24rpx;
+        image {
+          width: 590rpx;
+          height: 180rpx;
         }
       }
     }
@@ -116,6 +123,14 @@
           align-items: center;
           justify-content: space-between;
           padding: 0 50rpx;
+          position: relative;
+
+          .tag {
+            position: absolute;
+            left: 240rpx;
+            top: 50rpx;
+          }
+
           .col-right {
             image {
               width: 32rpx;
@@ -159,18 +174,22 @@
       >
         <u-form-item label="绑定手机号">
           <u-input
-            v-model="mobileForm.data.phone"
+            v-model="mobileForm.data.mobile"
             placeholder="请输入手机号"
             type="number"
           />
         </u-form-item>
         <u-form-item label="验证码">
           <u-input
-            v-model="mobileForm.data.code"
+            v-model="mobileForm.data.sms_vcode"
             placeholder="请输入验证码"
             type="number"
           />
-          <view slot="right" class="code" @click="handleGetCode">
+          <view
+            slot="right"
+            class="code"
+            @click="handleGetCode"
+          >
             <text v-if="loading">{{ codeText }}</text>
             <text v-else>获取验证码</text>
           </view>
@@ -185,9 +204,22 @@
             @click="handleShowCarPopup"
           />
         </view>
-        <view class="c-content">
-          <view class="number">{{ cars[0].number }}</view>
-          <view class="type">{{ cars[0]._type }}</view>
+        <view
+          class="c-content"
+          v-if="selectedCar"
+        >
+          <view class="number">{{ selectedCar.number }}</view>
+          <view class="type">{{ selectedCar._type }}</view>
+        </view>
+        <view
+          class="no-car"
+          v-else
+          @click="navTo('/pages/shifting-code/add-car')"
+        >
+          <image
+            src="../../static/images/shifting-code/add_car.png"
+            mode="widthFit"
+          />
         </view>
       </view>
     </view>
@@ -205,16 +237,28 @@
       <text class="link">《用户须知》</text>
     </view>
     <view class="btn-wrap">
-      <u-button type="warning" shape="circle">启用挪车码</u-button>
+      <u-button
+        type="warning"
+        shape="circle"
+        @click="handleSubmit"
+      >启用挪车码</u-button>
     </view>
-    <u-popup mode="bottom " v-model="carPopup.visible" class="popup-wrap">
+    <u-popup
+      mode="bottom "
+      v-model="carPopup.visible"
+      class="popup-wrap"
+    >
       <view class="car-wrap">
         <view class="car-header">
           <text>我的车库</text>
           <text @click="navTo('/pages/shifting-code/add-car')">添加车辆</text>
         </view>
         <view class="car-content">
-          <view class="row" v-for="item in cars" :key="item.id">
+          <view
+            class="row"
+            v-for="item in cars"
+            :key="item.id"
+          >
             <view class="col-left">
               <view class="number">{{ item.number }}</view>
               <view class="type gray">{{ item._type }}</view>
@@ -229,6 +273,12 @@
                 mode="widthFit"
               />
             </view>
+            <view class="tag">
+              <u-tag
+                text="已绑"
+                type="warning"
+              />
+            </view>
           </view>
         </view>
       </view>
@@ -237,8 +287,9 @@
 </template>
 
 <script>
-import timingMixin from "../../mixins/timingMixin";
-import { getCarsRes } from "../../api";
+import timingMixin from '../../mixins/timingMixin';
+import { getCarsRes, bindCodeCarRes, getCodeInfoRes } from '../../api';
+import { debounce } from '../../utils/tool';
 
 export default {
   mixins: [timingMixin],
@@ -249,19 +300,23 @@ export default {
       agreement: false,
       mobileForm: {
         data: {
-          phone: "",
-          code: "",
+          mobile: '',
+          sms_vcode: '',
         },
       },
       carPopup: {
         visible: false,
       },
+      selectedCar: null,
     };
   },
 
-  onLoad() {
-    this.mobileForm.data.phone = this.getAppUser().member_mobile;
-    this.getCars();
+  async onLoad(options) {
+    this.code = options.code;
+    this.codeId = uni.getStorageSync('shifting_code_id') || 74;
+    this.mobileForm.data.mobile = this.getAppUser().member_mobile;
+    await this.getCars();
+    this.code && (await this.getCodeInfo());
   },
 
   methods: {
@@ -272,7 +327,20 @@ export default {
       this.carPopup.visible = true;
     },
     handleGetCode() {
-      this.getCode(this.mobileForm.data.phone);
+      this.getCode(this.mobileForm.data.mobile);
+    },
+    async getCodeInfo() {
+      const {
+        code,
+        data: { codeInfo },
+      } = await getCodeInfoRes({
+        code: this.code,
+      });
+      if (code == 200) {
+        this.selectedCar = this.cars.find((x) => x.id == codeInfo.car_id);
+        this.mobileForm.data.mobile = codeInfo.mobile;
+        this.codeId = codeInfo.id;
+      }
     },
     async getCars() {
       const {
@@ -280,9 +348,50 @@ export default {
       } = await getCarsRes();
       this.cars = carList.map((x) => ({
         ...x,
-        _type: x.type == 1 ? "小型汽车(非营运)" : "小型汽车(营运)",
+        _type: x.type == 1 ? '小型汽车(非营运)' : '小型汽车(营运)',
       }));
+      if (!this.code) {
+        this.selectedCar = this.cars[0];
+      }
     },
+    handleSubmit: debounce(
+      async function () {
+        if (this.agreement) {
+          if (
+            !this.selectedCar ||
+            !this.mobileForm.data.mobile ||
+            !this.mobileForm.data.sms_vcode
+          ) {
+            uni.showToast({
+              icon: 'none',
+              title: '请填写完资料再提交~',
+            });
+            return;
+          }
+          const reqData = {
+            ...this.mobileForm.data,
+            id: this.codeId,
+            car_id: this.selectedCar.id,
+          };
+          const { code, data } = await bindCodeCarRes(reqData);
+          if (code === 200) {
+            this.navTo('/pages/shifting_code/enable-success');
+          } else {
+            uni.showToast({
+              icon: 'none',
+              title: data,
+            });
+          }
+        } else {
+          uni.showToast({
+            icon: 'none',
+            title: '请先同意用户须知再进行操作~',
+          });
+        }
+      },
+      3000,
+      true
+    ),
   },
 };
 </script>

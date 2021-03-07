@@ -5,15 +5,15 @@
 
   "pages": [
     {
-      "path": "pages/shifting-code/enable",
+      "path": "pages/shifting-code/index",
       "style": {
-        "navigationBarTitleText": "启用挪车码"
+        "navigationBarTitleText": "我的挪车码"
       }
     },
     {
-      "path": "pages/shifting-code/add-car",
+      "path": "pages/shifting-code/enable",
       "style": {
-        "navigationBarTitleText": "添加车辆"
+        "navigationBarTitleText": "绑定挪车码"
       }
     },
     {
@@ -23,15 +23,21 @@
       }
     },
     {
-      "path": "pages/shifting-code/contact",
+      "path": "pages/service/outlets",
       "style": {
-        "navigationBarTitleText": "联系车主挪车"
+        "navigationBarTitleText": "领取网点"
       }
     },
     {
-      "path": "pages/shifting-code/index",
+      "path": "pages/shifting-code/add-car",
       "style": {
-        "navigationBarTitleText": "我的挪车码"
+        "navigationBarTitleText": "添加车辆"
+      }
+    },
+    {
+      "path": "pages/shifting-code/contact",
+      "style": {
+        "navigationBarTitleText": "联系车主挪车"
       }
     },
     {
@@ -44,12 +50,6 @@
       "path": "pages/shifting-code/enable-success",
       "style": {
         "navigationBarTitleText": "启用挪车码"
-      }
-    },
-    {
-      "path": "pages/service/outlets",
-      "style": {
-        "navigationBarTitleText": "车主服务"
       }
     },
     {

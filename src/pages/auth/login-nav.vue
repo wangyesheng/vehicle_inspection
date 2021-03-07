@@ -50,7 +50,7 @@
       <view class="footer">
         <button
           class="btn-plain"
-          @click="mobilePopup.visible = false"
+          @click="handleReject"
         >
           拒绝
         </button>
@@ -95,6 +95,9 @@ export default {
       uni.navigateTo({
         url: '/pages/auth/user-protocol',
       });
+    },
+    handleReject() {
+      this.redirect();
     },
   },
 };

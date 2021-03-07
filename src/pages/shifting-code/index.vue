@@ -63,16 +63,26 @@
       }
     }
   }
-  .btn-wrap {
-    margin-top: 65rpx;
-    padding: 0 15rpx;
+  .footer-wrap {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    z-index: 10;
+    background: #fff;
+    padding: 25rpx 30rpx;
+    box-shadow: 0px -2px 10px rgba(0, 0, 0, 0.1);
   }
 }
 </style>
 
 <template>
   <view class="code-wrap">
-    <view class="row">
+    <view
+      class="row"
+      v-for="layer in codes"
+      :key="layer.id"
+    >
       <view class="header">
         <view class="h-top">
           <view class="title flex-center">
@@ -99,10 +109,11 @@
               class="edit"
               mode="widthFit"
               src="../../static/images/shifting-code/edit.png"
+              @click="handleEdit(layer)"
             />
           </view>
         </view>
-        <view class="h-bottom"> 43554643 </view>
+        <view class="h-bottom"> {{layer.code.slice(0,10)}} </view>
       </view>
       <view class="footer">
         <view class="col">
@@ -111,12 +122,13 @@
         </view>
         <view class="col">
           <view class="label">手机号</view>
-          <view class="value">18862944188</view>
+          <view class="value">{{ layer.mobile }}</view>
         </view>
       </view>
     </view>
-    <view class="btn-wrap">
+    <view class="footer-wrap">
       <u-button
+        type="warning"
         shape="circle"
         @click="navTo('/pages/service/outlets')"
       >免费领取挪车码</u-button>
@@ -125,16 +137,36 @@
 </template>
 
 <script>
+import { getMyCodesRes } from '../../api';
+
 export default {
   data() {
     return {
       enable: false,
+      codes: [],
     };
   },
 
+  onLoad() {
+    this.getMyCodes();
+  },
+
   methods: {
+    async getMyCodes() {
+      const {
+        code,
+        data: { codeList },
+      } = await getMyCodesRes();
+      if (code == 200) {
+        this.codes = codeList;
+        console.log(this.codes);
+      }
+    },
     handleEnable() {
       this.enable = !this.enable;
+    },
+    handleEdit(layer) {
+      this.navTo(`/pages/shifting-code/enable?code=${layer.code}`);
     },
   },
 };

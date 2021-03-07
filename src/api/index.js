@@ -167,3 +167,26 @@ export function getCustomerRes(data) {
     data,
   });
 }
+
+export function bindCodeCarRes(data) {
+  return request({
+    url: "/api.php?p=/code/bindCodeCar",
+    method: "GET",
+    data,
+  });
+}
+
+export function getCodeInfoRes(data) {
+  return request({
+    url: "/api.php?p=/code/getCodeInfo",
+    method: "GET",
+    data,
+  });
+}
+
+export const getMyCodesRes = (data) =>
+  request({
+    url: "/api.php?p=/code/getMyCodeList",
+    method: "GET",
+    data,
+  });
