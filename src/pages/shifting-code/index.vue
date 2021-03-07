@@ -129,7 +129,6 @@
     </view>
     <view class="footer-wrap">
       <u-button
-        type="warning"
         shape="circle"
         @click="navTo('/pages/service/outlets')"
       >免费领取挪车码</u-button>
@@ -156,7 +155,6 @@ export default {
       const { code, data } = await getMyCodesRes();
       if (code == 200) {
         this.codes = data.codeList;
-        console.log(this.codes);
       } else {
         uni.showToast({
           icon: 'none',
@@ -170,6 +168,10 @@ export default {
         status: layer.status == 10 ? 2 : 10,
       });
       if (code == 200) {
+        uni.showToast({
+          icon: 'none',
+          title: layer.status == 10 ? '挪车码已禁用~' : '挪车码已启用~',
+        });
         layer.status = layer.status == 10 ? 2 : 10;
       }
     },

@@ -15,7 +15,10 @@
       >拨打车主电话</u-button>
     </view>
     <view class="tips"> 为了保护双方因此，本次通话将启用虚拟号码 </view>
-    <view class="pull flex-vc">
+    <view
+      class="pull flex-vc"
+      @click="navTo('/pages/service/outlets')"
+    >
       <text>免费领取挪车码</text>
       <image
         src="../../static/images/shifting-code/right_arrow.png"
@@ -59,7 +62,6 @@ export default {
       const { code: _code, data } = await getCodeInfoRes({
         code,
       });
-      console.log('==========data', data);
       if (_code == 200) {
         const {
           codeInfo: { uid, id, car_id, number },
@@ -89,10 +91,12 @@ export default {
       uni.hideLoading();
     },
     handleCall() {
-      uni.makePhoneCall({
-        phoneNumber: this.virtualMobile,
-        success: (_) => {},
-      });
+      if (this.virtualMobile) {
+        uni.makePhoneCall({
+          phoneNumber: this.virtualMobile,
+          success: (_) => {},
+        });
+      }
     },
   },
 };
