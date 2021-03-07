@@ -48,6 +48,14 @@ export function editCarRes(data) {
   });
 }
 
+export function deleteCarRes(data) {
+  return request({
+    url: "/api.php?p=/Car/delCar",
+    method: "GET",
+    data,
+  });
+}
+
 export function getCarInfoRes(data) {
   return request({
     url: "/api.php?p=/Car/carInfo",
@@ -187,6 +195,34 @@ export function getCodeInfoRes(data) {
 export const getMyCodesRes = (data) =>
   request({
     url: "/api.php?p=/code/getMyCodeList",
+    method: "GET",
+    data,
+  });
+
+export const unbindCodeCarRes = (data) =>
+  request({
+    url: "/api.php?p=/code/unbindCodeCar",
+    method: "GET",
+    data,
+  });
+
+export const updateCodeStateRes = (data) =>
+  request({
+    url: "/api.php?p=/code/updateCodeState",
+    method: "GET",
+    data,
+  });
+
+export const getVirtualMobileRes = (data) =>
+  request({
+    url: "/api.php?p=/Code/scanCode",
+    method: "GET",
+    data,
+  });
+
+export const getMyCodeCountRes = (data) =>
+  request({
+    url: "/api.php?p=/code/getMyCodeCount",
     method: "GET",
     data,
   });

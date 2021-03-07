@@ -69,7 +69,10 @@
         mode="widthFit"
       />
     </view> -->
-    <view class="code-wrap flex-01" @click="navTo('/pages/shifting-code/apply');">
+    <view
+      class="code-wrap flex-01"
+      @click="handleNavTo(3)"
+    >
       <image
         src="../../static/images/home/code.png"
         mode="widthFit"
@@ -119,7 +122,12 @@ import {
   getDateByDays,
   getDiffDate,
 } from '../../utils/time';
-import { getCarsRes, getNoticesRes, setCarDealRes } from '../../api';
+import {
+  getCarsRes,
+  getNoticesRes,
+  setCarDealRes,
+  getMyCodeCountRes,
+} from '../../api';
 import { BUTTON_FLAGS } from '../../constant';
 
 export default {
@@ -146,6 +154,7 @@ export default {
 
   onLoad(options) {
     this.sysHeight = this.getSysHeight();
+    this.shiftingCodeCount = 0;
     // 海报分享二维码
     if (options.scene) {
       const scene = decodeURIComponent(options.scene);
@@ -159,10 +168,22 @@ export default {
   },
 
   onShow() {
-    Promise.all([this.getCars(), this.getNotices()]);
+    Promise.all([this.getCars(), this.getNotices(), this.getMyCodeCount()]);
   },
 
   methods: {
+    async getMyCodeCount() {
+      if (!this.checkLogin()) {
+        return;
+      }
+      const {
+        code,
+        data: { count },
+      } = await getMyCodeCountRes();
+      if (code == 200) {
+        this.shiftingCodeCount = count;
+      }
+    },
     async getNotices() {
       const {
         data: { noticeList },
@@ -285,6 +306,11 @@ export default {
           break;
         case 2:
           this.navTo(`/pages/inspection/station?carId=${this.selectedCar.id}`);
+          break;
+        case 3:
+          this.shiftingCodeCount == 0
+            ? this.navTo('/pages/shifting-code/apply')
+            : this.navTo('/pages/shifting-code/index');
           break;
       }
     },

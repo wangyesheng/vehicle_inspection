@@ -2,7 +2,11 @@
   <view class="success-wrap">
     <view class="banner"></view>
     <view class="btn-wrap">
-      <u-button type="warning">查看我的挪车码</u-button>
+      <u-button
+        type="warning"
+        shape="circle"
+        @click="navTo('/pages/shifting-code/index')"
+      >查看我的挪车码</u-button>
     </view>
   </view>
 </template>

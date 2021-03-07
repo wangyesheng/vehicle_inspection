@@ -172,7 +172,6 @@
       <u-button
         type="warning"
         shape="circle"
-        :disabled="disabled"
         @click="handleSubmit"
       >保存</u-button>
     </view>
@@ -214,7 +213,7 @@
 </template>
 
 <script>
-import { addCarRes } from '../../api';
+import { getCarInfoRes, editCarRes } from '../../api';
 import { getDateInterval } from '../../utils/time';
 import { getAppUser } from '../../utils/auth';
 import EOSABCKeyboard from '../../components/eos-abc-keyboard';
@@ -232,7 +231,6 @@ export default {
 
   data() {
     return {
-      disabled: true,
       carForm: {
         data: {
           type: '',
@@ -240,8 +238,8 @@ export default {
           engine_number: '',
           register_date: '',
           noCode: 1,
-          owner: this.getAppUser().member_name,
-          mobile: this.getAppUser().member_mobile,
+          owner: '',
+          mobile: '',
         },
         rules: {
           number: [
@@ -304,11 +302,34 @@ export default {
     };
   },
 
+  onLoad(ops) {
+    this.carId = ops.id;
+    this.getCarInfo();
+  },
+
   onReady() {
     this.$refs.carForm.setRules(this.carForm.rules);
   },
 
   methods: {
+    async getCarInfo() {
+      const {
+        code,
+        data: { carInfo },
+      } = await getCarInfoRes({ car_id: this.carId });
+      if (code == 200) {
+        this.carForm.data = {
+          noCode: 1,
+          type: carInfo.type == 1 ? '小型汽车(非营运)' : '小型汽车(营运)',
+          number: carInfo.number,
+          engine_number: carInfo.engine_number,
+          register_date: carInfo.register_date.slice(0, 7),
+          owner: carInfo.owner,
+          mobile: carInfo.mobile,
+        };
+        this.typeSelect.selectedType = +carInfo.type;
+      }
+    },
     handleShowDateSelect() {
       this.dateSelect.visible = true;
     },
@@ -362,7 +383,6 @@ export default {
                   const response = JSON.parse(data);
                   if (response.code == 200) {
                     const info = response.data;
-                    console.log(info);
                     // 只做小型车的平台
                     if (info.lstypename.indexOf('小型') != -1) {
                       let type = '';
@@ -419,9 +439,10 @@ export default {
           if (valid) {
             const reqData = {
               ...this.carForm.data,
+              id: this.carId,
               type: this.typeSelect.selectedType,
             };
-            const { code, data } = await addCarRes(reqData);
+            const { code, data } = await editCarRes(reqData);
             if (code === 200) {
               this.navTo('/pages/shifting-code/enable');
             } else {

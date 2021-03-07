@@ -98,6 +98,7 @@
     <view class="btn-wrap">
       <u-button
         type="primary"
+        shape="circle"
         @click="handleSubmit"
       >提交</u-button>
     </view>
@@ -140,7 +141,7 @@
 </template>
 
 <script>
-import { getDateInterval, getMaxDay } from '../../utils/time';
+import { getDateInterval } from '../../utils/time';
 import { editCarRes, getCarInfoRes } from '../../api';
 import EOSABCKeyboard from '../../components/eos-abc-keyboard';
 import carFormMixin from '../../mixins/carFormMixin';

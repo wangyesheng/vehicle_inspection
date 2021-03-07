@@ -3,23 +3,31 @@
     "^u-(.*)": "@/uview-ui/components/u-$1/u-$1.vue"
   },
 
-  "pages": [
-    {
+  "pages": [{
+      "path": "pages/shifting-code/enable",
+      "style": {
+        "navigationBarTitleText": "启用挪车码"
+      }
+    }, {
+      "path": "pages/home/index",
+      "style": {
+        "navigationBarTitleText": "川B年检"
+      }
+    }, {
       "path": "pages/shifting-code/index",
       "style": {
         "navigationBarTitleText": "我的挪车码"
       }
     },
     {
-      "path": "pages/shifting-code/enable",
+      "path": "pages/shifting-code/bind-edit",
       "style": {
-        "navigationBarTitleText": "绑定挪车码"
+        "navigationBarTitleText": "编辑绑定信息"
       }
-    },
-    {
-      "path": "pages/home/index",
+    }, {
+      "path": "pages/shifting-code/apply",
       "style": {
-        "navigationBarTitleText": "川B年检"
+        "navigationBarTitleText": "申领挪车码"
       }
     },
     {
@@ -35,15 +43,15 @@
       }
     },
     {
-      "path": "pages/shifting-code/contact",
+      "path": "pages/shifting-code/edit-car",
       "style": {
-        "navigationBarTitleText": "联系车主挪车"
+        "navigationBarTitleText": "编辑车辆"
       }
     },
     {
-      "path": "pages/shifting-code/apply",
+      "path": "pages/shifting-code/contact",
       "style": {
-        "navigationBarTitleText": "申领挪车码"
+        "navigationBarTitleText": "联系车主挪车"
       }
     },
     {
@@ -156,8 +164,7 @@
     "selectedColor": "#5E93EC",
     "borderStyle": "black",
     "backgroundColor": "#ffffff",
-    "list": [
-      {
+    "list": [{
         "pagePath": "pages/home/index",
         "iconPath": "static/images/tab_bar/home.png",
         "selectedIconPath": "static/images/tab_bar/home-active.png",

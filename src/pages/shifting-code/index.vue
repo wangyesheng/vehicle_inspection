@@ -91,6 +91,7 @@
               src="../../static/images/shifting-code/brand.png"
               mode="widthFit"
               class="brand"
+              @click="handlePreview(layer.qr)"
             />
           </view>
 
@@ -99,26 +100,26 @@
               class="switch"
               mode="widthFit"
               :src="
-                enable
+                layer.status==10
                   ? require('../../static/images/shifting-code/switch_on.png')
                   : require('../../static/images/shifting-code/switch_off.png')
               "
-              @click="handleEnable"
+              @click="handleEnable(layer)"
             />
             <image
               class="edit"
               mode="widthFit"
               src="../../static/images/shifting-code/edit.png"
-              @click="handleEdit(layer)"
+              @click="handleEdit(layer.code)"
             />
           </view>
         </view>
-        <view class="h-bottom"> {{layer.code.slice(0,10)}} </view>
+        <view class="h-bottom"> {{layer.code.slice(0,8)}} </view>
       </view>
       <view class="footer">
         <view class="col">
           <view class="label">车牌号</view>
-          <view class="value">川B·88888</view>
+          <view class="value">{{layer.number}}</view>
         </view>
         <view class="col">
           <view class="label">手机号</view>
@@ -137,12 +138,11 @@
 </template>
 
 <script>
-import { getMyCodesRes } from '../../api';
+import { getMyCodesRes, updateCodeStateRes } from '../../api';
 
 export default {
   data() {
     return {
-      enable: false,
       codes: [],
     };
   },
@@ -153,20 +153,34 @@ export default {
 
   methods: {
     async getMyCodes() {
-      const {
-        code,
-        data: { codeList },
-      } = await getMyCodesRes();
+      const { code, data } = await getMyCodesRes();
       if (code == 200) {
-        this.codes = codeList;
+        this.codes = data.codeList;
         console.log(this.codes);
+      } else {
+        uni.showToast({
+          icon: 'none',
+          title: data,
+        });
       }
     },
-    handleEnable() {
-      this.enable = !this.enable;
+    async handleEnable(layer) {
+      const { code } = await updateCodeStateRes({
+        id: layer.id,
+        status: layer.status == 10 ? 2 : 10,
+      });
+      if (code == 200) {
+        layer.status = layer.status == 10 ? 2 : 10;
+      }
     },
-    handleEdit(layer) {
-      this.navTo(`/pages/shifting-code/enable?code=${layer.code}`);
+    handleEdit(code) {
+      this.navTo(`/pages/shifting-code/bind-edit?code=${code}`);
+    },
+    handlePreview(qr) {
+      uni.previewImage({
+        current: 0,
+        urls: [qr],
+      });
     },
   },
 };

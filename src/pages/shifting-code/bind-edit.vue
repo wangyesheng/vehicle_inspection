@@ -249,7 +249,13 @@
         type="warning"
         shape="circle"
         @click="handleSubmit"
-      >启用挪车码</u-button>
+      >保存</u-button>
+    </view>
+    <view
+      class="unbind"
+      @click="handleUnbind"
+    >
+      <text>解绑挪车码</text>
     </view>
     <u-popup
       mode="bottom "
@@ -301,6 +307,8 @@ import timingMixin from '../../mixins/timingMixin';
 import {
   getCarsRes,
   bindCodeCarRes,
+  getCodeInfoRes,
+  unbindCodeCarRes,
   deleteCarRes,
 } from '../../api';
 import { debounce } from '../../utils/tool';
@@ -322,13 +330,16 @@ export default {
         visible: false,
       },
       selectedCar: null,
+      code: null,
     };
   },
 
-  async onLoad() {
+  async onLoad(options) {
+    this.code = options.code;
     this.codeId = uni.getStorageSync('shifting_code_id') || 74;
     this.mobileForm.data.mobile = this.getAppUser().member_mobile;
     await this.getCars();
+    this.code && (await this.getCodeInfo());
   },
 
   methods: {
@@ -340,6 +351,19 @@ export default {
     },
     handleGetCode() {
       this.getCode(this.mobileForm.data.mobile);
+    },
+    async getCodeInfo() {
+      const {
+        code,
+        data: { codeInfo },
+      } = await getCodeInfoRes({
+        code: this.code,
+      });
+      if (code == 200) {
+        this.selectedCar = this.cars.find((x) => x.id == codeInfo.car_id);
+        this.mobileForm.data.mobile = codeInfo.mobile;
+        this.codeId = codeInfo.id;
+      }
     },
     async getCars() {
       const {
@@ -372,7 +396,7 @@ export default {
           };
           const { code, data } = await bindCodeCarRes(reqData);
           if (code == 200) {
-            this.navTo('/pages/shifting-code/enable-success');
+            this.navTo('/pages/shifting-code/index');
           } else {
             uni.showToast({
               icon: 'none',

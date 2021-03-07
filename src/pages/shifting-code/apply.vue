@@ -3,13 +3,15 @@
   position: relative;
   .banner {
     height: 400rpx;
-    background: #5e93ec;
+    background: url('../../static/images/shifting-code/apply_bg.png');
+    background-size: 100% 100%;
   }
   .introduction {
     position: absolute;
     top: 300rpx;
     left: 0;
     text-align: center;
+    padding-bottom: 150rpx;
     image {
       &:first-child {
         width: 729rpx;

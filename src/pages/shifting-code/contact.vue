@@ -11,6 +11,7 @@
       <u-button
         type="warning"
         shape="circle"
+        @click="handleCall"
       >拨打车主电话</u-button>
     </view>
     <view class="tips"> 为了保护双方因此，本次通话将启用虚拟号码 </view>
@@ -25,7 +26,7 @@
 </template>
 
 <script>
-import { getCodeInfoRes } from '../../api';
+import { getCodeInfoRes, getVirtualMobileRes } from '../../api';
 
 export default {
   data() {
@@ -58,7 +59,7 @@ export default {
       const { code: _code, data } = await getCodeInfoRes({
         code,
       });
-      console.log('===========', data);
+      console.log('==========data', data);
       if (_code == 200) {
         const {
           codeInfo: { uid, id, car_id, number },
@@ -69,9 +70,29 @@ export default {
           this.navTo('/pages/shifting-code/enable');
         } else if (car_id != 0 && uid == appUser.member_id) {
           this.navTo('/pages/shifting-code/index');
+        } else if (car_id != 0 && uid != appUser.member_id) {
+          // 获取隐私电话
+          const { code, data } = await getVirtualMobileRes({
+            to_id: uid,
+            code,
+          });
+          if (code == 200) {
+            this.virtualMobile = data.xMobile;
+          } else {
+            uni.showToast({
+              title: data,
+              icon: 'none',
+            });
+          }
         }
       }
       uni.hideLoading();
+    },
+    handleCall() {
+      uni.makePhoneCall({
+        phoneNumber: this.virtualMobile,
+        success: (_) => {},
+      });
     },
   },
 };

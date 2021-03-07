@@ -11,7 +11,10 @@
         fontWeight: 600,
       }"
     >
-      <u-form-item label="车牌号码" prop="number">
+      <u-form-item
+        label="车牌号码"
+        prop="number"
+      >
         <u-input
           disabled
           placeholder="请填写车牌号码"
@@ -19,7 +22,10 @@
           @click="handleShowCarKeyboard"
         />
       </u-form-item>
-      <u-form-item label="号牌种类" prop="type">
+      <u-form-item
+        label="号牌种类"
+        prop="type"
+      >
         <u-input
           type="select"
           placeholder="请选择号牌种类"
@@ -27,7 +33,10 @@
           @click="handleShowTypeSelect"
         />
       </u-form-item>
-      <u-form-item label="发动机号" prop="engine_number">
+      <u-form-item
+        label="发动机号"
+        prop="engine_number"
+      >
         <u-input
           disabled
           placeholder="请填写发动机号"
@@ -35,14 +44,20 @@
           @click="handleShowEngineKeyboard"
         />
       </u-form-item>
-      <u-form-item label="所有人" prop="owner">
+      <u-form-item
+        label="所有人"
+        prop="owner"
+      >
         <u-input
           v-model="carForm.data.owner"
           placeholder="请填写所有人姓名或公司名称"
           @blur="handleBlur"
         />
       </u-form-item>
-      <u-form-item label="注册登记日期" prop="register_date">
+      <u-form-item
+        label="注册登记日期"
+        prop="register_date"
+      >
         <u-input
           type="select"
           placeholder="请选择注册登记日期"
@@ -50,14 +65,20 @@
           @click="handleShowDateSelect"
         />
       </u-form-item>
-      <u-form-item label="手机号" prop="mobile">
+      <u-form-item
+        label="手机号"
+        prop="mobile"
+      >
         <u-input
           type="number"
           placeholder="请填写手机号"
           v-model="carForm.data.mobile"
         />
       </u-form-item>
-      <u-form-item label="验证码" prop="sms_vcode">
+      <u-form-item
+        label="验证码"
+        prop="sms_vcode"
+      >
         <u-button
           slot="left"
           size="medium"
@@ -75,7 +96,11 @@
       </u-form-item>
     </u-form>
     <view class="btn-wrap">
-      <u-button type="primary" @click="handleSubmit">提交</u-button>
+      <u-button
+        type="primary"
+        shape="circle"
+        @click="handleSubmit"
+      >提交</u-button>
     </view>
     <u-select
       v-model="typeSelect.visible"
@@ -99,7 +124,11 @@
       @change="handleCarNumChange"
       @backspace="handleCarNumBackspace"
     />
-    <u-popup mode="bottom" :mask="false" v-model="keyboard.engineVisible">
+    <u-popup
+      mode="bottom"
+      :mask="false"
+      v-model="keyboard.engineVisible"
+    >
       <eos-abc-keyboard
         ref="abcKeyboard"
         @change="handleEngineNumChange"
@@ -111,19 +140,19 @@
 </template>
 
 <script>
-import { getDateInterval } from "../../utils/time";
-import { addCarRes } from "../../api";
-import EOSABCKeyboard from "../../components/eos-abc-keyboard";
-import carFormMixin from "../../mixins/carFormMixin";
-import timingMixin from "../../mixins/timingMixin";
-import { debounce } from "../../utils/tool";
-import { TEMPLATE_IDS } from "../../constant/index";
+import { getDateInterval } from '../../utils/time';
+import { addCarRes } from '../../api';
+import EOSABCKeyboard from '../../components/eos-abc-keyboard';
+import carFormMixin from '../../mixins/carFormMixin';
+import timingMixin from '../../mixins/timingMixin';
+import { debounce } from '../../utils/tool';
+import { TEMPLATE_IDS } from '../../constant/index';
 
 const { years, months, defaultDate } = getDateInterval();
 
 export default {
   components: {
-    "eos-abc-keyboard": EOSABCKeyboard,
+    'eos-abc-keyboard': EOSABCKeyboard,
   },
 
   mixins: [carFormMixin, timingMixin],
@@ -132,68 +161,68 @@ export default {
     return {
       carForm: {
         data: {
-          number: "",
-          type: "",
-          engine_number: "",
-          owner: "",
-          register_date: "",
-          mobile: "",
-          sms_vcode: "",
+          number: '',
+          type: '',
+          engine_number: '',
+          owner: '',
+          register_date: '',
+          mobile: '',
+          sms_vcode: '',
           noCode: 0,
         },
         rules: {
           number: [
             {
               required: true,
-              message: "请填写车牌号码",
-              trigger: "change",
+              message: '请填写车牌号码',
+              trigger: 'change',
             },
           ],
           type: [
             {
               required: true,
-              message: "请选择号牌种类",
-              trigger: "change",
+              message: '请选择号牌种类',
+              trigger: 'change',
             },
           ],
           engine_number: [
             {
               required: true,
-              message: "请填写发动机号",
-              trigger: "change",
+              message: '请填写发动机号',
+              trigger: 'change',
             },
           ],
           owner: [
             {
               required: true,
-              message: "请填写所有人",
-              trigger: "change",
+              message: '请填写所有人',
+              trigger: 'change',
             },
           ],
           register_date: [
             {
               required: true,
-              message: "请选择注册登记日期",
-              trigger: "change",
+              message: '请选择注册登记日期',
+              trigger: 'change',
             },
           ],
           mobile: [
             {
               required: true,
-              message: "请填写手机号",
-              trigger: "change",
+              message: '请填写手机号',
+              trigger: 'change',
             },
             {
               pattern: /^1[3456789]\d{9}$/,
-              message: "手机号格式错误",
-              trigger: "change",
+              message: '手机号格式错误',
+              trigger: 'change',
             },
           ],
           sms_vcode: [
             {
               required: true,
-              message: "请填写验证码",
-              trigger: "change",
+              message: '请填写验证码',
+              trigger: 'change',
             },
           ],
         },
@@ -203,11 +232,11 @@ export default {
         types: [
           {
             value: 1,
-            label: "小型汽车(非营运)",
+            label: '小型汽车(非营运)',
           },
           {
             value: 2,
-            label: "小型汽车(营运)",
+            label: '小型汽车(营运)',
           },
         ],
         selectedType: 1,
@@ -255,11 +284,11 @@ export default {
               const { code, data } = await addCarRes(reqData);
               if (code === 200) {
                 uni.switchTab({
-                  url: "/pages/home/index",
+                  url: '/pages/home/index',
                 });
               } else {
                 uni.showToast({
-                  icon: "none",
+                  icon: 'none',
                   title: data,
                 });
               }
@@ -269,7 +298,7 @@ export default {
         wx.getSetting({
           withSubscriptions: true, //是否获取用户订阅消息的订阅状态，默认false不返回
           success: (res) => {
-            if (res.authSetting["scope.subscribeMessage"]) {
+            if (res.authSetting['scope.subscribeMessage']) {
               //用户点击了“总是保持以上，不再询问”
               uni.openSetting({
                 // 打开设置页
@@ -287,8 +316,8 @@ export default {
                 },
                 fail: (res) => {
                   uni.showToast({
-                    icon: "none",
-                    title: "授权消息推送失败！",
+                    icon: 'none',
+                    title: '授权消息推送失败！',
                   });
                 },
               });
