@@ -358,72 +358,74 @@ export default {
             title: '正在识别中...',
             mask: true,
           });
-          const limitSize = 300 * 1024;
-          const { path, size } = res.tempFiles[0];
-          this.driverLicenseSrc = path;
-          if (size > limitSize) {
+          const errFn = () =>
             uni.showToast({
-              title: '行驶证大小不得大于300kb',
+              title: '行驶证识别失败~',
               icon: 'none',
             });
-          } else {
-            const errFn = () =>
-              uni.showToast({
-                title: '行驶证识别失败~',
-                icon: 'none',
-              });
-            uni.uploadFile({
-              url: `https://cj.huazhe.work/api.php?p=/code/uploadCarCard&key=${
-                getAppUser().token
-              }`,
-              name: 'cardFile',
-              filePath: this.driverLicenseSrc,
-              success: ({ statusCode, data }) => {
-                if (statusCode == 200) {
-                  const response = JSON.parse(data);
-                  if (response.code == 200) {
-                    const info = response.data;
-                    // 只做小型车的平台
-                    if (info.lstypename.indexOf('小型') != -1) {
-                      let type = '';
-                      if (info.usetype == '非营运') {
-                        type = '小型汽车(非营运)';
-                        this.typeSelect.selectedType = 1;
+          const { path } = res.tempFiles[0];
+          uni.compressImage({
+            src: path,
+            quality: 0.8,
+            success: (compressRes) => {
+              this.driverLicenseSrc = compressRes.tempFilePath;
+              uni.uploadFile({
+                url: `https://cj.huazhe.work/api.php?p=/code/uploadCarCard&key=${
+                  getAppUser().token
+                }`,
+                name: 'cardFile',
+                filePath: this.driverLicenseSrc,
+                success: ({ statusCode, data }) => {
+                  if (statusCode == 200) {
+                    const response = JSON.parse(data);
+                    if (response.code == 200) {
+                      const info = response.data;
+                      // 只做小型车的平台
+                      if (info.lstypename.indexOf('小型') != -1) {
+                        let type = '';
+                        if (info.usetype == '非营运') {
+                          type = '小型汽车(非营运)';
+                          this.typeSelect.selectedType = 1;
+                        } else {
+                          type = '小型汽车(营运)';
+                          this.typeSelect.selectedType = 2;
+                        }
+                        this.carForm.data = {
+                          ...this.carForm.data,
+                          type,
+                          owner: info.realname
+                            ? info.realname
+                            : this.getAppUser().member_name,
+                          engine_number: info.engineno,
+                          number: info.lsprefix + info.lsnum,
+                          register_date: info.regdate.slice(0, 7),
+                        };
+                        this.disabled = false;
                       } else {
-                        type = '小型汽车(营运)';
-                        this.typeSelect.selectedType = 2;
+                        uni.showToast({
+                          title: '行驶证识别失败~',
+                          icon: 'none',
+                        });
                       }
-                      this.carForm.data = {
-                        ...this.carForm.data,
-                        type,
-                        owner: info.realname
-                          ? info.realname
-                          : this.getAppUser().member_name,
-                        engine_number: info.engineno,
-                        number: info.lsprefix + info.lsnum,
-                        register_date: info.regdate.slice(0, 7),
-                      };
-                      this.disabled = false;
                     } else {
-                      uni.showToast({
-                        title: '行驶证识别失败~',
-                        icon: 'none',
-                      });
+                      errFn();
                     }
                   } else {
                     errFn();
                   }
-                } else {
+                  uni.hideLoading();
+                },
+                res: (err) => {
                   errFn();
-                }
-                uni.hideLoading();
-              },
-              res: (err) => {
-                errFn();
-                uni.hideLoading();
-              },
-            });
-          }
+                  uni.hideLoading();
+                },
+              });
+            },
+            fail: (err) => {
+              errFn();
+              uni.hideLoading();
+            },
+          });
         },
       });
     },

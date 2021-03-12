@@ -8,6 +8,12 @@
       "style": {
         "navigationBarTitleText": "川B年检"
       }
+    },
+    {
+      "path": "pages/shifting-code/add-car",
+      "style": {
+        "navigationBarTitleText": "添加车辆"
+      }
     }, {
       "path": "pages/shifting-code/index",
       "style": {
@@ -34,12 +40,6 @@
       "path": "pages/service/outlets",
       "style": {
         "navigationBarTitleText": "领取网点"
-      }
-    },
-    {
-      "path": "pages/shifting-code/add-car",
-      "style": {
-        "navigationBarTitleText": "添加车辆"
       }
     },
     {
@@ -155,7 +155,7 @@
   ],
   "globalStyle": {
     "navigationBarTextStyle": "white",
-    "navigationBarTitleText": "Fanr",
+    "navigationBarTitleText": "川B年检",
     "navigationBarBackgroundColor": "#5E93EC",
     "backgroundColor": "#F8F8F8"
   },

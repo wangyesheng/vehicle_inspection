@@ -14,7 +14,7 @@
         @click="handleCall"
       >拨打车主电话</u-button>
     </view>
-    <view class="tips"> 为了保护双方因此，本次通话将启用虚拟号码 </view>
+    <view class="tips"> 为了保护双方隐私，本次通话将启用虚拟号码 </view>
     <view
       class="pull flex-vc"
       @click="navTo('/pages/service/outlets')"
@@ -39,6 +39,7 @@ export default {
   },
 
   onLoad(options) {
+    console.log('--------------options', options);
     let code;
     if (Object.keys(options).length == 0) {
       code = uni.getStorageSync('shifting_code_value');
@@ -62,6 +63,7 @@ export default {
       const { code: _code, data } = await getCodeInfoRes({
         code,
       });
+      console.log('--------------getCodeInfoRes', data);
       if (_code == 200) {
         const {
           codeInfo: { uid, id, car_id, number },
@@ -74,11 +76,12 @@ export default {
           this.navTo('/pages/shifting-code/index');
         } else if (car_id != 0 && uid != appUser.member_id) {
           // 获取隐私电话
-          const { code, data } = await getVirtualMobileRes({
+          const { code: __code, data } = await getVirtualMobileRes({
             to_id: uid,
             code,
           });
-          if (code == 200) {
+          console.log('--------------getVirtualMobileRes', code, data);
+          if (__code == 200) {
             this.virtualMobile = data.xMobile;
           } else {
             uni.showToast({
