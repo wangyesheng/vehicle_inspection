@@ -371,7 +371,7 @@ export default {
               this.driverLicenseSrc = compressRes.tempFilePath;
               uni.uploadFile({
                 url: `https://cj.huazhe.work/api.php?p=/code/uploadCarCard&key=${
-                  getAppUser().token
+                  this.getAppUser().token
                 }`,
                 name: 'cardFile',
                 filePath: this.driverLicenseSrc,

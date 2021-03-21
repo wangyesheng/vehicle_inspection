@@ -1,5 +1,9 @@
 <template>
   <view class="contact-wrap">
+    <u-mask
+      :show="maskVisible"
+      :custom-style="{background: '#fefefe'}"
+    />
     <view class="banner">
       <image
         src="../../static/images/shifting-code/mind-tips.png"
@@ -35,11 +39,11 @@ export default {
   data() {
     return {
       carNum: '',
+      maskVisible: true,
     };
   },
 
   onLoad(options) {
-    console.log('--------------options', options);
     let code;
     if (Object.keys(options).length == 0) {
       code = uni.getStorageSync('shifting_code_value');
@@ -83,6 +87,7 @@ export default {
           console.log('--------------getVirtualMobileRes', code, data);
           if (__code == 200) {
             this.virtualMobile = data.xMobile;
+            this.maskVisible = false;
           } else {
             uni.showToast({
               title: data,

@@ -71,6 +71,10 @@
     margin-top: 30rpx;
     margin-bottom: 80rpx;
   }
+
+  .btn-wrap {
+    padding-bottom: 80rpx;
+  }
 }
 </style>
 
@@ -166,12 +170,41 @@
             @blur="handleBlur"
           />
         </u-form-item>
+        <u-form-item
+          label="手机号"
+          prop="mobile"
+        >
+          <u-input
+            type="number"
+            placeholder="请填写手机号"
+            v-model="carForm.data.mobile"
+          />
+        </u-form-item>
+        <u-form-item
+          label="验证码"
+          prop="sms_vcode"
+        >
+          <u-button
+            slot="left"
+            size="medium"
+            :custom-style="{ padding: '18rpx 20rpx' }"
+            @click="handleGetCode"
+          >
+            <text v-if="loading">{{ codeText }}</text>
+            <text v-else>获取验证码</text>
+          </u-button>
+          <u-input
+            v-model="carForm.data.sms_vcode"
+            placeholder="请填写验证码"
+            type="number"
+          />
+        </u-form-item>
       </u-form>
     </view>
     <view class="btn-wrap">
       <u-button
-        type="warning"
         shape="circle"
+        type="primary"
         :disabled="disabled"
         @click="handleSubmit"
       >保存</u-button>
@@ -214,12 +247,13 @@
 </template>
 
 <script>
-import { addCarRes } from '../../api';
 import { getDateInterval } from '../../utils/time';
-import { getAppUser } from '../../utils/auth';
+import { addCarRes } from '../../api';
 import EOSABCKeyboard from '../../components/eos-abc-keyboard';
 import carFormMixin from '../../mixins/carFormMixin';
+import timingMixin from '../../mixins/timingMixin';
 import { debounce } from '../../utils/tool';
+import { TEMPLATE_IDS } from '../../constant/index';
 
 const { years, months, defaultDate } = getDateInterval();
 
@@ -228,7 +262,7 @@ export default {
     'eos-abc-keyboard': EOSABCKeyboard,
   },
 
-  mixins: [carFormMixin],
+  mixins: [carFormMixin, timingMixin],
 
   data() {
     return {
@@ -239,9 +273,10 @@ export default {
           number: '',
           engine_number: '',
           register_date: '',
-          noCode: 1,
+          noCode: 0,
           owner: this.getAppUser().member_name,
           mobile: this.getAppUser().member_mobile,
+          sms_vcode: '',
         },
         rules: {
           number: [
@@ -279,6 +314,25 @@ export default {
               trigger: 'change',
             },
           ],
+          mobile: [
+            {
+              required: true,
+              message: '请填写手机号',
+              trigger: 'change',
+            },
+            {
+              pattern: /^1[3456789]\d{9}$/,
+              message: '手机号格式错误',
+              trigger: 'change',
+            },
+          ],
+          sms_vcode: [
+            {
+              required: true,
+              message: '请填写验证码',
+              trigger: 'change',
+            },
+          ],
         },
       },
       typeSelect: {
@@ -309,18 +363,21 @@ export default {
   },
 
   methods: {
-    handleShowDateSelect() {
-      this.dateSelect.visible = true;
-    },
-    handledDateConfirm(e) {
-      this.carForm.data.register_date = `${e[0].label}-${e[1].label}`;
-    },
     handleShowTypeSelect() {
       this.typeSelect.visible = true;
     },
     handleTypeConfirm(e) {
       this.carForm.data.type = e[0].label;
       this.typeSelect.selectedType = e[0].value;
+    },
+    handleShowDateSelect() {
+      this.dateSelect.visible = true;
+    },
+    handledDateConfirm(e) {
+      this.carForm.data.register_date = `${e[0].label}-${e[1].label}`;
+    },
+    handleGetCode() {
+      this.getCode(this.carForm.data.mobile);
     },
     handleTakePhoto() {
       if (!this.checkLogin()) {
@@ -369,6 +426,7 @@ export default {
                           type = '小型汽车(营运)';
                           this.typeSelect.selectedType = 2;
                         }
+                        console.log(this.getAppUser());
                         this.carForm.data = {
                           ...this.carForm.data,
                           type,
@@ -405,15 +463,6 @@ export default {
               uni.hideLoading();
             },
           });
-
-          // if (size > limitSize) {
-          //   uni.showToast({
-          //     title: '行驶证大小不得大于300kb',
-          //     icon: 'none',
-          //   });
-          // } else {
-
-          // }
         },
       });
     },
@@ -441,6 +490,35 @@ export default {
               });
             }
           }
+        });
+        wx.getSetting({
+          withSubscriptions: true, //是否获取用户订阅消息的订阅状态，默认false不返回
+          success: (res) => {
+            if (res.authSetting['scope.subscribeMessage']) {
+              //用户点击了“总是保持以上，不再询问”
+              uni.openSetting({
+                // 打开设置页
+                success: (res) => {
+                  // console.log('all: ' + res.authSetting);
+                  addCar();
+                },
+              });
+            } else {
+              // 用户没有点击“总是保持以上，不再询问”则每次都会调起订阅消息
+              uni.requestSubscribeMessage({
+                tmplIds: TEMPLATE_IDS.slice(2, 3),
+                success: (res) => {
+                  addCar();
+                },
+                fail: (res) => {
+                  uni.showToast({
+                    icon: 'none',
+                    title: '授权消息推送失败！',
+                  });
+                },
+              });
+            }
+          },
         });
       },
       3000,

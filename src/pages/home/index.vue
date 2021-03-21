@@ -299,7 +299,7 @@ export default {
       }
       switch (flag) {
         case -1:
-          this.navTo('/pages/car/add-form');
+          this.navTo('/pages/car/add-form-chore');
           break;
         case 1:
           this.navTo('/pages/reservation/index');

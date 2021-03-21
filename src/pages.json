@@ -8,6 +8,11 @@
       "style": {
         "navigationBarTitleText": "川B年检"
       }
+    }, {
+      "path": "pages/shifting-code/contact",
+      "style": {
+        "navigationBarTitleText": "联系车主挪车"
+      }
     },
     {
       "path": "pages/shifting-code/add-car",
@@ -49,29 +54,12 @@
       }
     },
     {
-      "path": "pages/shifting-code/contact",
-      "style": {
-        "navigationBarTitleText": "联系车主挪车"
-      }
-    },
-    {
       "path": "pages/shifting-code/enable-success",
       "style": {
         "navigationBarTitleText": "启用挪车码"
       }
     },
-    {
-      "path": "pages/order/index",
-      "style": {
-        "navigationBarTitleText": "年检代办订单"
-      }
-    },
-    {
-      "path": "pages/order/status",
-      "style": {
-        "navigationBarTitleText": "订单状态"
-      }
-    },
+
     {
       "path": "pages/me/index",
       "style": {
@@ -110,7 +98,7 @@
       }
     },
     {
-      "path": "pages/car/add-form",
+      "path": "pages/car/add-form-chore",
       "style": {
         "navigationBarTitleText": "添加车辆"
       }
@@ -153,6 +141,28 @@
       }
     }
   ],
+  "subPackages": [{
+    "root": "pagesA",
+    "pages": [{
+        "path": "order/index",
+        "style": {
+          "navigationBarTitleText": "年检代办订单"
+        }
+      },
+      {
+        "path": "order/status",
+        "style": {
+          "navigationBarTitleText": "订单状态"
+        }
+      },
+      {
+        "path": "order/address",
+        "style": {
+          "navigationBarTitleText": "订单状态"
+        }
+      }
+    ]
+  }],
   "globalStyle": {
     "navigationBarTextStyle": "white",
     "navigationBarTitleText": "川B年检",

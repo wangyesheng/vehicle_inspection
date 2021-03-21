@@ -1,5 +1,6 @@
 <template>
   <view class="car-add-form-container">
+
     <u-form
       ref="carForm"
       label-width="auto"
@@ -246,7 +247,7 @@ export default {
         dateSource: [years, months],
         defaultDate,
       },
-      carId: null,
+      driverLicenseSrc: '',
     };
   },
 
