@@ -3,7 +3,7 @@
   position: relative;
   .bg-wrap {
     height: 480rpx;
-    background: url('../../static/images/shifting-code/bg.png');
+    background: url('https://cj.huazhe.work/images/shifting-code/bg.png');
     background-size: 100% 100%;
   }
   .form-wrap {
@@ -207,7 +207,7 @@
         <view class="c-header">
           <text>绑定车辆信息</text>
           <image
-            src="../../static/images/shifting-code/car.png"
+            src="https://cj.huazhe.work/images/shifting-code/car.png"
             mode="widthFit"
             @click="handleShowCarPopup"
           />
@@ -225,7 +225,7 @@
           @click="navTo('/pages/shifting-code/add-car')"
         >
           <image
-            src="../../static/images/shifting-code/add_car.png"
+            src="https://cj.huazhe.work/images/shifting-code/add_car.png"
             mode="widthFit"
           />
         </view>
@@ -235,8 +235,8 @@
       <image
         :src="
           agreement
-            ? require('../../static/images/shifting-code/selected.png')
-            : require('../../static/images/shifting-code/unselected.png')
+            ? 'https://cj.huazhe.work/images/shifting-code/selected.png'
+            : 'https://cj.huazhe.work/images/shifting-code/unselected.png'
         "
         mode="widthFit"
         @click="handleAgree"
@@ -279,12 +279,12 @@
             </view>
             <view class="col-right">
               <image
-                src="../../static/images/shifting-code/edit_draw.png"
+                src="https://cj.huazhe.work/images/shifting-code/edit_draw.png"
                 mode="widthFit"
                 @click="navTo(`/pages/shifting-code/edit-car?id=${item.id}`)"
               />
               <image
-                src="../../static/images/shifting-code/delete_draw.png"
+                src="https://cj.huazhe.work/images/shifting-code/delete_draw.png"
                 mode="widthFit"
                 @click="handleDelete(item.id)"
               />

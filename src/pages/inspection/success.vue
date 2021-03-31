@@ -6,7 +6,7 @@
   <u-navbar :is-back="false" :background="{ background: '#5e93ec' }" />
     <view class="banner-wrap">
       <image
-        src="../../static/images/inspection/success.png"
+        src="https://cj.huazhe.work/images/inspection/success.png"
         mode=""
       />
       <view class="tips-f">预约成功</view>
@@ -15,12 +15,12 @@
     </view>
     <view class="content-wrap">
       <image
-        src="../../static/images/inspection/btn-view.png"
+        src="https://cj.huazhe.work/images/inspection/btn-view.png"
         mode="widthFit"
         @click="handleNavTo(1)"
       />
       <image
-        src="../../static/images/inspection/btn-back.png"
+        src="https://cj.huazhe.work/images/inspection/btn-back.png"
         mode="widthFit"
         @click="handleNavTo(2)"
       />

@@ -6,7 +6,7 @@
     />
     <view class="banner">
       <image
-        src="../../static/images/shifting-code/mind-tips.png"
+        src="https://cj.huazhe.work/images/shifting-code/mind-tips.png"
         mode="widthFit"
       />
       <view class="carnum">{{carNum}}</view>
@@ -25,7 +25,7 @@
     >
       <text>免费领取挪车码</text>
       <image
-        src="../../static/images/shifting-code/right_arrow.png"
+        src="https://cj.huazhe.work/images/shifting-code/right_arrow.png"
         mode="widthFit"
       />
     </view>
@@ -114,7 +114,7 @@ export default {
 .contact-wrap {
   .banner {
     height: 458rpx;
-    background: url('../../static/images/shifting-code/contact.png');
+    background: url('https://cj.huazhe.work/images/shifting-code/contact.png');
     background-size: 100% 100%;
     position: relative;
     font-size: 60rpx;

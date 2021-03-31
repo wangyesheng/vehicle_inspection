@@ -6,7 +6,7 @@
     <view class="logo-wrap">
       <view class="header">
         <image
-          src="../../static/images/logo.png"
+          src="https://cj.huazhe.work/images/logo.png"
           mode="widthFit"
         />
         <text class="pro-desc">川B年检</text>
@@ -39,7 +39,7 @@
       </view>
       <view class="content">
         <image
-          src="../../static/images/success.png"
+          src="https://cj.huazhe.work/images/success.png"
           mode="widthFit"
           class="success-icon"
         />
@@ -152,7 +152,7 @@ export default {
     button {
       width: 600rpx;
       height: 90rpx;
-      background-image: url('../../static/images/btn_login.png');
+      background-image: url('https://cj.huazhe.work/images/btn_login.png');
       background-size: 100% 100%;
       border-radius: 45rpx;
     }

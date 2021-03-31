@@ -26,7 +26,7 @@
       >
         <view class="user-header">
           <image
-            :src="item.headpic?item.headpic:require('../../static/images/me/male.png')"
+            :src="item.headpic?item.headpic:'https://cj.huazhe.work/images/me/male.png'"
             mode="widthFit"
           />
           <text class="name">{{item.username}}</text>
@@ -60,7 +60,7 @@
     >
       <view>
         <image
-          src="../../static/images/inspection/no_appointment.png"
+          src="https://cj.huazhe.work/images/inspection/no_appointment.png"
           mode="widthFit"
         />
         <view>暂无邀请的好友~</view>
@@ -462,7 +462,7 @@ export default {
     button {
       width: 330rpx;
       height: 90rpx;
-      background-image: url('../../static/images/me/wechat.png');
+      background-image: url('https://cj.huazhe.work/images/me/wechat.png');
       background-size: 100% 100%;
       border-radius: 45rpx;
     }
@@ -475,7 +475,7 @@ export default {
     button {
       width: 690rpx;
       height: 90rpx;
-      background-image: url('../../static/images/me/wechat_large.png');
+      background-image: url('https://cj.huazhe.work/images/me/wechat_large.png');
       background-size: 100% 100%;
       border-radius: 45rpx;
     }
@@ -488,7 +488,7 @@ export default {
     button {
       width: 330rpx;
       height: 90rpx;
-      background-image: url('../../static/images/me/timeline.png');
+      background-image: url('https://cj.huazhe.work/images/me/timeline.png');
       background-size: 100% 100%;
       border-radius: 45rpx;
     }

@@ -1,7 +1,7 @@
 <style lang="scss" scoped>
 .add-car-wrap {
   height: 480rpx;
-  background: url('../../static/images/shifting-code/bg.png');
+  background: url('https://cj.huazhe.work/images/shifting-code/bg.png');
   background-size: 100% 100%;
   padding: 50rpx 30rpx;
   & /deep/ .u-form-item {
@@ -12,7 +12,7 @@
   }
   .driver-license-wrap {
     height: 300rpx;
-    background: url('../../static/images/shifting-code/scan.png');
+    background: url('https://cj.huazhe.work/images/shifting-code/scan.png');
     background-size: 100% 100%;
   }
   .photo-wrap {

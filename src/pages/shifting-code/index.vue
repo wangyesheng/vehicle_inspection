@@ -3,7 +3,7 @@
   padding: 15rpx;
   .row {
     height: 392rpx;
-    background: url('../../static/images/shifting-code/main_bg.png');
+    background: url('https://cj.huazhe.work/images/shifting-code/main_bg.png');
     background-size: 100% 100%;
     padding: 46rpx 60rpx;
     .header {
@@ -88,7 +88,7 @@
           <view class="title flex-center">
             <text>挪车码</text>
             <image
-              src="../../static/images/shifting-code/brand.png"
+              src="https://cj.huazhe.work/images/shifting-code/brand.png"
               mode="widthFit"
               class="brand"
               @click="handlePreview(layer.qr)"
@@ -101,15 +101,15 @@
               mode="widthFit"
               :src="
                 layer.status==10
-                  ? require('../../static/images/shifting-code/switch_on.png')
-                  : require('../../static/images/shifting-code/switch_off.png')
+                  ? 'https://cj.huazhe.work/images/shifting-code/switch_on.png'
+                  : 'https://cj.huazhe.work/images/shifting-code/switch_off.png'
               "
               @click="handleEnable(layer)"
             />
             <image
               class="edit"
               mode="widthFit"
-              src="../../static/images/shifting-code/edit.png"
+              src="https://cj.huazhe.work/images/shifting-code/edit.png"
               @click="handleEdit(layer.code)"
             />
           </view>

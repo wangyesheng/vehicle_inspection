@@ -8,7 +8,7 @@
       <view class="b-r">
         <view class="car-wrap">
           <image
-            src="../../static/images/inspection/car.png"
+            src="https://cj.huazhe.work/images/inspection/car.png"
             mode="widthFit"
           />
           <text class="num">{{carInfo.number}}</text>
@@ -33,21 +33,21 @@
             <u-input
               type="select"
               placeholder="请选择预约日期"
-              v-model="orderForm.date"
+              v-model="orderForm.appoint_date"
               @click="handleShowDateSelect"
             />
           </u-form-item>
-          <u-form-item label="预约时间">
+          <!-- <u-form-item label="预约时间">
             <u-input
               type="select"
               placeholder="请选择预约时间"
               v-model="orderForm.time"
               @click="handleShowTimeSelect"
             />
-          </u-form-item>
+          </u-form-item> -->
           <u-form-item label="联系人">
             <u-input
-              v-model="orderForm.mobile"
+              v-model="orderForm.linkname"
               placeholder="请填写联系人"
             />
           </u-form-item>
@@ -71,35 +71,41 @@
             </u-button>
             <u-input
               type="number"
-              v-model="orderForm.code"
+              v-model="orderForm.sms_vcode"
               placeholder="请填写验证码"
-              @blur="handleBlur"
             />
           </u-form-item>
           <u-form-item label="取车位置">
             <u-input
-              v-model="orderForm.mobile"
+              type="select"
+              v-model="orderForm.pick_address"
               placeholder="请填写取车位置"
+              @click="handleNavTo('pick')"
             />
           </u-form-item>
-          <u-form-item label="还车位置">
-            <u-button
-              slot="left"
-              size="medium"
-              :custom-style="{padding:'18rpx 20rpx'}"
-              @click="handleGetCode"
-            >
-              <text v-if="loading">{{ codeText }}</text>
-              <text v-else>一键同上</text>
-            </u-button>
+          <view class="switch-wrap">
+            <u-form-item label="还车位置与取车位置一致">
+              <u-switch
+                v-model="orderForm.isSame"
+                active-color="#5E93EC"
+                @change="handleSwitchChange"
+              ></u-switch>
+            </u-form-item>
+          </view>
+          <u-form-item
+            label="还车位置"
+            v-if="!orderForm.isSame"
+          >
             <u-input
-              v-model="orderForm.mobile"
+              type="select"
+              v-model="orderForm.return_address"
               placeholder="请填写还车位置"
+              @click="handleNavTo('return')"
             />
           </u-form-item>
         </u-form>
       </view>
-      <view class="notice-wrap">
+      <!-- <view class="notice-wrap">
         <view class="title">请准备以下资料并交给上门服务的工作人员</view>
         <view class="content">
           <view class="c-col">
@@ -117,7 +123,7 @@
             <view>车主身份证</view>
           </view>
         </view>
-      </view>
+      </view> -->
       <view class="service-charge">
         <text class="label">代办服务费</text>
         <text class="value">限时免费</text>
@@ -138,11 +144,18 @@
         <text>立即办理</text>
       </view>
     </view>
-    <u-select
+    <!-- <u-select
       v-model="appointmentDateSelect.visible"
       :list="appointmentDateSelect.dates"
       @confirm="handleDateConfirm"
-    />
+    /> -->
+    <u-picker
+      mode="time"
+      v-model="appointmentDateSelect.visible"
+      start-year="2021"
+      :show-time-tag="false"
+      @confirm="handleDateConfirm"
+    ></u-picker>
     <u-select
       v-model="appointmentTimeSelect.visible"
       :list="appointmentTimeSelect.times"
@@ -152,12 +165,7 @@
 </template>
 
 <script>
-import { getInspectionStationInfoRes, saveAppointmentRes } from '../../api';
-import {
-  currentHours,
-  currentMinutes,
-  currentFormatDate,
-} from '../../utils/time';
+import { addCarAgencyRes } from '../../api';
 import timingMixin from '../../mixins/timingMixin';
 import { debounce } from '../../utils/tool';
 
@@ -166,15 +174,16 @@ export default {
     return {
       sysHeight: 0,
       orderForm: {
-        stationName: '',
-        date: '',
-        time: '',
+        linkname: '',
         mobile: '',
-        code: '',
+        sms_vcode: '',
+        appoint_date: '',
+        pick_address: '',
+        return_address: '',
+        isSame: true,
       },
       appointmentDateSelect: {
         visible: false,
-        dates: [],
         selectedDate: '',
       },
       appointmentTimeSelect: {
@@ -188,60 +197,71 @@ export default {
 
   mixins: [timingMixin],
 
-  computed: {
-    canSubmit() {
-      return (
-        this.appointmentDateSelect.selectedDate !== '' &&
-        this.appointmentTimeSelect.selectedTime !== '' &&
-        this.orderForm.code !== ''
-      );
-    },
-  },
-
   onLoad(options) {
     this.sysHeight = this.getSysHeight();
-    this.carId = options.carId || 87;
+    this.carId = options.carId || 105;
     this.carInfo =
       uni.getStorageSync('app_user_cars').find((x) => x.id == this.carId) || {};
     this.orderForm.mobile = this.carInfo.mobile;
   },
 
+  onShow() {
+    this.orderForm = {
+      ...this.orderForm,
+      ...uni.getStorageSync('order_form_data'),
+    };
+    this.orderForm.pick_address = uni.getStorageSync('pick_address');
+    this.orderForm.return_address =
+      uni.getStorageSync('return_address') || this.orderForm.pick_address;
+    uni.setStorageSync('order_form_data', {});
+  },
+
+  computed: {
+    canSubmit() {
+      return (
+        this.orderForm.linkname !== '' &&
+        this.orderForm.mobile !== '' &&
+        this.orderForm.sms_vcode !== '' &&
+        this.orderForm.appoint_date !== '' &&
+        this.orderForm.pick_address !== '' &&
+        this.orderForm.return_address !== ''
+      );
+    },
+  },
+
   methods: {
+    handleSwitchChange(value) {
+      this.orderForm.return_address = value
+        ? this.orderForm.pick_address
+        : this.orderForm.return_address;
+    },
     handleShowDateSelect() {
       this.appointmentDateSelect.visible = true;
     },
-    handleDateConfirm(e) {},
+    handleDateConfirm(e) {
+      this.orderForm.appoint_date = `${e.year}-${e.month}-${e.day}`;
+    },
     handleShowTimeSelect() {
       this.appointmentTimeSelect.visible = true;
     },
-    handleTimeConfirm(e) {
-      this.carForm.time = e[0].label;
-      this.appointmentTimeSelect.selectedTime = e[0].value;
-    },
+    handleTimeConfirm(e) {},
     handleSubmit: debounce(
       function () {
         const submit = async () => {
           const reqData = {
-            pid: this.stationId,
+            ...this.orderForm,
             car_id: this.carId,
-            date: this.appointmentDateSelect.selectedDate,
-            rid: this.appointmentTimeSelect.selectedTime,
-            mobile: this.orderForm.mobile,
-            code: this.orderForm.code,
           };
-          const { code, data } = await saveAppointmentRes(reqData);
-          if (code === 200) {
-            const info = `预约时间 ${this.orderForm.date.substring(
-              0,
-              14
-            )} ${this.orderForm.time.substring(0, 11)}`;
-            this.navTo(
-              `/pages/inspection/success?carNum=${this.carInfo.number}&info=${info}`
-            );
+          const { code, data } = await addCarAgencyRes(reqData);
+          if (code == 200) {
+            uni.setStorageSync('agent_appointment_order', reqData);
+            uni.navigateTo({
+              url: '/pages/order/status',
+            });
           } else {
             uni.showToast({
-              icon: 'none',
               title: data,
+              icon: 'none',
             });
           }
         };
@@ -252,12 +272,17 @@ export default {
           });
           return;
         }
+        submit();
       },
       3000,
       true
     ),
     handleGetCode() {
       this.getCode(this.orderForm.mobile);
+    },
+    handleNavTo(tag) {
+      uni.setStorageSync('order_form_data', this.orderForm);
+      this.navTo(`/pages/order/address?tag=${tag}`);
     },
   },
 };
@@ -308,6 +333,13 @@ export default {
 
         input {
           text-align: right;
+        }
+      }
+
+      .switch-wrap {
+        & /deep/ .u-form-item--right__content__slot {
+          text-align: right;
+          line-height: 20rpx;
         }
       }
     }

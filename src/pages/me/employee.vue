@@ -3,7 +3,7 @@
         <u-navbar :title="companyName" title-color="#fff" back-icon-color="#fff" back-icon-name="arrow-left" :background="{ background: '#5e93ec' }" />
         <view class="polyfill content-wrap" :style="{ minHeight: sysHeight - 112 + 'px' }" v-if="employees.length">
             <view class="record-wrap" v-for="item in employees" :key="item">
-                <image :src="item.headpic?item.headpic:require('../../static/images/me/male.png')" mode="widthFit" />
+                <image :src="item.headpic?item.headpic:'https://cj.huazhe.work/images/me/male.png'" mode="widthFit" />
                 <view>
                     <view class="name">{{item.username}}</view>
                     <view class="time">邀请注册时间：{{item.register_time}}</view>
@@ -12,7 +12,7 @@
         </view>
         <view class="polyfill no-data-wrap" :style="{ minHeight: sysHeight - 112 + 'px' }" v-else>
             <view>
-                <image src="../../static/images/inspection/no_appointment.png" mode="widthFit" />
+                <image src="https://cj.huazhe.work/images/inspection/no_appointment.png" mode="widthFit" />
                 <view>暂无成员~</view>
             </view>
         </view>

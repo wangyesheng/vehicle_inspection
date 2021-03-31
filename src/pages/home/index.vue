@@ -5,7 +5,7 @@
   >
     <view class="header">
       <image
-        src="../../static/images/home/header-bg.jpg"
+        src="https://cj.huazhe.work/images/home/header-bg.jpg"
         mode="widthFit"
       />
     </view>
@@ -20,7 +20,7 @@
         >
           <image
             slot="speaker"
-            src="../../static/images/home/speaker.png"
+            src="https://cj.huazhe.work/images/home/speaker.png"
             mode="widthFit"
           />
         </u-notice-bar>
@@ -65,7 +65,7 @@
     </view>
     <!-- <view class="process-wrap">
       <image
-        src="../../static/images/home/process.png"
+        src="https://cj.huazhe.work/images/home/process.png"
         mode="widthFit"
       />
     </view> -->
@@ -74,7 +74,7 @@
       @click="handleNavTo(3)"
     >
       <image
-        src="../../static/images/home/code.png"
+        src="https://cj.huazhe.work/images/home/code.png"
         mode="widthFit"
       />
       <view class="tips">
@@ -86,7 +86,7 @@
         </view>
       </view>
       <image
-        src="../../static/images/home/arrow_right.png"
+        src="https://cj.huazhe.work/images/home/arrow_right.png"
         mode="widthFit"
       />
     </view>
@@ -101,20 +101,57 @@
         <view class="c-main">{{ processedModal.content }}</view>
         <view class="c-image">
           <image
-            src="../../static/images/home/flag.jpg"
+            src="https://cj.huazhe.work/images/home/flag.jpg"
             mode="widthFit"
           />
         </view>
       </view>
     </u-modal>
+    <u-popup
+      closeable
+      mode="bottom"
+      class="popup-wrap"
+      v-model="methodPopup.visible"
+    >
+      <view class="header">选择年检方式</view>
+      <view class="content">
+        <view
+          class="row"
+          @click="handleChooseMethod(1)"
+        >
+          <view>
+            <image
+              src="../../static/images/order/daijia.png"
+              mode="widthFit"
+            />
+          </view>
+          <view class="right">
+            <view class="top">上门代驾</view>
+            <view class="bottom">专业人员上门取还车，全程代办，安全省心</view>
+          </view>
+        </view>
+        <view
+          class="row"
+          @click="handleChooseMethod(2)"
+        >
+          <view>
+            <image
+              src="../../static/images/order/zijia.png"
+              mode="widthFit"
+            />
+          </view>
+          <view class="right">
+            <view class="top">自驾到站</view>
+            <view class="bottom">自驾前往车检站，享受专员服务，方便舒心</view>
+          </view>
+        </view>
+      </view>
+    </u-popup>
   </view>
 </template>
 
 <script>
 import EOSSwiper from '../../components/eos-swiper';
-import bannerBg from '../../static/images/home/banner_bg.png';
-import editIcon from '../../static/images/home/edit_icon.png';
-import addCarBg from '../../static/images/home/add_car_bg.png';
 
 import {
   diffMonths,
@@ -149,6 +186,7 @@ export default {
       canShowReserveTime: false,
       reserveTime: '',
       sysHeight: 0,
+      methodPopup: { visible: true },
     };
   },
 
@@ -194,7 +232,7 @@ export default {
       this.cars = [];
       if (!this.checkLogin()) {
         this.cars.push({
-          image: addCarBg,
+          image: 'https://cj.huazhe.work//images/home/add_car_bg.png',
           canAddCar: true,
           buttonFlag: -1,
         });
@@ -207,9 +245,9 @@ export default {
       this.cars = carList.map((x) => {
         let layer = {
           ...x,
-          editIcon,
+          editIcon: 'https://cj.huazhe.work//images/home/edit_icon.png',
           number: x.number.toUpperCase(),
-          image: bannerBg,
+          image: 'https://cj.huazhe.work/images/home/banner_bg.png',
         };
         const months = diffMonths(x.register_date, currentFormatDate);
         if (x.type == 1) {
@@ -280,7 +318,7 @@ export default {
       uni.setStorageSync('app_user_cars', this.cars);
       if (this.cars.length < 3) {
         this.cars.push({
-          image: addCarBg,
+          image: 'https://cj.huazhe.work//images/home/add_car_bg.png',
           canAddCar: true,
           buttonFlag: -1,
         });
@@ -305,7 +343,7 @@ export default {
           this.navTo('/pages/reservation/index');
           break;
         case 2:
-          this.navTo(`/pages/inspection/station?carId=${this.selectedCar.id}`);
+          this.methodPopup.visible = true;
           break;
         case 3:
           this.shiftingCodeCount == 0
@@ -313,6 +351,11 @@ export default {
             : this.navTo('/pages/shifting-code/index');
           break;
       }
+    },
+    handleChooseMethod(flag) {
+      flag == 1
+        ? this.navTo('/pages/order/index')
+        : this.navTo(`/pages/inspection/station?carId=${this.selectedCar.id}`);
     },
     onProcessed() {
       this.processedModal.visible = true;
@@ -340,6 +383,60 @@ export default {
 .home-container {
   background: #5e93ec;
   padding: 0 30rpx 30rpx;
+  .popup-wrap {
+    height: 500rpx;
+    & /deep/ .u-icon__icon {
+      top: 0 !important;
+    }
+    .header {
+      height: 90rpx;
+      line-height: 90rpx;
+      text-align: center;
+      box-shadow: 0 2rpx 10rpx 0 rgba(0, 0, 0, 0.1);
+      font-size: 32rpx;
+      font-weight: 500;
+      color: #333333;
+    }
+    .content {
+      padding: 50rpx 30rpx;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+
+      .row {
+        height: 180rpx;
+        width: 690rpx;
+        border: 1rpx solid #cccccc;
+        border-radius: 10rpx;
+        margin-bottom: 30rpx;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        image {
+          width: 90rpx;
+          height: 90rpx;
+        }
+
+        .right {
+          margin-left: 24rpx;
+          .top {
+            text-align: left;
+            font-size: 32rpx;
+            font-weight: bold;
+            color: #000000;
+          }
+
+          .bottom {
+            font-size: 26rpx;
+            font-weight: 400;
+            color: #999999;
+          }
+        }
+      }
+    }
+  }
   .content-wrap {
     .c-main {
       padding: 33rpx 41rpx 30rpx 37rpx;

@@ -4,9 +4,30 @@
   },
 
   "pages": [{
+      "path": "pages/reservation/index",
+      "style": {
+        "navigationBarTitleText": "我的预约单"
+      }
+    }, {
+      "path": "pages/order/index",
+      "style": {
+        "navigationBarTitleText": "年检代办订单"
+      }
+    },
+    {
+      "path": "pages/order/status",
+      "style": {
+        "navigationBarTitleText": "订单状态"
+      }
+    }, {
       "path": "pages/home/index",
       "style": {
         "navigationBarTitleText": "川B年检"
+      }
+    }, {
+      "path": "pages/order/address",
+      "style": {
+        "navigationBarTitleText": "选择位置"
       }
     }, {
       "path": "pages/shifting-code/contact",
@@ -98,7 +119,7 @@
       }
     },
     {
-      "path": "pages/car/add-form-chore",
+      "path": "pages/car/add-form",
       "style": {
         "navigationBarTitleText": "添加车辆"
       }
@@ -129,9 +150,9 @@
       }
     },
     {
-      "path": "pages/reservation/index",
+      "path": "pages/reservation/drive",
       "style": {
-        "navigationBarTitleText": "我的预约单"
+        "navigationBarTitleText": "代驾预约单"
       }
     },
     {
@@ -141,28 +162,6 @@
       }
     }
   ],
-  "subPackages": [{
-    "root": "pagesA",
-    "pages": [{
-        "path": "order/index",
-        "style": {
-          "navigationBarTitleText": "年检代办订单"
-        }
-      },
-      {
-        "path": "order/status",
-        "style": {
-          "navigationBarTitleText": "订单状态"
-        }
-      },
-      {
-        "path": "order/address",
-        "style": {
-          "navigationBarTitleText": "订单状态"
-        }
-      }
-    ]
-  }],
   "globalStyle": {
     "navigationBarTextStyle": "white",
     "navigationBarTitleText": "川B年检",

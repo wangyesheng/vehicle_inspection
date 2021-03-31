@@ -8,7 +8,7 @@
       <view class="b-r">
         <view class="car-wrap">
           <image
-            src="../../static/images/inspection/car.png"
+            src="https://cj.huazhe.work/images/inspection/car.png"
             mode="widthFit"
           />
           <text class="num">{{carInfo.number}}</text>

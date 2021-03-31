@@ -1,5 +1,12 @@
 <template>
-  <view v-if="myAppointments.length">
+  <!-- v-if="myAppointments.length" -->
+  <view>
+    <u-tabs
+      :list="[{name:'我的预约单'},{name:'我的代驾单'}]"
+      :is-scroll="false"
+      :current="current"
+      @change="onTabChange"
+    />
     <view
       class="reservation-container"
       :style="{ minHeight: `${sysHeight}px` }"
@@ -47,19 +54,19 @@
 
     </view>
   </view>
-  <view
+  <!-- <view
     v-else
     class="no-data-wrap"
     :style="{ minHeight: `${sysHeight}px` }"
   >
     <view>
       <image
-        src="../../static/images/inspection/no_appointment.png"
+        src="https://cj.huazhe.work/images/inspection/no_appointment.png"
         mode="widthFit"
       />
       <view>暂无预约订单~</view>
     </view>
-  </view>
+  </view> -->
 </template>
 
 <script>
@@ -75,6 +82,7 @@ export default {
     return {
       sysHeight: 0,
       myAppointments: [],
+      current: 0,
     };
   },
 
@@ -84,6 +92,9 @@ export default {
   },
 
   methods: {
+    onTabChange(index) {
+      this.current = index;
+    },
     async getMyAppointments() {
       uni.showLoading({
         title: '数据加载中...',

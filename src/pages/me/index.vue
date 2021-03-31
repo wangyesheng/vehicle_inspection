@@ -3,7 +3,7 @@
     <view class="banner-wrap">
       <view class="user-wrap">
         <image
-          :src="appUser.member_avatar?appUser.member_avatar:require('../../static/images/me/male.png')"
+          :src="appUser.member_avatar?appUser.member_avatar:'https://cj.huazhe.work/images/me/male.png'"
           mode="widthFit"
         />
         <view
@@ -28,7 +28,7 @@
           v-if="hasLogin&&appUser.gid!='1'"
         >
           <image
-            :src="appUser.gid=='2'?require('../../static/images/me/salesman.png'):require('../../static/images/me/employee.png')"
+            :src="appUser.gid=='2'?'https://cj.huazhe.work/images/me/salesman.png':'https://cj.huazhe.work/images/me/employee.png'"
             mode="widthFit"
           />
         </view>
@@ -43,6 +43,10 @@
         <u-cell-item
           title="我的预约单"
           @click="handleNavTo(2)"
+        ></u-cell-item>
+        <u-cell-item
+          title="代驾预约单"
+          @click="handleNavTo(3)"
         ></u-cell-item>
         <u-cell-item @click="handleContact">
           <view slot="title">
@@ -64,7 +68,7 @@
     >
       <view class="wechat-popup">
         <image
-          src="../../static/images/me/wechat.jpg"
+          src="https://cj.huazhe.work/images/me/wechat.jpg"
           mode="aspectFit"
           @click="handlePreview"
         />
@@ -116,6 +120,9 @@ export default {
           break;
         case 2:
           this.navTo('/pages/reservation/index');
+          break;
+        case 3:
+          this.navTo('/pages/reservation/drive');
           break;
       }
     },
@@ -172,7 +179,7 @@ export default {
   // }
 
   .banner-wrap {
-    background-image: url('../../static/images/me/banner.png');
+    background-image: url('https://cj.huazhe.work/images/me/banner.png');
     background-size: 100% 100%;
     height: 420rpx;
     width: 100%;

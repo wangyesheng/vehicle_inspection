@@ -11,7 +11,7 @@
         </view>
         <view class="polyfill no-data-wrap" :style="{ minHeight: sysHeight - 40 + 'px' }" v-else>
             <view>
-                <image src="../../static/images/inspection/no_appointment.png" mode="widthFit" />
+                <image src="https://cj.huazhe.work/images/inspection/no_appointment.png" mode="widthFit" />
                 <view>暂无协议单位~</view>
             </view>
         </view>

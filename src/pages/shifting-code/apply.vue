@@ -3,7 +3,7 @@
   position: relative;
   .banner {
     height: 400rpx;
-    background: url('../../static/images/shifting-code/apply_bg.png');
+    background: url('https://cj.huazhe.work/images/shifting-code/apply_bg.png');
     background-size: 100% 100%;
   }
   .introduction {
@@ -42,10 +42,10 @@
     <view class="banner"> </view>
     <view class="introduction">
       <image
-        src="../../static/images/shifting-code/permission.png"
+        src="https://cj.huazhe.work/images/shifting-code/permission.png"
         mode="widthFit"
       />
-      <image src="../../static/images/shifting-code/use.png" mode="widthFit" />
+      <image src="https://cj.huazhe.work/images/shifting-code/use.png" mode="widthFit" />
     </view>
     <view class="footer-wrap">
       <u-button

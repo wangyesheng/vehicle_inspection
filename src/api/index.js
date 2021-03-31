@@ -226,3 +226,17 @@ export const getMyCodeCountRes = (data) =>
     method: "GET",
     data,
   });
+
+export const addCarAgencyRes = (data) =>
+  request({
+    url: "/api.php?p=/car/addCarAgency",
+    method: "POST",
+    data,
+  });
+
+export const getCarAgencies = (data) =>
+  request({
+    url: "/api.php?p=/car/carAgencyList",
+    method: "GET",
+    data,
+  });

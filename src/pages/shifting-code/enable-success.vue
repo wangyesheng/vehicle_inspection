@@ -15,7 +15,7 @@
 .success-wrap {
   .banner {
     height: 480rpx;
-    background: url('../../static/images/shifting-code/success.png');
+    background: url('https://cj.huazhe.work/images/shifting-code/success.png');
     background-size: 100% 100%;
   }
   .btn-wrap {
