@@ -1,5 +1,8 @@
 <template>
-  <view class="order-form-container" :style="{ minHeight: `${sysHeight}px` }">
+  <view
+    class="order-form-container"
+    :style="{ minHeight: `${sysHeight}px` }"
+  >
     <view class="banner-wrap">
       <view class="b-l">送检车辆</view>
       <view class="b-r">
@@ -10,9 +13,7 @@
           />
           <text class="num">{{ carInfo.number }}</text>
         </view>
-        <view class="desc"
-          >小型汽车（{{ carInfo.type === "1" ? "非营运" : "营运" }}）</view
-        >
+        <view class="desc">小型汽车（{{ carInfo.type === "1" ? "非营运" : "营运" }}）</view>
       </view>
     </view>
     <view class="content-wrap">
@@ -45,14 +46,16 @@
             />
           </u-form-item> -->
           <u-form-item label="联系人">
-            <u-input v-model="orderForm.linkname" placeholder="请填写联系人" />
+            <u-input
+              v-model="orderForm.linkname"
+              placeholder="请填写联系人"
+            />
           </u-form-item>
           <u-form-item label="联系电话">
             <u-input
               type="number"
               v-model="orderForm.mobile"
               placeholder="请填写联系电话"
-              @blur="handleBlur"
             />
           </u-form-item>
           <u-form-item label="验证码">
@@ -76,7 +79,7 @@
               type="select"
               v-model="orderForm.pick_address"
               placeholder="请填写取车位置"
-              @click="handleNavTo('pick')"
+              @click="handleSearchPois('pick')"
             />
           </u-form-item>
           <view class="switch-wrap">
@@ -88,12 +91,15 @@
               ></u-switch>
             </u-form-item>
           </view>
-          <u-form-item label="还车位置" v-if="!orderForm.isSame">
+          <u-form-item
+            label="还车位置"
+            v-if="!orderForm.isSame"
+          >
             <u-input
               type="select"
               v-model="orderForm.return_address"
               placeholder="请填写还车位置"
-              @click="handleNavTo('return')"
+              @click="handleSearchPois('return')"
             />
           </u-form-item>
         </u-form>
@@ -155,37 +161,88 @@
       :list="appointmentTimeSelect.times"
       @confirm="handleTimeConfirm"
     />
+    <u-popup
+      v-model="addressPopup.visible"
+      mode="bottom"
+      class="address-popup-wrap"
+    >
+      <view class="address-wrap">
+        <view class="search-wrap">
+          <u-search
+            placeholder="输入取车地点"
+            v-model="addressPopup.keyword"
+            :show-action="false"
+            @search="handleSearch"
+          />
+        </view>
+
+        <scroll-view
+          scroll-y="true"
+          style="height: 880rpx;"
+        >
+          <view class="pois-wrap">
+            <view
+              class="row"
+              v-for="item in addressPopup.pois"
+              :key="item.id"
+              @click="onAddressSelect(item)"
+            >
+              <view>
+                <image
+                  src="../../static/images/order/position.png"
+                  mode="widthFit"
+                />
+              </view>
+              <view class="address-details">
+                <text class="title">{{ item.title }}</text>
+                <text class="address">{{ item.address }}</text>
+              </view>
+            </view>
+          </view>
+        </scroll-view>
+
+      </view>
+    </u-popup>
   </view>
 </template>
 
 <script>
-import { addCarAgencyRes } from "../../api";
-import timingMixin from "../../mixins/timingMixin";
-import { debounce } from "../../utils/tool";
+import QQMapWX from './qqmap-wx-jssdk.min.js';
+const qqmapsdk = new QQMapWX({
+  key: 'V3FBZ-XHZCF-QBMJT-JCCEG-GT4OT-BVFSP',
+});
+import { addCarAgencyRes } from '../../api';
+import timingMixin from '../../mixins/timingMixin';
+import { debounce } from '../../utils/tool';
 
 export default {
   data() {
     return {
       sysHeight: 0,
       orderForm: {
-        linkname: "",
-        mobile: "",
-        sms_vcode: "",
-        appoint_date: "",
-        pick_address: "",
-        return_address: "",
+        linkname: '',
+        mobile: '',
+        sms_vcode: '',
+        appoint_date: '',
+        pick_address: '',
+        return_address: '',
         isSame: true,
       },
       appointmentDateSelect: {
         visible: false,
-        selectedDate: "",
+        selectedDate: '',
       },
       appointmentTimeSelect: {
         visible: false,
         times: [],
-        selectedTime: "",
+        selectedTime: '',
       },
       carInfo: {},
+      addressPopup: {
+        visible: false,
+        keyword: '',
+        pois: [],
+      },
     };
   },
 
@@ -195,46 +252,94 @@ export default {
     this.sysHeight = this.getSysHeight();
     this.carId = options.carId;
     this.carInfo =
-      uni.getStorageSync("app_user_cars").find((x) => x.id == this.carId) || {};
+      uni.getStorageSync('app_user_cars').find((x) => x.id == this.carId) || {};
     this.orderForm.mobile = this.carInfo.mobile;
-    const storageOrder = uni.getStorageSync("order_form_data");
-    this.orderForm = {
-      ...this.orderForm,
-      linkname: storageOrder.linkname,
-      mobile: storageOrder.mobile,
-      appoint_date: storageOrder.appoint_date,
-      pick_address: storageOrder.pick_address,
-      return_address: storageOrder.return_address,
-      isSame: storageOrder.isSame,
-    };
-    if (storageOrder.id) {
-      if (this.orderForm.pick_address != this.orderForm.return_address) {
-        this.orderForm.isSame = false;
-      } else {
-        this.orderForm.isSame = true;
-      }
-    } else {
-      this.orderForm.pick_address = uni.getStorageSync("pick_address");
-      this.orderForm.return_address =
-        uni.getStorageSync("return_address") || this.orderForm.pick_address;
+    const storageOrder = uni.getStorageSync('order_form_data');
+    if (storageOrder && Object.keys(storageOrder).length > 0) {
+      this.orderForm = {
+        ...this.orderForm,
+        linkname: storageOrder.linkname,
+        mobile: storageOrder.mobile,
+        appoint_date: storageOrder.appoint_date,
+        pick_address: storageOrder.pick_address,
+        return_address: storageOrder.return_address,
+      };
+      uni.setStorageSync('order_form_data', {});
     }
-    uni.setStorageSync("order_form_data", {});
   },
 
   computed: {
     canSubmit() {
-      let flag = true;
-      for (let key in this.orderForm) {
-        if (key != "isSame" && this.orderForm[key] === "") {
-          flag = false;
-          break;
-        }
-      }
-      return flag;
+      console.log(this.orderForm.pick_address);
+      console.log(this.orderForm.return_address);
+      return (
+        this.orderForm.linkname &&
+        this.orderForm.mobile &&
+        this.orderForm.sms_vcode &&
+        this.orderForm.appoint_date &&
+        this.orderForm.pick_address &&
+        this.orderForm.return_address
+      );
     },
   },
 
   methods: {
+    getLocation() {
+      uni.showLoading({
+        title: '玩命加载中...',
+      });
+      this.getAuthLocation(({ latitude, longitude }) => {
+        this.latitude = latitude;
+        this.longitude = longitude;
+        qqmapsdk.reverseGeocoder({
+          location: `${latitude},${longitude}`, //获取表单传入的位置坐标,不填默认当前位置,示例为string格式
+          get_poi: 1, //是否返回周边POI列表：1.返回；0不返回(默认),非必须参数
+          coord_type: 1,
+          success: ({ result: { pois } }) => {
+            //成功后的回调
+            this.addressPopup.pois = pois;
+            uni.hideLoading();
+          },
+          fail: (error) => {
+            uni.showToast({
+              icon: 'none',
+              title: '获取失败，请重试',
+            });
+          },
+        });
+      });
+    },
+    handleSearch() {
+      uni.showLoading({
+        title: '玩命加载中...',
+      });
+      qqmapsdk.search({
+        keyword: this.addressPopup.keyword, //搜索关键词
+        location: `${this.latitude},${this.longitude}`, //设置周边搜索中心点
+        success: (res) => {
+          //搜索成功后的回调
+          this.addressPopup.pois = res.data;
+          uni.hideLoading();
+        },
+        fail: (res) => {
+          uni.showToast({
+            icon: 'none',
+            title: '获取失败，请重试',
+          });
+        },
+      });
+    },
+    onAddressSelect(value) {
+      if (this.tag == 'pick') {
+        this.orderForm.pick_address = value.title;
+        if (this.orderForm.isSame) {
+          this.orderForm.return_address = value.title;
+        }
+      } else {
+        this.orderForm.return_address = value.title;
+      }
+      this.addressPopup.visible = false;
+    },
     handleSwitchChange(value) {
       this.orderForm.return_address = value
         ? this.orderForm.pick_address
@@ -259,21 +364,21 @@ export default {
           };
           const { code, data } = await addCarAgencyRes(reqData);
           if (code == 200) {
-            uni.setStorageSync("agent_appointment_order", reqData);
+            uni.setStorageSync('agent_appointment_order', reqData);
             uni.navigateTo({
-              url: "/pages/order/status",
+              url: '/pages/order/status',
             });
           } else {
             uni.showToast({
               title: data,
-              icon: "none",
+              icon: 'none',
             });
           }
         };
         if (!this.canSubmit) {
           uni.showToast({
-            title: "请填写完信息再提交！",
-            icon: "none",
+            title: '请填写完信息再提交！',
+            icon: 'none',
           });
           return;
         }
@@ -285,17 +390,77 @@ export default {
     handleGetCode() {
       this.getCode(this.orderForm.mobile);
     },
-    handleNavTo(tag) {
-      uni.setStorageSync("order_form_data", this.orderForm);
-      this.navTo(`/pages/order/address?tag=${tag}&carId=${this.carId}`);
+    handleSearchPois(tag) {
+      this.tag = tag;
+      this.addressPopup.keyword = '';
+      this.addressPopup.visible = true;
+      this.getLocation();
     },
   },
 };
 </script>
 
 <style lang="scss" scoped>
+.address-popup-wrap {
+  .address-wrap {
+    max-height: 1000rpx;
+    background: #f5f5f5;
+    .search-wrap {
+      background: #fff;
+      width: 100%;
+      height: 120rpx;
+      line-height: 120rpx;
+      padding: 0 30rpx;
+      margin-bottom: 10rpx;
+    }
+    .pois-wrap {
+      background: #fff;
+      .row {
+        height: 136rpx;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        border-bottom: 1rpx solid #f5f5f5;
+        padding: 0 32rpx;
+        position: relative;
+
+        image {
+          width: 22rpx;
+          height: 26rpx;
+          position: absolute;
+          left: 16rpx;
+          top: 28rpx;
+        }
+
+        .address-details {
+          margin-left: 15rpx;
+          display: flex;
+          flex-direction: column;
+          .title {
+            font-size: 28rpx;
+            font-weight: 500;
+            color: #000000;
+            margin-bottom: 16rpx;
+          }
+          .address {
+            font-size: 24rpx;
+            font-weight: 400;
+            color: #999999;
+            display: -webkit-box; /** 对象作为伸缩盒子模型显示 **/
+            overflow: hidden;
+            word-break: break-all; /* break-all(允许在单词内换行。) */
+            text-overflow: ellipsis; /* 超出部分省略号 */
+            -webkit-box-orient: vertical; /** 设置或检索伸缩盒对象的子元素的排列方式 **/
+            -webkit-line-clamp: 1;
+          }
+        }
+      }
+    }
+  }
+}
 .order-form-container {
   background: #f6f6f6;
+
   .banner-wrap {
     height: 180rpx;
     background: #5e93ec;

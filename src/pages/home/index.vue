@@ -1,5 +1,8 @@
 <template>
-  <view class="home-container" :style="{ minHeight: sysHeight + 'px' }">
+  <view
+    class="home-container"
+    :style="{ minHeight: sysHeight + 'px' }"
+  >
     <view class="header">
       <image
         src="https://cj.huazhe.work/images/home/header-bg.jpg"
@@ -31,9 +34,16 @@
           @change="handleSwiperChange"
         />
       </view>
-      <view class="banner-footer" v-for="item in buttonFlags" :key="item.value">
+      <view
+        class="banner-footer"
+        v-for="item in buttonFlags"
+        :key="item.value"
+      >
         <view v-if="buttonFlag === item.value">
-          <view class="btn-disabled" v-if="item.value == 0">
+          <view
+            class="btn-disabled"
+            v-if="item.value == 0"
+          >
             {{ item.label }}
           </view>
           <u-button
@@ -46,7 +56,10 @@
           </u-button>
         </view>
       </view>
-      <view class="reserve-time" v-if="canShowReserveTime">
+      <view
+        class="reserve-time"
+        v-if="canShowReserveTime"
+      >
         已预约年检时间：{{ reserveTime }}
       </view>
     </view>
@@ -56,7 +69,10 @@
         mode="widthFit"
       />
     </view> -->
-    <view class="code-wrap flex-01" @click="handleNavTo(3)">
+    <view
+      class="code-wrap flex-01"
+      @click="handleNavTo(3)"
+    >
       <image
         src="https://cj.huazhe.work/images/home/code.png"
         mode="widthFit"
@@ -99,18 +115,30 @@
     >
       <view class="header">选择年检方式</view>
       <view class="content">
-        <view class="row" @click="handleChooseMethod(1)">
+        <view
+          class="row"
+          @click="handleChooseMethod(1)"
+        >
           <view>
-            <image src="../../static/images/order/daijia.png" mode="widthFit" />
+            <image
+              src="../../static/images/order/daijia.png"
+              mode="widthFit"
+            />
           </view>
           <view class="right">
             <view class="top">上门代驾</view>
             <view class="bottom">专业人员上门取还车，全程代办，安全省心</view>
           </view>
         </view>
-        <view class="row" @click="handleChooseMethod(2)">
+        <view
+          class="row"
+          @click="handleChooseMethod(2)"
+        >
           <view>
-            <image src="../../static/images/order/zijia.png" mode="widthFit" />
+            <image
+              src="../../static/images/order/zijia.png"
+              mode="widthFit"
+            />
           </view>
           <view class="right">
             <view class="top">自驾到站</view>
@@ -123,32 +151,32 @@
 </template>
 
 <script>
-import EOSSwiper from "../../components/eos-swiper";
+import EOSSwiper from '../../components/eos-swiper';
 
 import {
   diffMonths,
   currentFormatDate,
   getDateByDays,
   getDiffDate,
-} from "../../utils/time";
+} from '../../utils/time';
 import {
   getCarsRes,
   getNoticesRes,
   setCarDealRes,
   getMyCodeCountRes,
-} from "../../api";
-import { BUTTON_FLAGS } from "../../constant";
+} from '../../api';
+import { BUTTON_FLAGS } from '../../constant';
 
 export default {
   components: {
-    "eos-swiper": EOSSwiper,
+    'eos-swiper': EOSSwiper,
   },
 
   data() {
     return {
       processedModal: {
         visible: false,
-        content: "系统将为你更新到下次年检时间，请确认是否已办理线上年检！",
+        content: '系统将为你更新到下次年检时间，请确认是否已办理线上年检！',
       },
       notifies: [],
       cars: [],
@@ -156,7 +184,7 @@ export default {
       buttonFlags: BUTTON_FLAGS,
       selectedCar: undefined,
       canShowReserveTime: false,
-      reserveTime: "",
+      reserveTime: '',
       sysHeight: 0,
       methodPopup: { visible: false },
     };
@@ -168,12 +196,12 @@ export default {
     // 海报分享二维码
     if (options.scene) {
       const scene = decodeURIComponent(options.scene);
-      const sharerId = scene.split("=")[1];
-      uni.setStorageSync("sharer_id", sharerId);
+      const sharerId = scene.split('=')[1];
+      uni.setStorageSync('sharer_id', sharerId);
     }
     // 邀请微信好友
     if (options.sharerId) {
-      uni.setStorageSync("sharer_id", options.sharerId);
+      uni.setStorageSync('sharer_id', options.sharerId);
     }
   },
 
@@ -204,7 +232,7 @@ export default {
       this.cars = [];
       if (!this.checkLogin()) {
         this.cars.push({
-          image: "https://cj.huazhe.work//images/home/add_car_bg.png",
+          image: 'https://cj.huazhe.work//images/home/add_car_bg.png',
           canAddCar: true,
           buttonFlag: -1,
         });
@@ -217,35 +245,35 @@ export default {
       this.cars = carList.map((x) => {
         let layer = {
           ...x,
-          editIcon: "https://cj.huazhe.work//images/home/edit_icon.png",
+          editIcon: 'https://cj.huazhe.work//images/home/edit_icon.png',
           number: x.number.toUpperCase(),
-          image: "https://cj.huazhe.work/images/home/banner_bg.png",
+          image: 'https://cj.huazhe.work/images/home/banner_bg.png',
         };
         const months = diffMonths(x.register_date, currentFormatDate);
         if (x.type == 1) {
           // 非营运
           if (months < 70) {
-            layer._status = "六年免检";
+            layer._status = '六年免检';
           } else if (months >= 70 && months < 118) {
-            layer._status = "两年一检";
+            layer._status = '两年一检';
           } else if (months >= 118 && months < 178) {
-            layer._status = "一年一检";
+            layer._status = '一年一检';
           } else if (months >= 178) {
-            layer._status = "一年两检";
+            layer._status = '一年两检';
           }
         } else {
           // 营运
           if (months <= 58) {
-            layer._status = "一年一检";
+            layer._status = '一年一检';
           } else {
-            layer._status = "一年两检";
+            layer._status = '一年两检';
           }
         }
 
         switch (x.status) {
           // 未到期，不可预约
           case 0:
-            layer.prompt = "距上线年检还剩";
+            layer.prompt = '距上线年检还剩';
             layer.isOverdue = false;
             layer.buttonFlag = 0;
             break;
@@ -253,30 +281,30 @@ export default {
           case 1:
             if (layer.is_pass == 0) {
               // 未逾期
-              layer.prompt = "距年检逾期还剩";
+              layer.prompt = '距年检逾期还剩';
               layer.isOverdue = false;
             } else {
-              layer.prompt = "年检已逾期";
+              layer.prompt = '年检已逾期';
               layer.isOverdue = true;
             }
             layer.buttonFlag = 1;
             break;
           // 已办理
           case 2:
-            layer.prompt = "距上线年检还剩";
+            layer.prompt = '距上线年检还剩';
             layer.isOverdue = false;
             layer.buttonFlag = 0;
             break;
           // 可预约
           case 3:
-            layer.prompt = "距年检逾期还剩";
+            layer.prompt = '距年检逾期还剩';
             layer.isOverdue = false;
             layer.buttonFlag = 2;
             layer.appointmentDates = getDiffDate(x.start_time, x.end_time);
             break;
           // 已逾期
           case 4:
-            layer.prompt = "年检已逾期";
+            layer.prompt = '年检已逾期';
             layer.isOverdue = true;
             layer.buttonFlag = 2;
             const date = getDateByDays(30 - x.days);
@@ -287,10 +315,10 @@ export default {
         }
         return layer;
       });
-      uni.setStorageSync("app_user_cars", this.cars);
+      uni.setStorageSync('app_user_cars', this.cars);
       if (this.cars.length < 3) {
         this.cars.push({
-          image: "https://cj.huazhe.work//images/home/add_car_bg.png",
+          image: 'https://cj.huazhe.work//images/home/add_car_bg.png',
           canAddCar: true,
           buttonFlag: -1,
         });
@@ -303,24 +331,24 @@ export default {
     handleNavTo(flag) {
       if (!this.checkLogin()) {
         uni.navigateTo({
-          url: "/pages/auth/login-nav?from=1",
+          url: '/pages/auth/login-nav?from=1',
         });
         return;
       }
       switch (flag) {
         case -1:
-          this.navTo("/pages/car/add-form");
+          this.navTo('/pages/car/add-form');
           break;
         case 1:
-          this.navTo("/pages/reservation/index");
+          this.navTo('/pages/reservation/index');
           break;
         case 2:
           this.methodPopup.visible = true;
           break;
         case 3:
           this.shiftingCodeCount == 0
-            ? this.navTo("/pages/shifting-code/apply")
-            : this.navTo("/pages/shifting-code/index");
+            ? this.navTo('/pages/shifting-code/apply')
+            : this.navTo('/pages/shifting-code/index');
           break;
       }
     },
@@ -348,7 +376,7 @@ export default {
       } else {
         uni.showToast({
           title: data,
-          icon: "none",
+          icon: 'none',
         });
       }
     },

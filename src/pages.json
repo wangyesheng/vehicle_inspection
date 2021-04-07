@@ -31,11 +31,6 @@
         "navigationBarTitleText": "我的预约单"
       }
     }, {
-      "path": "pages/order/address",
-      "style": {
-        "navigationBarTitleText": "选择位置"
-      }
-    }, {
       "path": "pages/shifting-code/contact",
       "style": {
         "navigationBarTitleText": "联系车主挪车"
