@@ -1,8 +1,5 @@
 <template>
-  <view
-    class="order-form-container"
-    :style="{ minHeight: `${sysHeight}px` }"
-  >
+  <view class="order-form-container" :style="{ minHeight: `${sysHeight}px` }">
     <view class="banner-wrap">
       <view class="b-l">送检车辆</view>
       <view class="b-r">
@@ -11,9 +8,11 @@
             src="https://cj.huazhe.work/images/inspection/car.png"
             mode="widthFit"
           />
-          <text class="num">{{carInfo.number}}</text>
+          <text class="num">{{ carInfo.number }}</text>
         </view>
-        <view class="desc">小型汽车（{{carInfo.type==='1'?'非营运':'营运'}}）</view>
+        <view class="desc"
+          >小型汽车（{{ carInfo.type === "1" ? "非营运" : "营运" }}）</view
+        >
       </view>
     </view>
     <view class="content-wrap">
@@ -46,10 +45,7 @@
             />
           </u-form-item> -->
           <u-form-item label="联系人">
-            <u-input
-              v-model="orderForm.linkname"
-              placeholder="请填写联系人"
-            />
+            <u-input v-model="orderForm.linkname" placeholder="请填写联系人" />
           </u-form-item>
           <u-form-item label="联系电话">
             <u-input
@@ -63,7 +59,7 @@
             <u-button
               slot="left"
               size="medium"
-              :custom-style="{padding:'18rpx 20rpx'}"
+              :custom-style="{ padding: '18rpx 20rpx' }"
               @click="handleGetCode"
             >
               <text v-if="loading">{{ codeText }}</text>
@@ -92,10 +88,7 @@
               ></u-switch>
             </u-form-item>
           </view>
-          <u-form-item
-            label="还车位置"
-            v-if="!orderForm.isSame"
-          >
+          <u-form-item label="还车位置" v-if="!orderForm.isSame">
             <u-input
               type="select"
               v-model="orderForm.return_address"
@@ -129,7 +122,8 @@
         <text class="value">限时免费</text>
       </view>
       <view class="tips">
-        订单费用仅包含代驾费用及代检费用，不包含检测站检测工本费。 检测工本费由代办人验车后根据发票收取。
+        订单费用仅包含代驾费用及代检费用，不包含检测站检测工本费。
+        检测工本费由代办人验车后根据发票收取。
       </view>
     </view>
     <view class="footer-wrap">
@@ -138,7 +132,7 @@
       </view>
       <view
         class="right"
-        :style="{background:canSubmit?'#fb635f':'#ccc'}"
+        :style="{ background: canSubmit ? '#fb635f' : '#ccc' }"
         @click="handleSubmit"
       >
         <text>立即办理</text>
@@ -165,31 +159,31 @@
 </template>
 
 <script>
-import { addCarAgencyRes } from '../../api';
-import timingMixin from '../../mixins/timingMixin';
-import { debounce } from '../../utils/tool';
+import { addCarAgencyRes } from "../../api";
+import timingMixin from "../../mixins/timingMixin";
+import { debounce } from "../../utils/tool";
 
 export default {
   data() {
     return {
       sysHeight: 0,
       orderForm: {
-        linkname: '',
-        mobile: '',
-        sms_vcode: '',
-        appoint_date: '',
-        pick_address: '',
-        return_address: '',
+        linkname: "",
+        mobile: "",
+        sms_vcode: "",
+        appoint_date: "",
+        pick_address: "",
+        return_address: "",
         isSame: true,
       },
       appointmentDateSelect: {
         visible: false,
-        selectedDate: '',
+        selectedDate: "",
       },
       appointmentTimeSelect: {
         visible: false,
         times: [],
-        selectedTime: '',
+        selectedTime: "",
       },
       carInfo: {},
     };
@@ -201,15 +195,20 @@ export default {
     this.sysHeight = this.getSysHeight();
     this.carId = options.carId || 105;
     this.carInfo =
-      uni.getStorageSync('app_user_cars').find((x) => x.id == this.carId) || {};
+      uni.getStorageSync("app_user_cars").find((x) => x.id == this.carId) || {};
     this.orderForm.mobile = this.carInfo.mobile;
   },
 
   onShow() {
-    const storageOrder = uni.getStorageSync('order_form_data');
+    const storageOrder = uni.getStorageSync("order_form_data");
     this.orderForm = {
       ...this.orderForm,
-      ...storageOrder,
+      linkname: storageOrder.linkname,
+      mobile: storageOrder.mobile,
+      appoint_date: storageOrder.appoint_date,
+      pick_address: storageOrder.pick_address,
+      return_address: storageOrder.return_address,
+      isSame: storageOrder.isSame,
     };
     if (storageOrder.id) {
       if (this.orderForm.pick_address != this.orderForm.return_address) {
@@ -218,22 +217,22 @@ export default {
         this.orderForm.isSame = true;
       }
     } else {
-      this.orderForm.pick_address = uni.getStorageSync('pick_address');
+      this.orderForm.pick_address = uni.getStorageSync("pick_address");
       this.orderForm.return_address =
-        uni.getStorageSync('return_address') || this.orderForm.pick_address;
+        uni.getStorageSync("return_address") || this.orderForm.pick_address;
     }
-    uni.setStorageSync('order_form_data', {});
+    uni.setStorageSync("order_form_data", {});
   },
 
   computed: {
     canSubmit() {
       return (
-        this.orderForm.linkname !== '' &&
-        this.orderForm.mobile !== '' &&
-        this.orderForm.sms_vcode !== '' &&
-        this.orderForm.appoint_date !== '' &&
-        this.orderForm.pick_address !== '' &&
-        this.orderForm.return_address !== ''
+        this.orderForm.linkname !== "" &&
+        this.orderForm.mobile !== "" &&
+        this.orderForm.sms_vcode !== "" &&
+        this.orderForm.appoint_date !== "" &&
+        this.orderForm.pick_address !== "" &&
+        this.orderForm.return_address !== ""
       );
     },
   },
@@ -263,21 +262,21 @@ export default {
           };
           const { code, data } = await addCarAgencyRes(reqData);
           if (code == 200) {
-            uni.setStorageSync('agent_appointment_order', reqData);
+            uni.setStorageSync("agent_appointment_order", reqData);
             uni.navigateTo({
-              url: '/pages/order/status',
+              url: "/pages/order/status",
             });
           } else {
             uni.showToast({
               title: data,
-              icon: 'none',
+              icon: "none",
             });
           }
         };
         if (!this.canSubmit) {
           uni.showToast({
-            title: '请填写完信息再提交！',
-            icon: 'none',
+            title: "请填写完信息再提交！",
+            icon: "none",
           });
           return;
         }
@@ -290,7 +289,7 @@ export default {
       this.getCode(this.orderForm.mobile);
     },
     handleNavTo(tag) {
-      uni.setStorageSync('order_form_data', this.orderForm);
+      uni.setStorageSync("order_form_data", this.orderForm);
       this.navTo(`/pages/order/address?tag=${tag}`);
     },
   },
