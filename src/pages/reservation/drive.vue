@@ -134,7 +134,7 @@ export default {
     handleNavTo(target) {
       if (target.status == 1) {
         uni.setStorageSync('order_form_data', target);
-        this.navTo('/pages/order/index');
+        this.navTo(`/pages/order/index?carId=${target.car_id}`);
       }
     },
   },

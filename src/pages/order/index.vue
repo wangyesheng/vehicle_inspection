@@ -192,14 +192,12 @@ export default {
   mixins: [timingMixin],
 
   onLoad(options) {
+    console.log("options", options);
     this.sysHeight = this.getSysHeight();
-    this.carId = options.carId || 105;
+    this.carId = options.carId;
     this.carInfo =
       uni.getStorageSync("app_user_cars").find((x) => x.id == this.carId) || {};
     this.orderForm.mobile = this.carInfo.mobile;
-  },
-
-  onShow() {
     const storageOrder = uni.getStorageSync("order_form_data");
     this.orderForm = {
       ...this.orderForm,
@@ -290,7 +288,7 @@ export default {
     },
     handleNavTo(tag) {
       uni.setStorageSync("order_form_data", this.orderForm);
-      this.navTo(`/pages/order/address?tag=${tag}`);
+      this.navTo(`/pages/order/address?tag=${tag}&carId=${this.carId}`);
     },
   },
 };

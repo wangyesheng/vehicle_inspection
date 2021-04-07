@@ -64,7 +64,7 @@
         @search="handleSearch"
       />
     </view>
-    {{errMsg}}
+    {{ errMsg }}
     <view class="pois-wrap">
       <view
         class="row"
@@ -73,14 +73,11 @@
         @click="onAddressSelect(item)"
       >
         <view>
-          <image
-            src="../../static/images/order/position.png"
-            mode="widthFit"
-          />
+          <image src="../../static/images/order/position.png" mode="widthFit" />
         </view>
         <view class="address-details">
-          <text class="title">{{item.title}}</text>
-          <text class="address">{{item.address}}</text>
+          <text class="title">{{ item.title }}</text>
+          <text class="address">{{ item.address }}</text>
         </view>
       </view>
     </view>
@@ -88,22 +85,23 @@
 </template>
 
 <script>
-import QQMapWX from './qqmap-wx-jssdk.min.js';
+import QQMapWX from "./qqmap-wx-jssdk.min.js";
 const qqmapsdk = new QQMapWX({
-  key: 'V3FBZ-XHZCF-QBMJT-JCCEG-GT4OT-BVFSP',
+  key: "V3FBZ-XHZCF-QBMJT-JCCEG-GT4OT-BVFSP",
 });
 
 export default {
   data() {
     return {
-      keyword: '',
+      keyword: "",
       pois: [],
-      errMsg: '',
+      errMsg: "",
     };
   },
 
   onLoad(ops) {
     this.tag = ops.tag;
+    this.carId = ops.carId;
     this.getLocation();
   },
 
@@ -122,10 +120,10 @@ export default {
           },
           fail: (error) => {
             this.errMsg = JSON.stringify(error);
-            console.log('qqmapsdk', error);
+            console.log("qqmapsdk", error);
             uni.showToast({
-              icon: 'none',
-              title: '获取失败，请重试',
+              icon: "none",
+              title: "获取失败，请重试",
             });
           },
         });
@@ -141,8 +139,8 @@ export default {
         },
         fail: (res) => {
           uni.showToast({
-            icon: 'none',
-            title: '获取失败，请重试',
+            icon: "none",
+            title: "获取失败，请重试",
           });
         },
       });
@@ -150,7 +148,7 @@ export default {
     onAddressSelect(value) {
       uni.setStorageSync(`${this.tag}_address`, value.title);
       uni.navigateTo({
-        url: '/pages/order/index',
+        url: `/pages/order/index?carId=${this.carId}`,
       });
     },
   },
