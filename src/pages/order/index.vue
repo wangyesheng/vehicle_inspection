@@ -192,7 +192,6 @@ export default {
   mixins: [timingMixin],
 
   onLoad(options) {
-    console.log("options", options);
     this.sysHeight = this.getSysHeight();
     this.carId = options.carId;
     this.carInfo =
@@ -224,14 +223,14 @@ export default {
 
   computed: {
     canSubmit() {
-      return (
-        this.orderForm.linkname !== "" &&
-        this.orderForm.mobile !== "" &&
-        this.orderForm.sms_vcode !== "" &&
-        this.orderForm.appoint_date !== "" &&
-        this.orderForm.pick_address !== "" &&
-        this.orderForm.return_address !== ""
-      );
+      let flag = true;
+      for (let key in this.orderForm) {
+        if (key != "isSame" && this.orderForm[key] === "") {
+          flag = false;
+          break;
+        }
+      }
+      return flag;
     },
   },
 
