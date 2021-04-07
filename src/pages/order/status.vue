@@ -35,12 +35,13 @@
         </view>
       </view>
       <view class="position mt30">
-        <view class="p-pos">取车位置</view>
-        <view class="p-detail">{{order.pick_address}}</view>
+        <text>取车位置：</text>
+        <!-- <view class="p-pos">取车位置</view> -->
+        <text>{{order.pick_address}}</text>
       </view>
       <view class="position mt30">
-        <view class="p-pos">取车位置</view>
-        <view class="p-detail">{{order.return_address}}</view>
+        <text>还车位置：</text>
+        <text>{{order.return_address}}</text>
       </view>
 
       <view class="station-wrap mt30">
@@ -67,8 +68,11 @@
       </view>
     </view>
     <view class="footer-wrap">
-      <u-button>取消订单</u-button>
-      <u-button type="warning">查看预约单</u-button>
+      <u-button
+        type="warning"
+        shape="circle"
+        @click="navTo('/pages/reservation/drive')"
+      >查看预约单</u-button>
     </view>
   </view>
 </template>
@@ -97,23 +101,20 @@ export default {
 
   methods: {
     getStations() {
-      uni.getLocation({
-        type: 'wgs84',
-        success: async (res) => {
-          const {
-            code,
-            data: { carList },
-          } = await getInspectionStationsRes({
-            lng: res.longitude,
-            lat: res.latitude,
-          });
-          if (code === 200) {
-            this.stations = carList.map((x) => ({
-              ...x,
-              _img: `https://cj.huazhe.work/${x.img}`,
-            }));
-          }
-        },
+      this.getAuthLocation(async (res) => {
+        const {
+          code,
+          data: { carList },
+        } = await getInspectionStationsRes({
+          lng: res.longitude,
+          lat: res.latitude,
+        });
+        if (code === 200) {
+          this.stations = carList.map((x) => ({
+            ...x,
+            _img: `https://cj.huazhe.work/${x.img}`,
+          }));
+        }
       });
     },
   },
@@ -232,29 +233,19 @@ export default {
     .position {
       width: 690rpx;
       height: 100rpx;
+      line-height: 100rpx;
       background: #ffffff;
       border-radius: 12rpx;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
       padding: 0 36rpx;
       font-size: 28rpx;
       font-weight: 400;
       color: #666666;
-
-      .p-pos {
-        width: 120rpx;
-      }
-
-      .p-detail {
-        width: 320rpx;
-        display: -webkit-box; /** 对象作为伸缩盒子模型显示 **/
-        overflow: hidden;
-        word-break: break-all; /* break-all(允许在单词内换行。) */
-        text-overflow: ellipsis; /* 超出部分省略号 */
-        -webkit-box-orient: vertical; /** 设置或检索伸缩盒对象的子元素的排列方式 **/
-        -webkit-line-clamp: 1;
-      }
+      display: -webkit-box; /** 对象作为伸缩盒子模型显示 **/
+      overflow: hidden;
+      word-break: break-all; /* break-all(允许在单词内换行。) */
+      text-overflow: ellipsis; /* 超出部分省略号 */
+      -webkit-box-orient: vertical; /** 设置或检索伸缩盒对象的子元素的排列方式 **/
+      -webkit-line-clamp: 1;
     }
   }
   .footer-wrap {
@@ -265,12 +256,6 @@ export default {
     position: fixed;
     bottom: 0;
     left: 0;
-    display: flex;
-    justify-content: space-between;
-
-    & /deep/ .u-size-default {
-      width: 320rpx !important;
-    }
   }
 }
 </style>

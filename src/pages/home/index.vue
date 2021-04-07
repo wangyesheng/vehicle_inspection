@@ -186,7 +186,7 @@ export default {
       canShowReserveTime: false,
       reserveTime: '',
       sysHeight: 0,
-      methodPopup: { visible: true },
+      methodPopup: { visible: false },
     };
   },
 
@@ -337,7 +337,7 @@ export default {
       }
       switch (flag) {
         case -1:
-          this.navTo('/pages/car/add-form-chore');
+          this.navTo('/pages/car/add-form');
           break;
         case 1:
           this.navTo('/pages/reservation/index');

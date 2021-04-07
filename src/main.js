@@ -4,6 +4,7 @@ import App from "./App";
 
 import { getAppUser } from "./utils/auth";
 import { formatTime } from "./utils/time";
+import { getLocation } from "./utils/location";
 import onShareAppMessageMixin from "./mixins/onShareAppMessageMixin";
 
 /**
@@ -40,6 +41,8 @@ Vue.prototype.navTo = function(url) {
 Vue.prototype.getSysHeight = function() {
   return uni.getSystemInfoSync().windowHeight;
 };
+
+Vue.prototype.getAuthLocation = getLocation;
 
 Vue.config.productionTip = false;
 

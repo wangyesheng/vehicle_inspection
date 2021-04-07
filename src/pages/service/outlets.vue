@@ -42,23 +42,20 @@ export default {
 
   methods: {
     getStations() {
-      uni.getLocation({
-        type: 'wgs84',
-        success: async (res) => {
-          const {
-            code,
-            data: { carList },
-          } = await getInspectionStationsRes({
-            lng: res.longitude,
-            lat: res.latitude,
-          });
-          if (code === 200) {
-            this.stations = carList.map((x) => ({
-              ...x,
-              _img: `https://cj.huazhe.work/${x.img}`,
-            }));
-          }
-        },
+      this.getAuthLocation(async (res) => {
+        const {
+          code,
+          data: { carList },
+        } = await getInspectionStationsRes({
+          lng: res.longitude,
+          lat: res.latitude,
+        });
+        if (code === 200) {
+          this.stations = carList.map((x) => ({
+            ...x,
+            _img: `https://cj.huazhe.work/${x.img}`,
+          }));
+        }
       });
     },
     handleOpenApp(item) {

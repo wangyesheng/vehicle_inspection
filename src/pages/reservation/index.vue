@@ -1,12 +1,6 @@
 <template>
-  <!-- v-if="myAppointments.length" -->
-  <view>
-    <u-tabs
-      :list="[{name:'我的预约单'},{name:'我的代驾单'}]"
-      :is-scroll="false"
-      :current="current"
-      @change="onTabChange"
-    />
+  <!--  -->
+  <view v-if="myAppointments.length">
     <view
       class="reservation-container"
       :style="{ minHeight: `${sysHeight}px` }"
@@ -51,10 +45,9 @@
           >{{item.status==='0'?'取消预约':'删除记录'}}</text>
         </view>
       </view>
-
     </view>
   </view>
-  <!-- <view
+  <view
     v-else
     class="no-data-wrap"
     :style="{ minHeight: `${sysHeight}px` }"
@@ -66,7 +59,7 @@
       />
       <view>暂无预约订单~</view>
     </view>
-  </view> -->
+  </view>
 </template>
 
 <script>

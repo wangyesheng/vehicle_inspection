@@ -64,6 +64,7 @@
         @search="handleSearch"
       />
     </view>
+    {{errMsg}}
     <view class="pois-wrap">
       <view
         class="row"
@@ -89,7 +90,7 @@
 <script>
 import QQMapWX from './qqmap-wx-jssdk.min.js';
 const qqmapsdk = new QQMapWX({
-  key: 'ZLDBZ-FFHK6-7BUSZ-EUH5U-WU72Z-WAFIR',
+  key: 'V3FBZ-XHZCF-QBMJT-JCCEG-GT4OT-BVFSP',
 });
 
 export default {
@@ -97,6 +98,7 @@ export default {
     return {
       keyword: '',
       pois: [],
+      errMsg: '',
     };
   },
 
@@ -107,34 +109,26 @@ export default {
 
   methods: {
     getLocation() {
-      uni.getLocation({
-        success: ({ latitude, longitude }) => {
-          this.latitude = latitude;
-          this.longitude = longitude;
-          qqmapsdk.reverseGeocoder({
-            location: `${latitude},${longitude}`, //获取表单传入的位置坐标,不填默认当前位置,示例为string格式
-            get_poi: 1, //是否返回周边POI列表：1.返回；0不返回(默认),非必须参数
-            coord_type: 1,
-            success: ({ result: { pois } }) => {
-              //成功后的回调
-              this.pois = pois;
-            },
-            fail: (error) => {
-              console.log('qqmapsdk', error);
-              uni.showToast({
-                icon: 'none',
-                title: '获取失败，请重试',
-              });
-            },
-          });
-        },
-        fail: (err) => {
-          console.log('getLocation', err);
-          uni.showToast({
-            icon: 'none',
-            title: '获取失败，请重试',
-          });
-        },
+      this.getAuthLocation(({ latitude, longitude }) => {
+        this.latitude = latitude;
+        this.longitude = longitude;
+        qqmapsdk.reverseGeocoder({
+          location: `${latitude},${longitude}`, //获取表单传入的位置坐标,不填默认当前位置,示例为string格式
+          get_poi: 1, //是否返回周边POI列表：1.返回；0不返回(默认),非必须参数
+          coord_type: 1,
+          success: ({ result: { pois } }) => {
+            //成功后的回调
+            this.pois = pois;
+          },
+          fail: (error) => {
+            this.errMsg = JSON.stringify(error);
+            console.log('qqmapsdk', error);
+            uni.showToast({
+              icon: 'none',
+              title: '获取失败，请重试',
+            });
+          },
+        });
       });
     },
     handleSearch() {

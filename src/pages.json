@@ -4,14 +4,9 @@
   },
 
   "pages": [{
-      "path": "pages/reservation/index",
+      "path": "pages/home/index",
       "style": {
-        "navigationBarTitleText": "我的预约单"
-      }
-    }, {
-      "path": "pages/order/index",
-      "style": {
-        "navigationBarTitleText": "年检代办订单"
+        "navigationBarTitleText": "川B年检"
       }
     },
     {
@@ -19,10 +14,21 @@
       "style": {
         "navigationBarTitleText": "订单状态"
       }
-    }, {
-      "path": "pages/home/index",
+    },
+    {
+      "path": "pages/reservation/drive",
       "style": {
-        "navigationBarTitleText": "川B年检"
+        "navigationBarTitleText": "代驾预约单"
+      }
+    }, {
+      "path": "pages/order/index",
+      "style": {
+        "navigationBarTitleText": "年检代办订单"
+      }
+    }, {
+      "path": "pages/reservation/index",
+      "style": {
+        "navigationBarTitleText": "我的预约单"
       }
     }, {
       "path": "pages/order/address",
@@ -147,12 +153,6 @@
       "style": {
         "navigationStyle": "custom",
         "navigationBarTextStyle": "white"
-      }
-    },
-    {
-      "path": "pages/reservation/drive",
-      "style": {
-        "navigationBarTitleText": "代驾预约单"
       }
     },
     {

@@ -1,7 +1,14 @@
 <template>
   <view class="inspection-containner">
-    <view class="station-wrap" v-for="item in stations" :key="item">
-      <image :src="item._img" mode="widthFit" />
+    <view
+      class="station-wrap"
+      v-for="item in stations"
+      :key="item"
+    >
+      <image
+        :src="item._img"
+        mode="widthFit"
+      />
       <view class="station-info">
         <view class="name">{{ item.name }}</view>
         <view class="address">
@@ -21,7 +28,7 @@
 </template>
 
 <script>
-import { getInspectionStationsRes } from "../../api";
+import { getInspectionStationsRes } from '../../api';
 export default {
   data() {
     return {
@@ -36,23 +43,20 @@ export default {
 
   methods: {
     getStations() {
-      uni.getLocation({
-        type: "wgs84",
-        success: async (res) => {
-          const {
-            code,
-            data: { carList },
-          } = await getInspectionStationsRes({
-            lng: res.longitude,
-            lat: res.latitude,
-          });
-          if (code === 200) {
-            this.stations = carList.map((x) => ({
-              ...x,
-              _img: `https://cj.huazhe.work/${x.img}`,
-            }));
-          }
-        },
+      this.getAuthLocation(async (res) => {
+        const {
+          code,
+          data: { carList },
+        } = await getInspectionStationsRes({
+          lng: res.longitude,
+          lat: res.latitude,
+        });
+        if (code === 200) {
+          this.stations = carList.map((x) => ({
+            ...x,
+            _img: `https://cj.huazhe.work/${x.img}`,
+          }));
+        }
       });
     },
     handleSubmit(id, name) {

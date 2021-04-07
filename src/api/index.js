@@ -240,3 +240,10 @@ export const getCarAgencies = (data) =>
     method: "GET",
     data,
   });
+
+export const cancelCarAgency = (data) =>
+  request({
+    url: "/api.php?p=/car/cancelCarAgency",
+    method: "GET",
+    data,
+  });

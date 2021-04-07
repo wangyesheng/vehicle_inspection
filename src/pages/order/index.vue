@@ -206,13 +206,22 @@ export default {
   },
 
   onShow() {
+    const storageOrder = uni.getStorageSync('order_form_data');
     this.orderForm = {
       ...this.orderForm,
-      ...uni.getStorageSync('order_form_data'),
+      ...storageOrder,
     };
-    this.orderForm.pick_address = uni.getStorageSync('pick_address');
-    this.orderForm.return_address =
-      uni.getStorageSync('return_address') || this.orderForm.pick_address;
+    if (storageOrder.id) {
+      if (this.orderForm.pick_address != this.orderForm.return_address) {
+        this.orderForm.isSame = false;
+      } else {
+        this.orderForm.isSame = true;
+      }
+    } else {
+      this.orderForm.pick_address = uni.getStorageSync('pick_address');
+      this.orderForm.return_address =
+        uni.getStorageSync('return_address') || this.orderForm.pick_address;
+    }
     uni.setStorageSync('order_form_data', {});
   },
 
