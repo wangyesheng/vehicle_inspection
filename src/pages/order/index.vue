@@ -102,6 +102,14 @@
               @click="handleSearchPois('return')"
             />
           </u-form-item>
+          <u-form-item label="监测站">
+            <u-input
+              type="select"
+              v-model="selectedStationLabel"
+              placeholder="请选择监测站"
+              @click="handleShowStationSelect"
+            />
+          </u-form-item>
         </u-form>
       </view>
       <!-- <view class="notice-wrap">
@@ -134,7 +142,7 @@
     </view>
     <view class="footer-wrap">
       <view class="left">
-        <text>合计：¥0.00</text>
+        <text>合计：¥ 0.00</text>
       </view>
       <view
         class="right"
@@ -160,6 +168,11 @@
       v-model="appointmentTimeSelect.visible"
       :list="appointmentTimeSelect.times"
       @confirm="handleTimeConfirm"
+    />
+    <u-select
+      v-model="stationSelect.visible"
+      :list="stationSelect.source"
+      @confirm="handleStationConfirm"
     />
     <u-popup
       v-model="addressPopup.visible"
@@ -211,7 +224,7 @@ import QQMapWX from './qqmap-wx-jssdk.min.js';
 const qqmapsdk = new QQMapWX({
   key: 'V3FBZ-XHZCF-QBMJT-JCCEG-GT4OT-BVFSP',
 });
-import { addCarAgencyRes } from '../../api';
+import { addCarAgencyRes, getInspectionStationsRes } from '../../api';
 import timingMixin from '../../mixins/timingMixin';
 import { debounce } from '../../utils/tool';
 
@@ -219,7 +232,9 @@ export default {
   data() {
     return {
       sysHeight: 0,
+      selectedStationLabel: '',
       orderForm: {
+        pid: '',
         linkname: '',
         mobile: '',
         sms_vcode: '',
@@ -236,6 +251,10 @@ export default {
         visible: false,
         times: [],
         selectedTime: '',
+      },
+      stationSelect: {
+        visible: false,
+        source: [],
       },
       carInfo: {},
       addressPopup: {
@@ -266,12 +285,11 @@ export default {
       };
       uni.setStorageSync('order_form_data', {});
     }
+    this.getStations();
   },
 
   computed: {
     canSubmit() {
-      console.log(this.orderForm.pick_address);
-      console.log(this.orderForm.return_address);
       return (
         this.orderForm.linkname &&
         this.orderForm.mobile &&
@@ -284,6 +302,30 @@ export default {
   },
 
   methods: {
+    handleShowStationSelect() {
+      this.stationSelect.visible = true;
+    },
+    handleStationConfirm(e) {
+      this.selectedStationLabel = e[0].label;
+      this.orderForm.pid = e[0].value;
+    },
+    getStations() {
+      this.getAuthLocation(async (res) => {
+        const {
+          code,
+          data: { carList },
+        } = await getInspectionStationsRes({
+          lng: res.longitude,
+          lat: res.latitude,
+        });
+        if (code === 200) {
+          this.stationSelect.source = carList.map((x) => ({
+            label: x.name,
+            value: x.id,
+          }));
+        }
+      });
+    },
     getLocation() {
       uni.showLoading({
         title: '玩命加载中...',
@@ -362,6 +404,7 @@ export default {
             ...this.orderForm,
             car_id: this.carId,
           };
+          delete reqData.isSame;
           const { code, data } = await addCarAgencyRes(reqData);
           if (code == 200) {
             uni.setStorageSync('agent_appointment_order', reqData);
@@ -429,7 +472,7 @@ export default {
           height: 26rpx;
           position: absolute;
           left: 16rpx;
-          top: 28rpx;
+          top: 30rpx;
         }
 
         .address-details {
@@ -589,6 +632,7 @@ export default {
     line-height: 100rpx;
     background: #fff;
     border-top: 1rpx solid #f2f2f2;
+    box-shadow: 0px -2px 10px rgba(0, 0, 0, 0.1);
     display: flex;
     .left {
       width: 60%;
