@@ -80,7 +80,7 @@ export function getCarsRes(data) {
   });
 }
 
-export function getInspectionStationsRes(data) {
+export function getStationsRes(data) {
   return request({
     url: "/api.php?p=/Pigsar/getPigsarList",
     method: "GET",

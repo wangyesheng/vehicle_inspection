@@ -74,6 +74,14 @@
               placeholder="请填写验证码"
             />
           </u-form-item>
+          <u-form-item label="监测站">
+            <u-input
+              type="select"
+              v-model="selectedStationLabel"
+              placeholder="请选择监测站"
+              @click="handleShowStationSelect"
+            />
+          </u-form-item>
           <u-form-item label="取车位置">
             <u-input
               type="select"
@@ -100,14 +108,6 @@
               v-model="orderForm.return_address"
               placeholder="请填写还车位置"
               @click="handleSearchPois('return')"
-            />
-          </u-form-item>
-          <u-form-item label="监测站">
-            <u-input
-              type="select"
-              v-model="selectedStationLabel"
-              placeholder="请选择监测站"
-              @click="handleShowStationSelect"
             />
           </u-form-item>
         </u-form>
@@ -224,7 +224,7 @@ import QQMapWX from './qqmap-wx-jssdk.min.js';
 const qqmapsdk = new QQMapWX({
   key: 'V3FBZ-XHZCF-QBMJT-JCCEG-GT4OT-BVFSP',
 });
-import { addCarAgencyRes, getInspectionStationsRes } from '../../api';
+import { addCarAgencyRes, getStationsRes } from '../../api';
 import timingMixin from '../../mixins/timingMixin';
 import { debounce } from '../../utils/tool';
 
@@ -314,7 +314,7 @@ export default {
         const {
           code,
           data: { carList },
-        } = await getInspectionStationsRes({
+        } = await getStationsRes({
           lng: res.longitude,
           lat: res.latitude,
         });

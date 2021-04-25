@@ -28,7 +28,7 @@
 </template>
 
 <script>
-import { getInspectionStationsRes } from '../../api';
+import { getStationsRes } from '../../api';
 export default {
   data() {
     return {
@@ -46,7 +46,7 @@ export default {
         const {
           code,
           data: { carList },
-        } = await getInspectionStationsRes({
+        } = await getStationsRes({
           lng: res.longitude,
           lat: res.latitude,
         });
