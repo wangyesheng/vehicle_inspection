@@ -186,7 +186,7 @@ export default {
       canShowReserveTime: false,
       reserveTime: '',
       sysHeight: 0,
-      methodPopup: { visible: true },
+      methodPopup: { visible: false },
     };
   },
 

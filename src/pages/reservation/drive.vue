@@ -51,9 +51,9 @@
       </view>
       <view class="bottom-wrap">
         <view
-          :class="['primary-color',item._canCancelClassname]"
+          :class="['primary-color']"
           @click="handleCancel(item)"
-        >取消代办</view>
+        >{{item.status==0?'取消代办':'删除代办'}}</view>
         <view
           :class="['primary-color',item._canNavToClassname]"
           @click="handleNavTo(item)"
@@ -77,11 +77,7 @@
 </template>
 
 <script>
-import {
-  getCarAgencies,
-  cancelCarAgency,
-  deleteAppointmentRes,
-} from '../../api';
+import { getCarAgencies, cancelCarAgency, deleteCarAgency } from '../../api';
 export default {
   data() {
     return {
@@ -104,32 +100,31 @@ export default {
       this.agencies = carAgencyList.map((x) => ({
         ...x,
         _carNum: this.cars.find((y) => x.car_id == y.id).number,
-        _canCancelClassname: x.status == 1 ? 'gray' : '',
         _canNavToClassname: x.status == 1 ? '' : 'gray',
       }));
     },
     handleCancel(target) {
-      if (target.status == 0) {
-        uni.showModal({
-          title: '提示',
-          content: `确定要取消代办吗？`,
-          success: async (res) => {
-            if (res.confirm) {
-              const { code, data } = await cancelCarAgency({
-                id: target.id,
+      uni.showModal({
+        title: '提示',
+        content: `确定要${target.status == 0 ? '取消' : '删除'}代办吗？`,
+        success: async (res) => {
+          if (res.confirm) {
+            const { code, data } =
+              target.status == 0
+                ? await cancelCarAgency({ id: target.id })
+                : await deleteCarAgency({ id: target.id });
+
+            if (code == 200) {
+              this.getCarAgencies();
+            } else {
+              uni.showToast({
+                title: data,
+                icon: 'none',
               });
-              if (code == 200) {
-                this.getCarAgencies();
-              } else {
-                uni.showToast({
-                  title: data,
-                  icon: 'none',
-                });
-              }
             }
-          },
-        });
-      }
+          }
+        },
+      });
     },
     handleNavTo(target) {
       if (target.status == 1) {

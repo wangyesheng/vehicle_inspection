@@ -247,3 +247,10 @@ export const cancelCarAgency = (data) =>
     method: "GET",
     data,
   });
+
+export const deleteCarAgency = (data) =>
+  request({
+    url: "/api.php?p=/car/delAgency",
+    method: "GET",
+    data,
+  });
