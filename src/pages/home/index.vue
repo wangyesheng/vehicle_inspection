@@ -69,6 +69,22 @@
         mode="widthFit"
       />
     </view> -->
+    <view class="method-wrap">
+      <view
+        class="common agent"
+        @click="handleToProcess(1)"
+      >
+        <text class="deep">年检代办流程</text>
+        <text class="shallow">点击查看</text>
+      </view>
+      <view
+        class="common self"
+        @click="handleToProcess(2)"
+      >
+        <text class="deep">自驾办理流程</text>
+        <text class="shallow">点击查看</text>
+      </view>
+    </view>
     <view
       class="code-wrap flex-01"
       @click="handleNavTo(3)"
@@ -186,7 +202,9 @@ export default {
       canShowReserveTime: false,
       reserveTime: '',
       sysHeight: 0,
-      methodPopup: { visible: false },
+      methodPopup: {
+        visible: false,
+      },
     };
   },
 
@@ -210,6 +228,11 @@ export default {
   },
 
   methods: {
+    handleToProcess(flag) {
+      flag == 1
+        ? this.navTo('/pages/home/agent')
+        : this.navTo('/pages/home/self');
+    },
     async getMyCodeCount() {
       if (!this.checkLogin()) {
         return;
@@ -337,7 +360,7 @@ export default {
       }
       switch (flag) {
         case -1:
-          this.navTo('/pages/car/add-form');
+          this.navTo('/pages/car/add-form-chore');
           break;
         case 1:
           this.navTo('/pages/reservation/index');
@@ -388,11 +411,47 @@ export default {
 .home-container {
   background: #5e93ec;
   padding: 0 30rpx 30rpx;
+
+  .method-wrap {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 30rpx;
+    .common {
+      width: 330rpx;
+      height: 120rpx;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding-left: 30rpx;
+      .deep {
+        font-size: 28rpx;
+        font-weight: 500;
+        color: #000000;
+      }
+
+      .shallow {
+        font-size: 24rpx;
+        font-weight: 400;
+        color: #666666;
+      }
+    }
+
+    .agent {
+      background: url('../../static/images/home/agent.png');
+    }
+
+    .self {
+      background: url('../../static/images/home/self.png');
+    }
+  }
+
   .popup-wrap {
     height: 500rpx;
+
     & /deep/ .u-icon__icon {
       top: 0 !important;
     }
+
     .header {
       height: 90rpx;
       line-height: 90rpx;
@@ -402,6 +461,7 @@ export default {
       font-weight: 500;
       color: #333333;
     }
+
     .content {
       padding: 50rpx 30rpx;
       display: flex;
@@ -426,6 +486,7 @@ export default {
 
         .right {
           margin-left: 24rpx;
+
           .top {
             text-align: left;
             font-size: 32rpx;
@@ -442,6 +503,7 @@ export default {
       }
     }
   }
+
   .content-wrap {
     .c-main {
       padding: 33rpx 41rpx 30rpx 37rpx;
@@ -449,9 +511,11 @@ export default {
       font-weight: 400;
       color: #000;
     }
+
     .c-image {
       margin-bottom: 40rpx;
       text-align: center;
+
       image {
         width: 228rpx;
         height: 240rpx;
@@ -459,6 +523,7 @@ export default {
       }
     }
   }
+
   .banner-wrap {
     width: 690rpx;
     height: 600rpx;
@@ -467,6 +532,7 @@ export default {
     border-radius: 8rpx;
     margin-bottom: 30rpx;
     padding: 32rpx 0;
+
     .reserve-time {
       text-align: center;
       font-size: 24rpx;
@@ -474,9 +540,11 @@ export default {
       color: #666666;
       padding: 10rpx 0;
     }
+
     .banner-top {
       padding: 0 28rpx;
       margin-bottom: 20rpx;
+
       image {
         width: 32rpx;
         height: 29rpx;
@@ -494,6 +562,7 @@ export default {
 
     .banner-footer {
       padding: 0 28rpx;
+
       .btn-disabled {
         height: 90rpx;
         background: #e6e6e6;
@@ -507,23 +576,27 @@ export default {
       }
     }
   }
+
   .header {
     image {
       width: 100%;
       height: 260rpx;
     }
   }
+
   .process-wrap {
     image {
       width: 100%;
       height: 1540rpx;
     }
   }
+
   .code-wrap {
     height: 200rpx;
     background: #ffffff;
     box-shadow: 0 0 20rpx 0 rgba(94, 147, 236, 0.2);
     border-radius: 8rpx;
+
     image:first-child {
       width: 100rpx;
       height: 100rpx;
@@ -536,10 +609,12 @@ export default {
         color: #333333;
         margin-bottom: 10rpx;
       }
+
       view:last-child {
         font-size: 26rpx;
         font-weight: 400;
         color: #666666;
+
         text {
           margin-right: 20rpx;
         }

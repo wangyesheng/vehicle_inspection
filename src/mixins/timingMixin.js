@@ -21,7 +21,7 @@ export default {
       }, 1000);
     },
     async getCode(mobile, enhancer) {
-      if (mobile.length === 11) {
+      if (/^1[3-9][0-9]{9}$/.test(mobile)) {
         if (this.loading) return;
         if (enhancer) this.hasGet = false;
         this.loading = true;

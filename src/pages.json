@@ -8,6 +8,16 @@
       "style": {
         "navigationBarTitleText": "川B年检"
       }
+    }, {
+      "path": "pages/home/self",
+      "style": {
+        "navigationBarTitleText": "自驾办理流程"
+      }
+    }, {
+      "path": "pages/home/agent",
+      "style": {
+        "navigationBarTitleText": "年检代办流程"
+      }
     },
     {
       "path": "pages/order/status",
@@ -120,13 +130,13 @@
       }
     },
     {
-      "path": "pages/car/add-form",
+      "path": "pages/car/add-form-chore",
       "style": {
         "navigationBarTitleText": "添加车辆"
       }
     },
     {
-      "path": "pages/car/edit-form",
+      "path": "pages/car/edit-form-chore",
       "style": {
         "navigationBarTitleText": "编辑车辆"
       }

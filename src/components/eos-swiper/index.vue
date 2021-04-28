@@ -282,7 +282,7 @@ export default {
       // #endif
     },
     handleNavTo(id) {
-      this.navTo(`/pages/car/edit-form?id=${id}`);
+      this.navTo(`/pages/car/edit-form-chore?id=${id}`);
     },
     handleProcessed() {
       this.$emit('on-processed');
