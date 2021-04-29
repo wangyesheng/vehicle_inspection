@@ -69,22 +69,6 @@
         mode="widthFit"
       />
     </view> -->
-    <view class="method-wrap">
-      <view
-        class="common agent"
-        @click="handleToProcess(1)"
-      >
-        <text class="deep">年检代办流程</text>
-        <text class="shallow">点击查看</text>
-      </view>
-      <view
-        class="common self"
-        @click="handleToProcess(2)"
-      >
-        <text class="deep">自驾办理流程</text>
-        <text class="shallow">点击查看</text>
-      </view>
-    </view>
     <view
       class="code-wrap flex-01"
       @click="handleNavTo(3)"
@@ -105,6 +89,22 @@
         src="https://cj.huazhe.work/images/home/arrow_right.png"
         mode="widthFit"
       />
+    </view>
+    <view class="method-wrap">
+      <view
+        class="common agent"
+        @click="handleToProcess(1)"
+      >
+        <text class="deep">年检代办流程</text>
+        <text class="shallow">点击查看</text>
+      </view>
+      <view
+        class="common self"
+        @click="handleToProcess(2)"
+      >
+        <text class="deep">自驾办理流程</text>
+        <text class="shallow">点击查看</text>
+      </view>
     </view>
     <u-modal
       title="温馨提示"
@@ -415,10 +415,11 @@ export default {
   .method-wrap {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 30rpx;
+    margin-top: 30rpx;
     .common {
       width: 330rpx;
       height: 120rpx;
+      background-size: 100% 100%;
       display: flex;
       flex-direction: column;
       justify-content: center;
@@ -437,11 +438,11 @@ export default {
     }
 
     .agent {
-      background: url('../../static/images/home/agent.png');
+      background: url('../../static/images/home/agent.png') no-repeat;
     }
 
     .self {
-      background: url('../../static/images/home/self.png');
+      background: url('../../static/images/home/self.png') no-repeat;
     }
   }
 
