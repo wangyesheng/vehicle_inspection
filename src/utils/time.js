@@ -1,13 +1,27 @@
 const weekdays = [
-  "星期日",
-  "星期一",
-  "星期二",
-  "星期三",
-  "星期四",
-  "星期五",
-  "星期六",
+  '星期日',
+  '星期一',
+  '星期二',
+  '星期三',
+  '星期四',
+  '星期五',
+  '星期六',
 ];
-const holidays = ["2021-01-01"];
+const holidays = [
+  '2021-06-12',
+  '2021-06-13',
+  '2021-06-14',
+  '2021-09-19',
+  '2021-09-20',
+  '2021-09-21',
+  '2021-10-01',
+  '2021-10-02',
+  '2021-10-03',
+  '2021-10-04',
+  '2021-10-05',
+  '2021-10-06',
+  '2021-10-07',
+];
 
 const currentDate = new Date();
 export const currentYear = currentDate.getFullYear();
@@ -35,17 +49,17 @@ export function getDateInterval(
     }
     years.push({
       value: _year,
-      label: _year + "",
+      label: _year + '',
     });
     if (i > 0) {
       days.push({
         value: i,
-        label: zeroPadding(i) || i + "",
+        label: zeroPadding(i) || i + '',
       });
       if (i < 13) {
         months.push({
           value: i,
-          label: zeroPadding(i) || i + "",
+          label: zeroPadding(i) || i + '',
         });
       }
       if (i === month) {
@@ -58,7 +72,7 @@ export function getDateInterval(
   }
   days.push({
     value: 31,
-    label: "31",
+    label: '31',
   });
   return {
     years,
@@ -105,18 +119,18 @@ export function diffDays(startDate, endDate) {
  * @param {*} endDate  2020-09-01
  */
 export function diffMonths(startDate, endDate) {
-  startDate = startDate.split("-");
+  startDate = startDate.split('-');
   startDate = parseInt(startDate[0]) * 12 + parseInt(startDate[1]);
-  endDate = endDate.split("-");
+  endDate = endDate.split('-');
   endDate = parseInt(endDate[0]) * 12 + parseInt(endDate[1]);
   return Math.abs(startDate - endDate);
 }
 
 function getDate(dateStr) {
-  var temp = dateStr.split("-");
-  if (temp[1] === "01") {
+  var temp = dateStr.split('-');
+  if (temp[1] === '01') {
     temp[0] = parseInt(temp[0], 10) - 1;
-    temp[1] = "12";
+    temp[1] = '12';
   } else {
     temp[1] = parseInt(temp[1], 10) - 1;
   }
@@ -152,13 +166,16 @@ export function getDiffDate(start, end) {
     }
 
     function walk() {
-      month = month < 9 ? "0" + (month + 1) : month + 1;
-      day = day < 10 ? "0" + day : day;
-      var date = year + "-" + month + "-" + day;
+      month = month < 9 ? '0' + (month + 1) : month + 1;
+      day = day < 10 ? '0' + day : day;
+      var date = year + '-' + month + '-' + day;
       var transformDate = new Date(Date.parse(date));
       var weekday = weekdays[transformDate.getDay()];
-      if (weekday !== "星期日" && !holidays.includes(date)) {
-        dates.push({ value: date, label: date + " " + weekday });
+      if (
+        date == '2021-09-26' ||
+        (weekday !== '星期日' && !holidays.includes(date))
+      ) {
+        dates.push({ value: date, label: date + ' ' + weekday });
       }
     }
 
