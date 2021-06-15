@@ -611,7 +611,7 @@ export default {
 	justify-content: space-between;
 	align-items: center;
 	box-sizing: border-box;
-	font-size: 30rpx;
+	font-size: 36rpx;
 	background: #fff;
 	position: relative;
 }
@@ -642,13 +642,13 @@ export default {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	font-size: 32rpx;
+	font-size: 38rpx;
 	color: $u-main-color;
 	padding: 0 8rpx;
 }
 
 .u-text {
-	font-size: 24rpx;
+	font-size: 38rpx;
 	padding-left: 8rpx;
 }
 

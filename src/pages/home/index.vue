@@ -5,7 +5,7 @@
   >
     <view class="header">
       <image
-        src="https://cj.huazhe.work/images/home/header-bg.jpg"
+        :src="headerBg"
         mode="widthFit"
       />
     </view>
@@ -206,6 +206,17 @@ export default {
         visible: false,
       },
     };
+  },
+
+  computed: {
+    headerBg() {
+      const timestampFormatter = this.$u.timeFormat(
+        new Date().getTime(),
+        'yyyy-mm-dd'
+      );
+      console.log(timestampFormatter);
+      return `https://cj.huazhe.work/images/home/header-bg.jpg?timestamp=${timestampFormatter}`;
+    },
   },
 
   onLoad(options) {

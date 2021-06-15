@@ -160,8 +160,7 @@ export default {
       posterHeight: '1017rpx',
       ready: false,
       showMask: false,
-      imageUrl:
-        'https://cj.huazhe.work/template/default/images/20201205170756.png',
+      imageUrl: `https://cj.huazhe.work/images/code.png?timespan=${new Date().getTime()}`,
       // 存本地缓存图片
       bgImage: '',
       // 最后生成的海报缓存图片

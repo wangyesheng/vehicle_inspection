@@ -27,9 +27,11 @@ export default {
           uni.login({
             provider: "weixin",
             success: ({ code }) => {
+              console.log("code", code);
               uni.getUserInfo({
                 provider: "weixin",
                 success: async ({ rawData, encryptedData }) => {
+                  console.log("rawData, encryptedData", rawData, encryptedData);
                   const sharerId = uni.getStorageSync("sharer_id") || "";
                   const { data } = await loginRes({
                     code,
@@ -37,6 +39,7 @@ export default {
                     jmData: encryptedData,
                     sharerId,
                   });
+                  console.log("data", data);
                   if (data.state === "200") {
                     uni.setStorageSync("app_user", JSON.stringify(data));
                     this.mobilePopup.visible = true;

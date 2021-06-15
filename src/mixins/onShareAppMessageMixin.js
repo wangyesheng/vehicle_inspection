@@ -8,7 +8,7 @@ export default {
     return {
       path,
       title: "汽车年审，还可以更快更简单",
-      imageUrl: "https://fanr.oss-cn-shanghai.aliyuncs.com/data/11.png",
+      imageUrl: `https://cj.huazhe.work/images/huodong.png?timespan=${new Date().getTime()}`,
     };
   },
 };
