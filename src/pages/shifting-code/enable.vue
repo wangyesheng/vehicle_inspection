@@ -302,6 +302,7 @@ import {
   getCarsRes,
   bindCodeCarRes,
   deleteCarRes,
+  bindInviterRes,
 } from '../../api';
 import { debounce } from '../../utils/tool';
 
@@ -325,9 +326,10 @@ export default {
     };
   },
 
-  async onLoad() {
-    this.codeId = uni.getStorageSync('shifting_code_id') || 74;
+  async onLoad(ops) {
+    this.codeId = uni.getStorageSync('shifting_code_id');
     this.mobileForm.data.mobile = this.getAppUser().member_mobile;
+    this.inviter_id = ops.inviter_id;
     await this.getCars();
   },
 
@@ -372,7 +374,23 @@ export default {
           };
           const { code, data } = await bindCodeCarRes(reqData);
           if (code == 200) {
-            this.navTo('/pages/shifting-code/enable-success');
+            if (this.inviter_id) {
+              // 绑定推广员
+              const { _code, _data } = await bindInviterRes({
+                inviter_id: this.inviter_id,
+              });
+              if (_code == 200) {
+                this.navTo('/pages/shifting-code/enable-success');
+              } else {
+                uni.showToast({
+                  icon: 'none',
+                  title: _data,
+                });
+              }
+            } else {
+              // 推广员自己绑定挪车码
+              this.navTo('/pages/shifting-code/enable-success');
+            }
           } else {
             uni.showToast({
               icon: 'none',

@@ -29,13 +29,19 @@
         mode="widthFit"
       />
     </view>
+    <EOSBackhome />
   </view>
 </template>
 
 <script>
 import { getCodeInfoRes, getVirtualMobileRes } from '../../api';
+import EOSBackhome from '../../components/eos-backbome';
 
 export default {
+  components: {
+    EOSBackhome,
+  },
+
   data() {
     return {
       carNum: '',
@@ -61,6 +67,7 @@ export default {
         title: '正在识别中...',
       });
       const appUser = this.getAppUser();
+      console.log('appUser', appUser);
       if (!appUser.member_mobile) {
         this.navTo('/pages/auth/login-nav?from=3');
       }
@@ -70,12 +77,24 @@ export default {
       console.log('--------------getCodeInfoRes', data);
       if (_code == 200) {
         const {
-          codeInfo: { uid, id, car_id, number },
+          codeInfo: { uid, id, car_id, number, member_id },
         } = data;
         this.carNum = number;
         uni.setStorageSync('shifting_code_id', id);
         if (car_id == 0) {
-          this.navTo('/pages/shifting-code/enable');
+          if (appUser.gid == 5) {
+            // 推广员
+            if (member_id == null || member_id == 0) {
+              this.navTo(`/pages/shifting-code/promoter?codeId=${id}`);
+            } else {
+              uni.showToast({
+                title: '该二维码已绑定过推广员...',
+                icon: 'none',
+              });
+            }
+          } else {
+            this.navTo(`/pages/shifting-code/enable?inviter_id=${member_id}`);
+          }
         } else if (car_id != 0 && uid == appUser.member_id) {
           this.navTo('/pages/shifting-code/index');
         } else if (car_id != 0 && uid != appUser.member_id) {
@@ -84,7 +103,6 @@ export default {
             to_id: uid,
             code,
           });
-          console.log('--------------getVirtualMobileRes', code, data);
           if (__code == 200) {
             this.virtualMobile = data.xMobile;
             this.maskVisible = false;
@@ -112,6 +130,7 @@ export default {
 
 <style lang="scss" scoped>
 .contact-wrap {
+  position: relative;
   .banner {
     height: 458rpx;
     background: url('https://cj.huazhe.work/images/shifting-code/contact.png');

@@ -254,3 +254,17 @@ export const deleteCarAgency = (data) =>
     method: "GET",
     data,
   });
+
+export const bindInviterCodeRes = (data) =>
+  request({
+    url: "/api.php?p=/code/bindInviterCode",
+    method: "GET",
+    data,
+  });
+
+export const bindInviterRes = (data) =>
+  request({
+    url: "/api.php?p=/code/bindInviter",
+    method: "GET",
+    data,
+  });

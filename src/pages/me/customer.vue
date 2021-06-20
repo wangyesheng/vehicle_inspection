@@ -43,6 +43,16 @@
             <text class="red">{{carItem.days}}</text>
             <text>天</text>
           </view>
+          <view
+            class="call"
+            @click="handleCall"
+            v-if="carItem.status==1 && carItem.is_pass==0 && carItem.days<=30 "
+          >
+            <image
+              src="../../static/images/phone.png"
+              mode="widthFit"
+            />
+          </view>
         </view>
         <view
           class="car-wrap"
@@ -185,6 +195,7 @@ export default {
   },
 
   methods: {
+    handleCall() {},
     async getMyCustomers(pageIndex) {
       const {
         data: { offlineList },
@@ -396,7 +407,17 @@ export default {
   }
   .content-wrap {
     .record-wrap {
+      position: relative;
       padding: 35rpx 30rpx;
+      .call {
+        position: absolute;
+        top: 40rpx;
+        right: 60rpx;
+        image {
+          width: 46rpx;
+          height: 46rpx;
+        }
+      }
       &:not(:last-child) {
         border-bottom: 1rpx solid #f2f2f2;
       }

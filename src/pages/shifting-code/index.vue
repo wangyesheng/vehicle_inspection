@@ -1,6 +1,10 @@
 <style lang="scss" scoped>
 .code-wrap {
+  position: relative;
   padding: 15rpx;
+  & /deep/ .backhome {
+    bottom: 200rpx;
+  }
   .row {
     height: 392rpx;
     background: url('https://cj.huazhe.work/images/shifting-code/main_bg.png');
@@ -133,13 +137,19 @@
         @click="navTo('/pages/service/outlets')"
       >免费领取挪车码</u-button>
     </view>
+    <EOSBackhome />
   </view>
 </template>
 
 <script>
 import { getMyCodesRes, updateCodeStateRes } from '../../api';
+import EOSBackhome from '../../components/eos-backbome';
 
 export default {
+  components: {
+    EOSBackhome,
+  },
+
   data() {
     return {
       codes: [],
