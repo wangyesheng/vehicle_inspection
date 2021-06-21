@@ -70,30 +70,18 @@ export default {
     handleSubmit() {
       uni.showModal({
         title: '提示',
-        content: '确定要推广此二维码吗？',
+        content: '确定要绑定该推广二维码吗？',
         success: async (res) => {
           if (res.confirm) {
-            const { code, data } = await bindInviterCodeRes({
+            const { data } = await bindInviterCodeRes({
               code_id: this.codeId,
             });
-            if (code == 200) {
-              uni.showToast({
-                title: data,
-                icon: 'none',
-              });
-            } else {
-              uni.showToast({
-                title: data,
-                icon: 'none',
-              });
-            }
+            uni.showToast({
+              title: data,
+              icon: 'none',
+            });
           }
         },
-      });
-    },
-    handleClick() {
-      uni.switchTab({
-        url: '/pages/home/index',
       });
     },
   },

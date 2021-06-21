@@ -42,16 +42,16 @@
             <text class="car-prompt">{{carItem.prompt }}</text>
             <text class="red">{{carItem.days}}</text>
             <text>天</text>
-          </view>
-          <view
-            class="call"
-            @click="handleCall"
-            v-if="carItem.status==1 && carItem.is_pass==0 && carItem.days<=30 "
-          >
-            <image
-              src="../../static/images/phone.png"
-              mode="widthFit"
-            />
+            <view
+              class="call"
+              v-if="carItem.status==1 && carItem.is_pass==0 && carItem.days<=30 "
+              @click="handleCall(carItem.member_id, carItem.mobile)"
+            >
+              <image
+                src="../../static/images/phone.png"
+                mode="widthFit"
+              />
+            </view>
           </view>
         </view>
         <view
@@ -130,7 +130,11 @@
 </template>
 
 <script>
-import { getMyCustomersRes, getMyCompaniesRes } from '../../api';
+import {
+  getMyCustomersRes,
+  getMyCompaniesRes,
+  callVirtualMobileRes,
+} from '../../api';
 
 import {
   loadImage,
@@ -195,7 +199,21 @@ export default {
   },
 
   methods: {
-    handleCall() {},
+    async handleCall(to_id, mobile) {
+      const {
+        code,
+        data: { xMobile },
+      } = await callVirtualMobileRes({
+        to_id,
+        mobile,
+      });
+      if (code == 200) {
+        uni.makePhoneCall({
+          phoneNumber: xMobile,
+          success: () => {},
+        });
+      }
+    },
     async getMyCustomers(pageIndex) {
       const {
         data: { offlineList },
@@ -411,11 +429,11 @@ export default {
       padding: 35rpx 30rpx;
       .call {
         position: absolute;
-        top: 40rpx;
+        top: 38rpx;
         right: 60rpx;
         image {
-          width: 46rpx;
-          height: 46rpx;
+          width: 42rpx;
+          height: 42rpx;
         }
       }
       &:not(:last-child) {

@@ -376,9 +376,11 @@ export default {
           if (code == 200) {
             if (this.inviter_id) {
               // 绑定推广员
-              const { _code, _data } = await bindInviterRes({
+              const bindRes = await bindInviterRes({
                 inviter_id: this.inviter_id,
               });
+              console.log('bindRes', bindRes);
+              const { _code, _data } = bindRes;
               if (_code == 200) {
                 this.navTo('/pages/shifting-code/enable-success');
               } else {

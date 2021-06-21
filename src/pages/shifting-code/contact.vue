@@ -63,6 +63,8 @@ export default {
 
   methods: {
     async getCodeInfo(code) {
+      // this.navTo(`/pages/shifting-code/promoter?codeId=178`);
+      // return;
       uni.showLoading({
         title: '正在识别中...',
       });
@@ -74,7 +76,7 @@ export default {
       const { code: _code, data } = await getCodeInfoRes({
         code,
       });
-      console.log('--------------getCodeInfoRes', data);
+      console.log('getCodeInfoRes', data);
       if (_code == 200) {
         const {
           codeInfo: { uid, id, car_id, number, member_id },

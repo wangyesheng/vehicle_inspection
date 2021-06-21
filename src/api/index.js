@@ -268,3 +268,10 @@ export const bindInviterRes = (data) =>
     method: "GET",
     data,
   });
+
+export const callVirtualMobileRes = (data) =>
+  request({
+    url: "/api.php?p=/Code/callVirtualMobile",
+    method: "GET",
+    data,
+  });
