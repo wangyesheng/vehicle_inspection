@@ -191,7 +191,7 @@ export function getDiffDate(start, end) {
 export function getDateByDays(days) {
   var date1 = new Date();
   var date2 = new Date(date1);
-  date2.setDate(date1.getDate() + days);q
+  date2.setDate(date1.getDate() + days);
   var year = date2.getFullYear();
   var month = zeroPadding(date2.getMonth() + 1);
   var day = zeroPadding(date2.getDate());
