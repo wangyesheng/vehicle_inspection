@@ -1,4 +1,7 @@
-import { loginRes, autoBindMobileRes } from "../api";
+import {
+  loginRes,
+  autoBindMobileRes
+} from "../api";
 
 export default {
   data() {
@@ -16,68 +19,81 @@ export default {
      * 登录逻辑
      * @param {*} from 1 → 首页，2 → 个人主页，3 -> 挪车码
      */
-    login(from) {
+    async login(from) {
       uni.showLoading({
         title: "授权登录中...",
         mask: true,
       });
-      uni.getProvider({
-        service: "oauth",
-        success: (_) => {
-          uni.login({
+      try {
+        const [{
+          rawData,
+          encryptedData
+        }, code] = await Promise.all([new Promise((resolve, reject) => {
+          uni.getUserProfile({
             provider: "weixin",
-            success: ({ code }) => {
-              console.log("code", code);
-              uni.getUserInfo({
-                provider: "weixin",
-                success: async ({ rawData, encryptedData }) => {
-                  console.log("rawData, encryptedData", rawData, encryptedData);
-                  const sharerId = uni.getStorageSync("sharer_id") || "";
-                  const { data } = await loginRes({
-                    code,
-                    userinfo: rawData,
-                    jmData: encryptedData,
-                    sharerId,
-                  });
-                  console.log("data", data);
-                  if (data.state === "200") {
-                    uni.setStorageSync("app_user", JSON.stringify(data));
-                    this.mobilePopup.visible = true;
-                    this.mobilePopup.wxCode = code;
-                    this.mobilePopup.session_key = data.session_key;
-                    this.mobilePopup.from = from;
-                  } else {
-                    uni.showToast({
-                      title: "微信登录授权失败",
-                      icon: "none",
-                    });
-                  }
-                  uni.hideLoading();
-                },
-                fail: () => {
-                  uni.showToast({
-                    title: "微信登录授权失败",
-                    icon: "none",
-                  });
-                },
-              });
+            desc: '获取用户信息！',
+            success: (response) => {
+              resolve(response)
             },
-            fail: () => {
-              uni.showToast({
-                title: "微信登录授权失败",
-                icon: "none",
-              });
+            fail: (err) => {
+              reject(err)
             },
           });
-        },
-      });
+        }), new Promise((resolve, reject) => {
+          uni.login({
+            provider: "weixin",
+            success: ({
+              code
+            }) => {
+              resolve(code)
+            },
+            fail: (err) => {
+              reject(err)
+            },
+          });
+        })])
+        const {
+          data
+        } = await loginRes({
+          code,
+          userinfo: rawData,
+          jmData: encryptedData,
+          sharerId: uni.getStorageSync("sharer_id") || "",
+        });
+        console.log("debugger::response_login", data);
+        if (data.state === "200") {
+          uni.setStorageSync("app_user", JSON.stringify(data));
+          this.mobilePopup.visible = true;
+          this.mobilePopup.wxCode = code;
+          this.mobilePopup.session_key = data.session_key;
+          this.mobilePopup.from = from;
+        } else {
+          uni.showToast({
+            title: "微信登录授权失败",
+            icon: "none",
+          });
+        }
+      } catch (error) {
+        console.log('debugger::error_login', error)
+        uni.showToast({
+          title: "微信登录授权失败",
+          icon: "none",
+        });
+      }
+      uni.hideLoading();
     },
     async handleGetPhoneNumber(e) {
       const {
-        detail: { encryptedData, iv },
+        detail: {
+          encryptedData,
+          iv
+        },
       } = e;
       if (encryptedData && iv) {
-        const { code, data } = await autoBindMobileRes({
+        const {
+          code,
+          data
+        } = await autoBindMobileRes({
           code: this.mobilePopup.wxCode,
           phonedata: encryptedData,
           phonedataiv: iv,
