@@ -214,7 +214,6 @@ export default {
         new Date().getTime(),
         'yyyy-mm-dd'
       );
-      console.log(timestampFormatter);
       return `https://cj.huazhe.work/images/home/header-bg.jpg?timestamp=${timestampFormatter}`;
     },
   },
@@ -224,6 +223,7 @@ export default {
     this.shiftingCodeCount = 0;
     // 海报分享二维码
     if (options.scene) {
+      console.log('=========',options.scene)
       const scene = decodeURIComponent(options.scene);
       const sharerId = scene.split('=')[1];
       uni.setStorageSync('sharer_id', sharerId);

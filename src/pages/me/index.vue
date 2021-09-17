@@ -3,32 +3,31 @@
     <view class="banner-wrap">
       <view class="user-wrap">
         <image
-          :src="appUser.member_avatar?appUser.member_avatar:'https://cj.huazhe.work/images/me/male.png'"
+          :src="
+            appUser.member_avatar
+              ? appUser.member_avatar
+              : 'https://cj.huazhe.work/images/me/male.png'
+          "
           mode="widthFit"
         />
-        <view
-          class="username"
-          v-if="appUser.token"
-        >
-          <text>{{appUser.member_name}}</text>
+        <view class="username" v-if="appUser.token">
+          <text>{{ appUser.member_name }}</text>
         </view>
-        <view
-          class="login-tips"
-          v-else
-        >
-          <button
-            class="btn-text"
-            @click="handleLogin"
-          >
+        <view class="login-tips" v-else>
+          <button class="btn-text" @click="handleLogin">
             点击登录
           </button>
         </view>
-        <view
-          class="role-wrap"
-          v-if="hasLogin&&appUser.gid!='1'"
-        >
+        <view class="role-wrap" v-if="hasLogin && appUser.gid != '1'">
           <image
-            :src="appUser.gid=='2'?'https://cj.huazhe.work/images/me/salesman.png':'https://cj.huazhe.work/images/me/employee.png'"
+            :src="
+              appUser.gid == '9'
+                ? 'https://cj.huazhe.work/static/images/tpy.png'
+                : appUser.gid == '2'
+                ? 'https://cj.huazhe.work/images/me/salesman.png'
+                : 'https://cj.huazhe.work/images/me/employee.png'
+            "
+            :class="appUser.gid == '9' ? 'tpy' : ''"
             mode="widthFit"
           />
         </view>
@@ -37,21 +36,15 @@
     <view class="me-content">
       <u-cell-group>
         <u-cell-item
-          :title="!hasLogin?'推荐好友免费预约':'我的客户'"
+          :title="!hasLogin ? '推荐好友免费预约' : '我的客户'"
           @click="handleNavTo(1)"
-        ></u-cell-item>
-        <u-cell-item
-          title="我的预约单"
-          @click="handleNavTo(2)"
-        ></u-cell-item>
-        <u-cell-item
-          title="代驾预约单"
-          @click="handleNavTo(3)"
-        ></u-cell-item>
+        />
+        <u-cell-item title="我的预约单" @click="handleNavTo(2)" />
+        <u-cell-item title="代驾预约单" @click="handleNavTo(3)" />
         <u-cell-item @click="handleContact">
           <view slot="title">
             <text>联系客服</text>
-            <text class="contact-time">（服务时间 {{customer_times}}）</text>
+            <text class="contact-time">（服务时间 {{ customer_times }}）</text>
           </view>
         </u-cell-item>
         <!-- <u-cell-item
@@ -61,11 +54,7 @@
       </u-cell-group>
       <view class="copyright">本服务由川B年检提供</view>
     </view>
-    <u-popup
-      v-model="wechatPopupVisible"
-      mode="center"
-      border-radius="5"
-    >
+    <u-popup v-model="wechatPopupVisible" mode="center" border-radius="5">
       <view class="wechat-popup">
         <image
           src="https://cj.huazhe.work/images/me/wechat.jpg"
@@ -143,7 +132,7 @@ export default {
       if (start <= currentHours && currentHours <= end) {
         uni.makePhoneCall({
           phoneNumber: this.customer_phone,
-          success: (_) => {},
+          success: _ => {},
         });
       } else {
         uni.showToast({
@@ -212,6 +201,9 @@ export default {
           width: 90rpx;
           height: 40rpx;
           border-radius: 0;
+        }
+        .tpy {
+          width: 164rpx;
         }
       }
     }

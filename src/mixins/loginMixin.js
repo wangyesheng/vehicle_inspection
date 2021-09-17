@@ -35,7 +35,6 @@ export default {
               provider: 'weixin',
               desc: '获取用户信息！',
               success: response => {
-                console.log('response', response);
                 resolve(response);
               },
               fail: err => {
@@ -62,7 +61,6 @@ export default {
           // 海报分享或者邀请好友携带的分享人 id 信息
           sharerId: uni.getStorageSync('sharer_id') || '',
         });
-        console.log('debugger::response_login', data);
         if (data.state === '200') {
           uni.setStorageSync(
             'app_user',

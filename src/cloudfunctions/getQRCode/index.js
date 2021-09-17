@@ -1,4 +1,4 @@
-const cloud = require("wx-server-sdk");
+const cloud = require('wx-server-sdk');
 
 cloud.init({
   env: cloud.DYNAMIC_CURRENT_ENV,
@@ -7,7 +7,7 @@ cloud.init({
 exports.main = async (event, context) => {
   try {
     const result = await cloud.openapi.wxacode.getUnlimited({
-      scene: `sharerId=${event.sharerId}`,
+      scene: `sharerId=${event.sharerId}&activityId=${event.activityId}`,
       page: 'pages/home/index',
       width: 280,
     });

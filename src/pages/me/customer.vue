@@ -1,16 +1,9 @@
 <template>
-  <view
-    class="customer-container"
-    :style="{ minHeight: sysHeight + 'px' }"
-  >
-    <view
-      class="unit-wrap"
-      v-if="appUser.gid==='2'"
-      @click="handleNavTo"
-    >
+  <view class="customer-container" :style="{ minHeight: sysHeight + 'px' }">
+    <view class="unit-wrap" v-if="appUser.gid === '2'" @click="handleNavTo">
       <view class="label">已发展协议单位</view>
       <view class="value">
-        <text>{{companyLength}}家</text>
+        <text>{{ companyLength }}家</text>
         <u-icon name="arrow-right" />
       </view>
     </view>
@@ -19,48 +12,45 @@
       v-if="customers.length"
       :style="{ minHeight: sysHeight - 40 + 'px' }"
     >
-      <view
-        class="record-wrap"
-        v-for="(item,index) in customers"
-        :key="index"
-      >
+      <view class="record-wrap" v-for="(item, index) in customers" :key="index">
         <view class="user-header">
           <image
-            :src="item.headpic?item.headpic:'https://cj.huazhe.work/images/me/male.png'"
+            :src="
+              item.headpic
+                ? item.headpic
+                : 'https://cj.huazhe.work/images/me/male.png'
+            "
             mode="widthFit"
           />
-          <text class="name">{{item.username}}</text>
+          <text class="name">{{ item.username }}</text>
         </view>
-        <view v-if="item.clist.length>0">
+        <view v-if="item.clist.length > 0">
           <view
             class="car-wrap"
             v-for="carItem in item.clist"
             :key="carItem.id"
           >
-            <text class="car-num">{{carItem.number}}</text>
-            <text class="car-status red">{{carItem.status_desc}}</text>
-            <text class="car-prompt">{{carItem.prompt }}</text>
-            <text class="red">{{carItem.days}}</text>
+            <text class="car-num">{{ carItem.number }}</text>
+            <text class="car-status red">{{ carItem.status_desc }}</text>
+            <text class="car-prompt">{{ carItem.prompt }}</text>
+            <text class="red">{{ carItem.days }}</text>
             <text>天</text>
             <view
               class="call"
-              v-if="carItem.status==1 && carItem.is_pass==0 && carItem.days<=30 "
+              v-if="
+                carItem.status == 1 &&
+                  carItem.is_pass == 0 &&
+                  carItem.days <= 30
+              "
               @click="handleCall(carItem.member_id, carItem.mobile)"
             >
-              <image
-                src="../../static/images/phone.png"
-                mode="widthFit"
-              />
+              <image src="../../static/images/phone.png" mode="widthFit" />
             </view>
           </view>
         </view>
-        <view
-          class="car-wrap"
-          v-else
-        >
+        <view class="car-wrap" v-else>
           <text>暂未绑定车辆~</text>
         </view>
-
       </view>
     </view>
     <view
@@ -75,25 +65,16 @@
         />
         <view>暂无邀请的好友~</view>
         <view class="btn-wrap_wechat">
-          <button
-            open-type="share"
-            @click="handleShare"
-          />
+          <button open-type="share" @click="handleShare" />
         </view>
         <view class="btn-wrap_timeline">
           <button @click="handleShareToTimeline" />
         </view>
       </view>
     </view>
-    <view
-      class="footer-wrap"
-      v-if="customers.length"
-    >
+    <view class="footer-wrap" v-if="customers.length">
       <view class="btn-wrap_wechat">
-        <button
-          open-type="share"
-          @click="handleShare"
-        />
+        <button open-type="share" @click="handleShare" />
       </view>
       <view class="btn-wrap_timeline">
         <button @click="handleShareToTimeline" />
@@ -101,28 +82,26 @@
     </view>
 
     <canvas
-      :style="{width:posterWidth, height:posterHeight, position:'fixed', left:'9999px', top:'0'}"
+      :style="{
+        width: posterWidth,
+        height: posterHeight,
+        position: 'fixed',
+        left: '9999px',
+        top: '0',
+      }"
       canvas-id="posterCanvas"
       id="posterCanvas"
       class="canvas"
     ></canvas>
     <!-- 遮罩层 -->
-    <view
-      class="mask"
-      v-if="showMask"
-      @click="showMask=false"
-    >
+    <view class="mask" v-if="showMask" @click="showMask = false">
       <!-- 生成的海报图 -->
       <image
-        :style="{width:posterWidth,height:posterHeight}"
+        :style="{ width: posterWidth, height: posterHeight }"
         :src="lastPoster"
         mode="aspectFill"
       ></image>
-      <u-button
-        type="warning"
-        shape="circle"
-        @click="saveToAlbum"
-      >
+      <u-button type="warning" shape="circle" @click="saveToAlbum">
         保存至相册
       </u-button>
     </view>
@@ -134,6 +113,7 @@ import {
   getMyCustomersRes,
   getMyCompaniesRes,
   callVirtualMobileRes,
+  getLatestActivityRes,
 } from '../../api';
 
 import {
@@ -179,7 +159,18 @@ export default {
       bgImage: '',
       // 最后生成的海报缓存图片
       lastPoster: '',
+      activityInfo: {},
     };
+  },
+
+  computed: {
+    isEffectActivity() {
+      const currentTimestamp = new Date().getTime();
+      return (
+        currentTimestamp >= this.activityInfo.startTime &&
+        currentTimestamp <= this.activityInfo.endTime
+      );
+    },
   },
 
   mounted() {
@@ -190,6 +181,9 @@ export default {
     if (this.appUser.gid === '2') {
       this.getMyCompanies();
     }
+    if (this.appUser.gid === '9') {
+      this.getLatestActivity();
+    }
   },
 
   onReachBottom() {
@@ -199,6 +193,19 @@ export default {
   },
 
   methods: {
+    async getLatestActivity() {
+      const {
+        code,
+        data: { activityInfo },
+      } = await getLatestActivityRes();
+      if (code == 200) {
+        this.activityInfo = {
+          ...activityInfo,
+          startTime: activityInfo.start_time * 1000,
+          endTime: activityInfo.end_time * 1000,
+        };
+      }
+    },
     async handleCall(to_id, mobile) {
       const {
         code,
@@ -222,9 +229,9 @@ export default {
       this.rowtotal = rowtotal;
       this.total += offlineList.length;
       const _customers = offlineList
-        .filter((x) => x.usermobile !== '')
-        .map((y) => {
-          y.clist.forEach((z) => {
+        .filter(x => x.usermobile !== '')
+        .map(y => {
+          y.clist.forEach(z => {
             switch (z.status) {
               // 未到期，不可预约
               case 0:
@@ -286,6 +293,7 @@ export default {
           name: 'getQRCode',
           data: {
             sharerId: appUser.member_id,
+            activityId: this.isEffectActivity ? this.activityInfo.id : null,
           },
           complete: async ({ result }) => {
             const ext = result.contentType.split('/')[1];
@@ -303,7 +311,7 @@ export default {
               });
             }
           },
-          fail: (err) => {
+          fail: err => {
             uni.showToast({
               title: '云函数调用失败~',
               icon: 'none',
