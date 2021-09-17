@@ -60,6 +60,7 @@ export default {
           jmData: encryptedData,
           // 海报分享或者邀请好友携带的分享人 id 信息
           sharerId: uni.getStorageSync('sharer_id') || '',
+          activityId: uni.getStorageSync('activity_id') || '',
         });
         if (data.state === '200') {
           uni.setStorageSync(

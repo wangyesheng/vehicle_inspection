@@ -80,7 +80,6 @@
         <button @click="handleShareToTimeline" />
       </view>
     </view>
-
     <canvas
       :style="{
         width: posterWidth,
@@ -151,7 +150,6 @@ export default {
 
       // 海报图和canvas的宽高
       posterWidth: '750rpx',
-      posterHeight: '1017rpx',
       ready: false,
       showMask: false,
       imageUrl: `https://cj.huazhe.work/images/code.png?timespan=${new Date().getTime()}`,
@@ -170,6 +168,9 @@ export default {
         currentTimestamp >= this.activityInfo.startTime &&
         currentTimestamp <= this.activityInfo.endTime
       );
+    },
+    posterHeight() {
+      return this.isEffectActivity ? '1336rpx' : '1016rpx';
     },
   },
 
@@ -293,16 +294,21 @@ export default {
           name: 'getQRCode',
           data: {
             sharerId: appUser.member_id,
-            activityId: this.isEffectActivity ? this.activityInfo.id : null,
+            activityId: this.isEffectActivity ? this.activityInfo.id : '',
           },
           complete: async ({ result }) => {
             const ext = result.contentType.split('/')[1];
             try {
               const qrcode = await savePathToLocal(result.buffer, ext);
-              const state = await this.loadingResources(this.imageUrl);
+              const state = await this.loadingResources(
+                this.isEffectActivity
+                  ? this.activityInfo.poster_img
+                  : this.imageUrl
+              );
               if (qrcode && state) {
                 this.ready = true;
-                this.createImage(qrcode);
+                // 原图高为当前数值的两倍
+                this.createImage(qrcode, this.isEffectActivity ? 668 : 508);
               }
             } catch (error) {
               uni.showToast({
@@ -344,7 +350,7 @@ export default {
       }
     },
     // 生成海报
-    async createImage(qrcode) {
+    async createImage(qrcode, bgHeight) {
       if (!this.ready) return;
       // 获取上下文对象
       const ctx = uni.createCanvasContext('posterCanvas');
@@ -359,7 +365,7 @@ export default {
             x: 0,
             y: 0,
             w: 375,
-            h: 508,
+            h: bgHeight,
           },
         },
         {

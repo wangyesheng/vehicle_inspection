@@ -1,13 +1,7 @@
 <template>
-  <view
-    class="home-container"
-    :style="{ minHeight: sysHeight + 'px' }"
-  >
+  <view class="home-container" :style="{ minHeight: sysHeight + 'px' }">
     <view class="header">
-      <image
-        :src="headerBg"
-        mode="widthFit"
-      />
+      <image :src="headerBg" mode="widthFit" />
     </view>
     <view class="banner-wrap">
       <view class="banner-top">
@@ -34,16 +28,9 @@
           @change="handleSwiperChange"
         />
       </view>
-      <view
-        class="banner-footer"
-        v-for="item in buttonFlags"
-        :key="item.value"
-      >
+      <view class="banner-footer" v-for="item in buttonFlags" :key="item.value">
         <view v-if="buttonFlag === item.value">
-          <view
-            class="btn-disabled"
-            v-if="item.value == 0"
-          >
+          <view class="btn-disabled" v-if="item.value == 0">
             {{ item.label }}
           </view>
           <u-button
@@ -56,10 +43,7 @@
           </u-button>
         </view>
       </view>
-      <view
-        class="reserve-time"
-        v-if="canShowReserveTime"
-      >
+      <view class="reserve-time" v-if="canShowReserveTime">
         已预约年检时间：{{ reserveTime }}
       </view>
     </view>
@@ -69,10 +53,7 @@
         mode="widthFit"
       />
     </view> -->
-    <view
-      class="code-wrap flex-01"
-      @click="handleNavTo(3)"
-    >
+    <view class="code-wrap flex-01" @click="handleNavTo(3)">
       <image
         src="https://cj.huazhe.work/images/home/code.png"
         mode="widthFit"
@@ -91,17 +72,11 @@
       />
     </view>
     <view class="method-wrap">
-      <view
-        class="common agent"
-        @click="handleToProcess(1)"
-      >
+      <view class="common agent" @click="handleToProcess(1)">
         <text class="deep">年检代办流程</text>
         <text class="shallow">点击查看</text>
       </view>
-      <view
-        class="common self"
-        @click="handleToProcess(2)"
-      >
+      <view class="common self" @click="handleToProcess(2)">
         <text class="deep">自驾办理流程</text>
         <text class="shallow">点击查看</text>
       </view>
@@ -131,30 +106,18 @@
     >
       <view class="header">选择年检方式</view>
       <view class="content">
-        <view
-          class="row"
-          @click="handleChooseMethod(1)"
-        >
+        <view class="row" @click="handleChooseMethod(1)">
           <view>
-            <image
-              src="../../static/images/order/daijia.png"
-              mode="widthFit"
-            />
+            <image src="../../static/images/order/daijia.png" mode="widthFit" />
           </view>
           <view class="right">
             <view class="top">上门代驾</view>
             <view class="bottom">专业人员上门取还车，全程代办，安全省心</view>
           </view>
         </view>
-        <view
-          class="row"
-          @click="handleChooseMethod(2)"
-        >
+        <view class="row" @click="handleChooseMethod(2)">
           <view>
-            <image
-              src="../../static/images/order/zijia.png"
-              mode="widthFit"
-            />
+            <image src="../../static/images/order/zijia.png" mode="widthFit" />
           </view>
           <view class="right">
             <view class="top">自驾到站</view>
@@ -223,10 +186,17 @@ export default {
     this.shiftingCodeCount = 0;
     // 海报分享二维码
     if (options.scene) {
-      console.log('=========',options.scene)
       const scene = decodeURIComponent(options.scene);
-      const sharerId = scene.split('=')[1];
-      uni.setStorageSync('sharer_id', sharerId);
+      const params = scene.split('&');
+      params.forEach(item => {
+        const [key, value] = item.split('=');
+        if (key == 'sharerId' && value) {
+          uni.setStorageSync('sharer_id', value);
+        }
+        if (key == 'activityId' && value) {
+          uni.setStorageSync('activity_id', value);
+        }
+      });
     }
     // 邀请微信好友
     if (options.sharerId) {
@@ -260,7 +230,7 @@ export default {
       const {
         data: { noticeList },
       } = await getNoticesRes();
-      this.notifies = noticeList.map((x) => x.note);
+      this.notifies = noticeList.map(x => x.note);
     },
     async getCars() {
       this.cars = [];
@@ -276,7 +246,7 @@ export default {
       const {
         data: { carList },
       } = await getCarsRes();
-      this.cars = carList.map((x) => {
+      this.cars = carList.map(x => {
         let layer = {
           ...x,
           editIcon: 'https://cj.huazhe.work//images/home/edit_icon.png',
