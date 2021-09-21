@@ -1,19 +1,35 @@
 <script>
 export default {
   onLaunch: function () {
-    console.log('App Launch');
-  },
-  onShow: function () {
-    console.log('App Show');
-  },
-  onHide: function () {
-    console.log('App Hide');
+    const updateManager = uni.getUpdateManager();
+    updateManager.onCheckForUpdate(function (res) {
+      console.log("onCheckForUpdate", res.hasUpdate);
+    });
+    updateManager.onUpdateReady(function () {
+      uni.showModal({
+        title: "更新提示",
+        content: "新版本已经准备好，是否重启应用？",
+        success: function (res) {
+          if (res.confirm) {
+            // 新的版本已经下载好，调用 applyUpdate 应用新版本并重启
+            updateManager.applyUpdate();
+          }
+        },
+      });
+    });
+    updateManager.onUpdateFailed(function () {
+      uni.showModal({
+        title: "更新提示",
+        content: "新版本下载失败！",
+        showCancel: false,
+      });
+    });
   },
 };
 </script>
 
 <style lang="scss">
-@import 'uview-ui/index.scss';
+@import "uview-ui/index.scss";
 
 .flex {
   display: flex;

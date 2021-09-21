@@ -35,16 +35,28 @@
             <text class="car-prompt">{{ carItem.prompt }}</text>
             <text class="red">{{ carItem.days }}</text>
             <text>天</text>
-            <view
-              class="call"
-              v-if="
-                carItem.status == 1 &&
+            <view class="extra">
+              <u-tag
+                v-if="isEffectActivity"
+                mode="plain"
+                shape="circleRight"
+                :type="item.is_check == 0 ? 'primary' : 'error'"
+                :text="item.is_check == 0 ? '权益未使用' : '权益已使用'"
+              />
+              <view
+                class="phone-call"
+                v-if="
+                  carItem.status == 1 &&
                   carItem.is_pass == 0 &&
                   carItem.days <= 30
-              "
-              @click="handleCall(carItem.member_id, carItem.mobile)"
-            >
-              <image src="../../static/images/phone.png" mode="widthFit" />
+                "
+              >
+                <image
+                  src="../../static/images/phone.png"
+                  mode="widthFit"
+                  @click="handleCall(carItem.member_id, carItem.mobile)"
+                />
+              </view>
             </view>
           </view>
         </view>
@@ -91,16 +103,25 @@
       canvas-id="posterCanvas"
       id="posterCanvas"
       class="canvas"
-    ></canvas>
+    />
     <!-- 遮罩层 -->
-    <view class="mask" v-if="showMask" @click="showMask = false">
+    <view
+      class="mask"
+      v-if="showMask"
+      @click="showMask = false"
+    >
       <!-- 生成的海报图 -->
       <image
         :style="{ width: posterWidth, height: posterHeight }"
         :src="lastPoster"
         mode="aspectFill"
-      ></image>
-      <u-button type="warning" shape="circle" @click="saveToAlbum">
+      />
+      <u-button
+        class="btn-save"
+        type="warning"
+        shape="circle"
+        @click="saveToAlbum"
+      >
         保存至相册
       </u-button>
     </view>
@@ -113,14 +134,14 @@ import {
   getMyCompaniesRes,
   callVirtualMobileRes,
   getLatestActivityRes,
-} from '../../api';
+} from "../../api";
 
 import {
   loadImage,
   createPoster,
   canvasToTempFilePath,
   saveImageToPhotosAlbum,
-} from '../../utils/poster';
+} from "../../utils/poster";
 
 function savePathToLocal(buffer, ext) {
   const fs = uni.getFileSystemManager();
@@ -129,12 +150,12 @@ function savePathToLocal(buffer, ext) {
     fs.writeFile({
       filePath,
       data: buffer,
-      encoding: 'binary',
+      encoding: "binary",
       success() {
         resolve(filePath);
       },
       fail() {
-        reject(new Error('ERROR_PATH_SAVE'));
+        reject(new Error("ERROR_PATH_SAVE"));
       },
     });
   });
@@ -142,6 +163,7 @@ function savePathToLocal(buffer, ext) {
 
 export default {
   data() {
+    console.log(this.getSysWidth());
     return {
       sysHeight: 0,
       customers: [],
@@ -149,14 +171,15 @@ export default {
       companyLength: 0,
 
       // 海报图和canvas的宽高
-      posterWidth: '750rpx',
+      posterWidth: "100vw",
+      posterHeight: '668px',
       ready: false,
       showMask: false,
       imageUrl: `https://cj.huazhe.work/images/code.png?timespan=${new Date().getTime()}`,
       // 存本地缓存图片
-      bgImage: '',
+      bgImage: "",
       // 最后生成的海报缓存图片
-      lastPoster: '',
+      lastPoster: "",
       activityInfo: {},
     };
   },
@@ -169,9 +192,6 @@ export default {
         currentTimestamp <= this.activityInfo.endTime
       );
     },
-    posterHeight() {
-      return this.isEffectActivity ? '1336rpx' : '1016rpx';
-    },
   },
 
   mounted() {
@@ -179,10 +199,10 @@ export default {
     this.pageIndex = 1;
     this.total = 0;
     this.getMyCustomers(this.pageIndex++);
-    if (this.appUser.gid === '2') {
+    if (this.appUser.gid === "2") {
       this.getMyCompanies();
     }
-    if (this.appUser.gid === '9') {
+    if (this.appUser.gid === "9") {
       this.getLatestActivity();
     }
   },
@@ -230,34 +250,34 @@ export default {
       this.rowtotal = rowtotal;
       this.total += offlineList.length;
       const _customers = offlineList
-        .filter(x => x.usermobile !== '')
-        .map(y => {
-          y.clist.forEach(z => {
+        .filter((x) => x.usermobile !== "")
+        .map((y) => {
+          y.clist.forEach((z) => {
             switch (z.status) {
               // 未到期，不可预约
               case 0:
-                z.prompt = '距上线年检还剩';
+                z.prompt = "距上线年检还剩";
                 break;
               // 已预约
               case 1:
                 if (z.is_pass == 0) {
                   // 未逾期
-                  z.prompt = '距年检逾期还剩';
+                  z.prompt = "距年检逾期还剩";
                 } else {
-                  z.prompt = '年检已逾期';
+                  z.prompt = "年检已逾期";
                 }
                 break;
               // 已办理
               case 2:
-                z.prompt = '距上线年检还剩';
+                z.prompt = "距上线年检还剩";
                 break;
               // 可预约
               case 3:
-                z.prompt = '距年检逾期还剩';
+                z.prompt = "距年检逾期还剩";
                 break;
               // 已逾期
               case 4:
-                z.prompt = '年检已逾期';
+                z.prompt = "年检已逾期";
                 break;
             }
           });
@@ -273,31 +293,31 @@ export default {
       this.companyLength = myCompanyList ? myCompanyList.length : 0;
     },
     handleNavTo() {
-      this.navTo('/pages/me/company');
+      this.navTo("/pages/me/company");
     },
     handleShare() {
       const path = `/pages/home/index?sharerId=${this.appUser.member_id}`;
       return {
         path,
-        title: '汽车年审，还可以更快更简单',
-        imageUrl: 'https://fanr.oss-cn-shanghai.aliyuncs.com/data/11.png',
+        title: "汽车年审，还可以更快更简单",
+        imageUrl: `https://cj.huazhe.work/images/huodong.png?timespan=${new Date().getTime()}`,
       };
     },
     handleShareToTimeline() {
       const appUser = this.getAppUser();
       if (appUser.member_mobile) {
         uni.showLoading({
-          title: '海报生成中...',
+          title: "海报生成中...",
         });
         wx.cloud.init();
         wx.cloud.callFunction({
-          name: 'getQRCode',
+          name: "getQRCode",
           data: {
             sharerId: appUser.member_id,
-            activityId: this.isEffectActivity ? this.activityInfo.id : '',
+            activityId: this.isEffectActivity ? this.activityInfo.id : "",
           },
           complete: async ({ result }) => {
-            const ext = result.contentType.split('/')[1];
+            const ext = result.contentType.split("/")[1];
             try {
               const qrcode = await savePathToLocal(result.buffer, ext);
               const state = await this.loadingResources(
@@ -308,19 +328,19 @@ export default {
               if (qrcode && state) {
                 this.ready = true;
                 // 原图高为当前数值的两倍
-                this.createImage(qrcode, this.isEffectActivity ? 668 : 508);
+                this.createImage(qrcode);
               }
             } catch (error) {
               uni.showToast({
-                title: '海报生成失败~',
-                icon: 'none',
+                title: "海报生成失败~",
+                icon: "none",
               });
             }
           },
-          fail: err => {
+          fail: (err) => {
             uni.showToast({
-              title: '云函数调用失败~',
-              icon: 'none',
+              title: "云函数调用失败~",
+              icon: "none",
             });
           },
         });
@@ -336,58 +356,58 @@ export default {
       try {
         await saveImageToPhotosAlbum(this.lastPoster);
         uni.showToast({
-          title: '保存成功，快去朋友圈分享吧！',
-          icon: 'none',
+          title: "保存成功，快去朋友圈分享吧！",
+          icon: "none",
         });
         setTimeout(() => {
           this.showMask = false;
         }, 3000);
       } catch (error) {
         uni.showToast({
-          title: '保存失败！',
-          icon: 'none',
+          title: "保存失败！",
+          icon: "none",
         });
       }
     },
     // 生成海报
-    async createImage(qrcode, bgHeight) {
+    async createImage(qrcode) {
       if (!this.ready) return;
       // 获取上下文对象
-      const ctx = uni.createCanvasContext('posterCanvas');
+      const ctx = uni.createCanvasContext("posterCanvas");
       // 创建海报
       // 图片需设置x,y,width,height
       // 文字需要设置 text, x,y
       await createPoster(ctx, [
         {
-          type: 'image',
+          type: "image",
           url: this.bgImage,
           config: {
             x: 0,
             y: 0,
-            w: 375,
-            h: bgHeight,
+            w: this.getSysWidth(),
+            h: 668,
           },
         },
         {
-          type: 'image',
+          type: "image",
           url: qrcode,
           config: {
-            x: 140,
-            y: 240,
+            x: this.getSysWidth() / 2 - 50,
+            y: 246,
             w: 100,
             h: 100,
           },
         },
       ]);
       try {
-        const imagePath = await canvasToTempFilePath('posterCanvas', this);
+        const imagePath = await canvasToTempFilePath("posterCanvas", this);
         this.lastPoster = imagePath;
         uni.hideLoading();
         this.showMask = true;
       } catch (error) {
         uni.showToast({
-          title: '海报生成失败~',
-          icon: 'none',
+          title: "海报生成失败~",
+          icon: "none",
         });
       }
     },
@@ -420,6 +440,7 @@ export default {
   .mask {
     width: 100vw;
     height: 100vh;
+    padding: 20rpx 0;
     position: fixed;
     background-color: rgba($color: #000000, $alpha: 0.4);
     left: 0;
@@ -429,6 +450,9 @@ export default {
     flex-direction: column;
     justify-content: space-around;
     align-items: center;
+    .btn-save {
+      margin-top: 20rpx;
+    }
   }
 
   .ployfill {
@@ -441,14 +465,27 @@ export default {
     .record-wrap {
       position: relative;
       padding: 35rpx 30rpx;
-      .call {
+      .extra {
         position: absolute;
         top: 38rpx;
         right: 60rpx;
-        image {
-          width: 42rpx;
-          height: 42rpx;
+        display: flex;
+        align-items: center;
+        .phone-call {
+          margin-left: 20rpx;
+          image {
+            width: 42rpx;
+            height: 42rpx;
+          }
         }
+      }
+
+      .has-use {
+        position: absolute;
+        top: 38rpx;
+        right: 80rpx;
+        padding: 10rpx;
+        border: 2rpx solid #ff0000;
       }
       &:not(:last-child) {
         border-bottom: 1rpx solid #f2f2f2;
@@ -514,7 +551,7 @@ export default {
     button {
       width: 330rpx;
       height: 90rpx;
-      background-image: url('https://cj.huazhe.work/images/me/wechat.png');
+      background-image: url("https://cj.huazhe.work/images/me/wechat.png");
       background-size: 100% 100%;
       border-radius: 45rpx;
     }
@@ -527,7 +564,7 @@ export default {
     button {
       width: 690rpx;
       height: 90rpx;
-      background-image: url('https://cj.huazhe.work/images/me/wechat_large.png');
+      background-image: url("https://cj.huazhe.work/images/me/wechat_large.png");
       background-size: 100% 100%;
       border-radius: 45rpx;
     }
@@ -540,7 +577,7 @@ export default {
     button {
       width: 330rpx;
       height: 90rpx;
-      background-image: url('https://cj.huazhe.work/images/me/timeline.png');
+      background-image: url("https://cj.huazhe.work/images/me/timeline.png");
       background-size: 100% 100%;
       border-radius: 45rpx;
     }

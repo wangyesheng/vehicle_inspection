@@ -282,3 +282,10 @@ export const getLatestActivityRes = data =>
     method: 'GET',
     data,
   });
+
+  export const getIsCheckRes = data =>
+  request({
+    url: '/api.php?p=/member/getIsCheck',
+    method: 'GET',
+    data,
+  });

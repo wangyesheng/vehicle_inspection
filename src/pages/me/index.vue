@@ -14,9 +14,7 @@
           <text>{{ appUser.member_name }}</text>
         </view>
         <view class="login-tips" v-else>
-          <button class="btn-text" @click="handleLogin">
-            点击登录
-          </button>
+          <button class="btn-text" @click="handleLogin">点击登录</button>
         </view>
         <view class="role-wrap" v-if="hasLogin && appUser.gid != '1'">
           <image
@@ -39,6 +37,7 @@
           :title="!hasLogin ? '推荐好友免费预约' : '我的客户'"
           @click="handleNavTo(1)"
         />
+        <!-- <u-cell-item title="我的权益" @click="handleNavTo(4)" /> -->
         <u-cell-item title="我的预约单" @click="handleNavTo(2)" />
         <u-cell-item title="代驾预约单" @click="handleNavTo(3)" />
         <u-cell-item @click="handleContact">
@@ -67,9 +66,9 @@
 </template>
 
 <script>
-import loginMixin from '../../mixins/loginMixin';
-import { currentHours } from '../../utils/time';
-import { getCustomerRes } from '../../api';
+import loginMixin from "../../mixins/loginMixin";
+import { currentHours } from "../../utils/time";
+import { getCustomerRes } from "../../api";
 
 export default {
   mixins: [loginMixin],
@@ -79,8 +78,8 @@ export default {
       appUser: {},
       hasLogin: false,
       wechatPopupVisible: false,
-      customer_times: '',
-      customer_phone: '',
+      customer_times: "",
+      customer_phone: "",
     };
   },
 
@@ -99,25 +98,28 @@ export default {
     handleNavTo(flag) {
       if (!this.checkLogin()) {
         uni.navigateTo({
-          url: '/pages/auth/login-nav?from=2',
+          url: "/pages/auth/login-nav?from=2",
         });
         return;
       }
       switch (flag) {
         case 1:
-          this.navTo('/pages/me/customer');
+          this.navTo("/pages/me/customer");
           break;
         case 2:
-          this.navTo('/pages/reservation/index');
+          this.navTo("/pages/reservation/index");
           break;
         case 3:
-          this.navTo('/pages/reservation/drive');
+          this.navTo("/pages/reservation/drive");
+          break;
+        case 4:
+          this.navTo("/pages/activity/index");
           break;
       }
     },
     handleLogin() {
       uni.navigateTo({
-        url: '/pages/auth/login-nav?from=2',
+        url: "/pages/auth/login-nav?from=2",
       });
     },
     async getCustomer() {
@@ -132,12 +134,12 @@ export default {
       if (start <= currentHours && currentHours <= end) {
         uni.makePhoneCall({
           phoneNumber: this.customer_phone,
-          success: _ => {},
+          success: (_) => {},
         });
       } else {
         uni.showToast({
-          title: '请在服务时间内拨打电话~',
-          icon: 'none',
+          title: "请在服务时间内拨打电话~",
+          icon: "none",
         });
       }
     },
@@ -160,23 +162,17 @@ export default {
   height: 100vh;
   position: relative;
 
-  // .wechat-popup {
-  //   image {
-  //     width: 505rpx;
-  //     height: 1344rpx;
-  //   }
-  // }
-
   .banner-wrap {
-    background-image: url('https://cj.huazhe.work/images/me/banner.png');
+    background-image: url("https://cj.huazhe.work/images/me/banner.png");
     background-size: 100% 100%;
     height: 420rpx;
     width: 100%;
     padding: 60rpx 285rpx 120rpx;
     .user-wrap {
-      height: 240rpx;
       width: 180rpx;
-      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
       image {
         width: 180rpx;
         height: 180rpx;

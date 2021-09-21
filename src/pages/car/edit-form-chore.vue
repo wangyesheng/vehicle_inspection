@@ -420,6 +420,7 @@ export default {
       this.carForm.data.owner = carInfo.owner;
       this.carForm.data.register_date = carInfo.register_date.slice(0, 7);
       this.carForm.data.mobile = carInfo.mobile;
+      this.driverLicenseSrc = carInfo.driver_license;
       const dates = this.carForm.data.register_date.split('-').slice(0, 2);
       const _dates = [];
       dates.forEach((d) => {

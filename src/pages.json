@@ -103,7 +103,12 @@
         "navigationBarTitleText": "启用挪车码"
       }
     },
-
+    {
+      "path": "pages/activity/index",
+      "style": {
+        "navigationBarTitleText": "我的权益"
+      }
+    },
     {
       "path": "pages/me/index",
       "style": {

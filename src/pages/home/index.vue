@@ -130,32 +130,32 @@
 </template>
 
 <script>
-import EOSSwiper from '../../components/eos-swiper';
+import EOSSwiper from "../../components/eos-swiper";
 
 import {
   diffMonths,
   currentFormatDate,
   getDateByDays,
   getDiffDate,
-} from '../../utils/time';
+} from "../../utils/time";
 import {
   getCarsRes,
   getNoticesRes,
   setCarDealRes,
   getMyCodeCountRes,
-} from '../../api';
-import { BUTTON_FLAGS } from '../../constant';
+} from "../../api";
+import { BUTTON_FLAGS } from "../../constant";
 
 export default {
   components: {
-    'eos-swiper': EOSSwiper,
+    "eos-swiper": EOSSwiper,
   },
 
   data() {
     return {
       processedModal: {
         visible: false,
-        content: '系统将为你更新到下次年检时间，请确认是否已办理线上年检！',
+        content: "系统将为你更新到下次年检时间，请确认是否已办理线上年检！",
       },
       notifies: [],
       cars: [],
@@ -163,7 +163,7 @@ export default {
       buttonFlags: BUTTON_FLAGS,
       selectedCar: undefined,
       canShowReserveTime: false,
-      reserveTime: '',
+      reserveTime: "",
       sysHeight: 0,
       methodPopup: {
         visible: false,
@@ -173,11 +173,7 @@ export default {
 
   computed: {
     headerBg() {
-      const timestampFormatter = this.$u.timeFormat(
-        new Date().getTime(),
-        'yyyy-mm-dd'
-      );
-      return `https://cj.huazhe.work/images/home/header-bg.jpg?timestamp=${timestampFormatter}`;
+      return `https://cj.huazhe.work/images/home/header-bg.jpg?timestamp=${new Date().getTime()}`;
     },
   },
 
@@ -187,20 +183,22 @@ export default {
     // 海报分享二维码
     if (options.scene) {
       const scene = decodeURIComponent(options.scene);
-      const params = scene.split('&');
-      params.forEach(item => {
-        const [key, value] = item.split('=');
-        if (key == 'sharerId' && value) {
-          uni.setStorageSync('sharer_id', value);
+      const params = scene.split("&");
+      console.log("params", params);
+      params.forEach((item) => {
+        const [key, value] = item.split("=");
+        console.log("key, value", key, value);
+        if (key == "sharerId" && value) {
+          uni.setStorageSync("sharer_id", value);
         }
-        if (key == 'activityId' && value) {
-          uni.setStorageSync('activity_id', value);
+        if (key == "activityId" && value) {
+          uni.setStorageSync("activity_id", value);
         }
       });
     }
     // 邀请微信好友
     if (options.sharerId) {
-      uni.setStorageSync('sharer_id', options.sharerId);
+      uni.setStorageSync("sharer_id", options.sharerId);
     }
   },
 
@@ -211,8 +209,8 @@ export default {
   methods: {
     handleToProcess(flag) {
       flag == 1
-        ? this.navTo('/pages/home/agent')
-        : this.navTo('/pages/home/self');
+        ? this.navTo("/pages/home/agent")
+        : this.navTo("/pages/home/self");
     },
     async getMyCodeCount() {
       if (!this.checkLogin()) {
@@ -230,13 +228,13 @@ export default {
       const {
         data: { noticeList },
       } = await getNoticesRes();
-      this.notifies = noticeList.map(x => x.note);
+      this.notifies = noticeList.map((x) => x.note);
     },
     async getCars() {
       this.cars = [];
       if (!this.checkLogin()) {
         this.cars.push({
-          image: 'https://cj.huazhe.work//images/home/add_car_bg.png',
+          image: "https://cj.huazhe.work//images/home/add_car_bg.png",
           canAddCar: true,
           buttonFlag: -1,
         });
@@ -246,38 +244,38 @@ export default {
       const {
         data: { carList },
       } = await getCarsRes();
-      this.cars = carList.map(x => {
+      this.cars = carList.map((x) => {
         let layer = {
           ...x,
-          editIcon: 'https://cj.huazhe.work//images/home/edit_icon.png',
+          editIcon: "https://cj.huazhe.work//images/home/edit_icon.png",
           number: x.number.toUpperCase(),
-          image: 'https://cj.huazhe.work/images/home/banner_bg.png',
+          image: "https://cj.huazhe.work/images/home/banner_bg.png",
         };
         const months = diffMonths(x.register_date, currentFormatDate);
         if (x.type == 1) {
           // 非营运
           if (months < 70) {
-            layer._status = '六年免检';
+            layer._status = "六年免检";
           } else if (months >= 70 && months < 118) {
-            layer._status = '两年一检';
+            layer._status = "两年一检";
           } else if (months >= 118 && months < 178) {
-            layer._status = '一年一检';
+            layer._status = "一年一检";
           } else if (months >= 178) {
-            layer._status = '一年两检';
+            layer._status = "一年两检";
           }
         } else {
           // 营运
           if (months <= 58) {
-            layer._status = '一年一检';
+            layer._status = "一年一检";
           } else {
-            layer._status = '一年两检';
+            layer._status = "一年两检";
           }
         }
 
         switch (x.status) {
           // 未到期，不可预约
           case 0:
-            layer.prompt = '距上线年检还剩';
+            layer.prompt = "距上线年检还剩";
             layer.isOverdue = false;
             layer.buttonFlag = 0;
             break;
@@ -285,30 +283,30 @@ export default {
           case 1:
             if (layer.is_pass == 0) {
               // 未逾期
-              layer.prompt = '距年检逾期还剩';
+              layer.prompt = "距年检逾期还剩";
               layer.isOverdue = false;
             } else {
-              layer.prompt = '年检已逾期';
+              layer.prompt = "年检已逾期";
               layer.isOverdue = true;
             }
             layer.buttonFlag = 1;
             break;
           // 已办理
           case 2:
-            layer.prompt = '距上线年检还剩';
+            layer.prompt = "距上线年检还剩";
             layer.isOverdue = false;
             layer.buttonFlag = 0;
             break;
           // 可预约
           case 3:
-            layer.prompt = '距年检逾期还剩';
+            layer.prompt = "距年检逾期还剩";
             layer.isOverdue = false;
             layer.buttonFlag = 2;
             layer.appointmentDates = getDiffDate(x.start_time, x.end_time);
             break;
           // 已逾期
           case 4:
-            layer.prompt = '年检已逾期';
+            layer.prompt = "年检已逾期";
             layer.isOverdue = true;
             layer.buttonFlag = 2;
             const date = getDateByDays(30 - x.days);
@@ -319,10 +317,10 @@ export default {
         }
         return layer;
       });
-      uni.setStorageSync('app_user_cars', this.cars);
+      uni.setStorageSync("app_user_cars", this.cars);
       if (this.cars.length < 3) {
         this.cars.push({
-          image: 'https://cj.huazhe.work//images/home/add_car_bg.png',
+          image: "https://cj.huazhe.work//images/home/add_car_bg.png",
           canAddCar: true,
           buttonFlag: -1,
         });
@@ -335,24 +333,24 @@ export default {
     handleNavTo(flag) {
       if (!this.checkLogin()) {
         uni.navigateTo({
-          url: '/pages/auth/login-nav?from=1',
+          url: "/pages/auth/login-nav?from=1",
         });
         return;
       }
       switch (flag) {
         case -1:
-          this.navTo('/pages/car/add-form-chore');
+          this.navTo("/pages/car/add-form-chore");
           break;
         case 1:
-          this.navTo('/pages/reservation/index');
+          this.navTo("/pages/reservation/index");
           break;
         case 2:
           this.methodPopup.visible = true;
           break;
         case 3:
           this.shiftingCodeCount == 0
-            ? this.navTo('/pages/shifting-code/apply')
-            : this.navTo('/pages/shifting-code/index');
+            ? this.navTo("/pages/shifting-code/apply")
+            : this.navTo("/pages/shifting-code/index");
           break;
       }
     },
@@ -380,7 +378,7 @@ export default {
       } else {
         uni.showToast({
           title: data,
-          icon: 'none',
+          icon: "none",
         });
       }
     },
@@ -398,7 +396,7 @@ export default {
     justify-content: space-between;
     margin-top: 30rpx;
     .common {
-      width: 330rpx;
+      width: 300rpx;
       height: 120rpx;
       background-size: 100% 100%;
       display: flex;
@@ -419,11 +417,11 @@ export default {
     }
 
     .agent {
-      background: url('../../static/images/home/agent.png') no-repeat;
+      background: url("../../static/images/home/agent.png") no-repeat;
     }
 
     .self {
-      background: url('../../static/images/home/self.png') no-repeat;
+      background: url("../../static/images/home/self.png") no-repeat;
     }
   }
 

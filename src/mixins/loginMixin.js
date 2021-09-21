@@ -1,4 +1,7 @@
-import { loginRes, autoBindMobileRes } from '../api';
+import {
+  loginRes,
+  autoBindMobileRes
+} from '../api';
 
 export default {
   data() {
@@ -22,11 +25,13 @@ export default {
         mask: true,
       });
       try {
-        const [
-          {
+        const [{
             rawData,
             encryptedData,
-            userInfo: { avatarUrl, nickName },
+            userInfo: {
+              avatarUrl,
+              nickName
+            },
           },
           code,
         ] = await Promise.all([
@@ -45,7 +50,9 @@ export default {
           new Promise((resolve, reject) => {
             uni.login({
               provider: 'weixin',
-              success: ({ code }) => {
+              success: ({
+                code
+              }) => {
                 resolve(code);
               },
               fail: err => {
@@ -54,7 +61,9 @@ export default {
             });
           }),
         ]);
-        const { data } = await loginRes({
+        const {
+          data
+        } = await loginRes({
           code,
           userinfo: rawData,
           jmData: encryptedData,
@@ -69,6 +78,7 @@ export default {
               ...data,
               member_avatar: avatarUrl ? avatarUrl : data.member_avatar,
               member_name: nickName ? nickName : data.member_name,
+              gid: '2'
             })
           );
           this.mobilePopup.visible = true;
@@ -92,10 +102,16 @@ export default {
     },
     async handleGetPhoneNumber(e) {
       const {
-        detail: { encryptedData, iv },
+        detail: {
+          encryptedData,
+          iv
+        },
       } = e;
       if (encryptedData && iv) {
-        const { code, data } = await autoBindMobileRes({
+        const {
+          code,
+          data
+        } = await autoBindMobileRes({
           code: this.mobilePopup.wxCode,
           phonedata: encryptedData,
           phonedataiv: iv,
