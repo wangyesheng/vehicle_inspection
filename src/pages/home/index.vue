@@ -173,7 +173,11 @@ export default {
 
   computed: {
     headerBg() {
-      return `https://cj.huazhe.work/images/home/header-bg.jpg?timestamp=${new Date().getTime()}`;
+      const timestampFormatter = this.$u.timeFormat(
+        new Date().getTime(),
+        "yyyy-mm-dd"
+      );
+      return `https://cj.huazhe.work/images/home/header-bg.jpg?timestamp=${timestampFormatter}`;
     },
   },
 

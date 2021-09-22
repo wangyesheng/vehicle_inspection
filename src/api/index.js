@@ -1,4 +1,6 @@
-import { request } from '../utils/request';
+import {
+  request
+} from '../utils/request';
 
 export function loginRes(data) {
   return request({
@@ -283,9 +285,16 @@ export const getLatestActivityRes = data =>
     data,
   });
 
-  export const getIsCheckRes = data =>
+export const getIsCheckRes = data =>
   request({
     url: '/api.php?p=/member/getIsCheck',
+    method: 'GET',
+    data,
+  });
+
+export const getUserinfoRes = data =>
+  request({
+    url: '/api.php?p=/member/getUserInfo',
     method: 'GET',
     data,
   });

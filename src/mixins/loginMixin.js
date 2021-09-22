@@ -77,8 +77,7 @@ export default {
             JSON.stringify({
               ...data,
               member_avatar: avatarUrl ? avatarUrl : data.member_avatar,
-              member_name: nickName ? nickName : data.member_name,
-              gid: '2'
+              member_name: nickName ? nickName : data.member_name
             })
           );
           this.mobilePopup.visible = true;

@@ -46,8 +46,8 @@
               <view
                 class="phone-call"
                 v-if="
-                  carItem.status == 1 &&
-                  carItem.is_pass == 0 &&
+                  (carItem.status == 3 ||
+                    (carItem.status == 1 && carItem.is_pass == 0)) &&
                   carItem.days <= 30
                 "
               >
@@ -105,11 +105,7 @@
       class="canvas"
     />
     <!-- 遮罩层 -->
-    <view
-      class="mask"
-      v-if="showMask"
-      @click="showMask = false"
-    >
+    <view class="mask" v-if="showMask" @click="showMask = false">
       <!-- 生成的海报图 -->
       <image
         :style="{ width: posterWidth, height: posterHeight }"
@@ -163,7 +159,6 @@ function savePathToLocal(buffer, ext) {
 
 export default {
   data() {
-    console.log(this.getSysWidth());
     return {
       sysHeight: 0,
       customers: [],
@@ -172,7 +167,7 @@ export default {
 
       // 海报图和canvas的宽高
       posterWidth: "100vw",
-      posterHeight: '668px',
+      posterHeight: "668px",
       ready: false,
       showMask: false,
       imageUrl: `https://cj.huazhe.work/images/code.png?timespan=${new Date().getTime()}`,
@@ -300,7 +295,7 @@ export default {
       return {
         path,
         title: "汽车年审，还可以更快更简单",
-        imageUrl: `https://fanr.oss-cn-shanghai.aliyuncs.com/data/huodong.png?timespan=${new Date().getTime()}`,
+        imageUrl: `https://cj.huazhe.work/images/huodong.png?timespan=${new Date().getTime()}`,
       };
     },
     handleShareToTimeline() {

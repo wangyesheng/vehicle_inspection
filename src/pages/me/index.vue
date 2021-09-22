@@ -3,6 +3,13 @@
     <view class="banner-wrap">
       <view class="user-wrap">
         <image
+          v-if="appUser.member_avatar"
+          src="../../static/images/refresh.png"
+          mode="widthFit"
+          class="refresh"
+          @click="handleGetUserinfo"
+        />
+        <image
           :src="
             appUser.member_avatar
               ? appUser.member_avatar
@@ -20,7 +27,7 @@
           <image
             :src="
               appUser.gid == '9'
-                ? 'https://cj.huazhe.work/static/images/tpy.png'
+                ? require('../../static/images/tpy.png')
                 : appUser.gid == '2'
                 ? 'https://cj.huazhe.work/images/me/salesman.png'
                 : 'https://cj.huazhe.work/images/me/employee.png'
@@ -68,7 +75,7 @@
 <script>
 import loginMixin from "../../mixins/loginMixin";
 import { currentHours } from "../../utils/time";
-import { getCustomerRes } from "../../api";
+import { getCustomerRes, getUserinfoRes } from "../../api";
 
 export default {
   mixins: [loginMixin],
@@ -95,6 +102,20 @@ export default {
   },
 
   methods: {
+    async handleGetUserinfo() {
+      const {
+        data: {
+          info: { gid },
+        },
+      } = await getUserinfoRes();
+      uni.setStorageSync(
+        "app_user",
+        JSON.stringify({
+          ...this.appUser,
+          gid: 1,
+        })
+      );
+    },
     handleNavTo(flag) {
       if (!this.checkLogin()) {
         uni.navigateTo({
@@ -167,16 +188,25 @@ export default {
     background-size: 100% 100%;
     height: 420rpx;
     width: 100%;
-    padding: 60rpx 285rpx 120rpx;
+    padding: 60rpx 120rpx 120rpx;
     .user-wrap {
-      width: 180rpx;
+      width: 100%;
       display: flex;
       flex-direction: column;
       align-items: center;
+      position: relative;
+      .refresh {
+        width: 40rpx;
+        height: 40rpx;
+        position: absolute;
+        top: -20rpx;
+        right: 146rpx;
+        z-index: 99;
+      }
       image {
         width: 180rpx;
         height: 180rpx;
-        border-radius: 50%;
+        border-radius: 10rpx;
       }
       .login-tips {
         margin-top: 10rpx;
@@ -199,7 +229,7 @@ export default {
           border-radius: 0;
         }
         .tpy {
-          width: 164rpx;
+          width: 148rpx;
         }
       }
     }
