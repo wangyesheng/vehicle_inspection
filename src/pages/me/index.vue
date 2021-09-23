@@ -3,13 +3,6 @@
     <view class="banner-wrap">
       <view class="user-wrap">
         <image
-          v-if="appUser.member_avatar"
-          src="../../static/images/refresh.png"
-          mode="widthFit"
-          class="refresh"
-          @click="handleGetUserinfo"
-        />
-        <image
           :src="
             appUser.member_avatar
               ? appUser.member_avatar
@@ -90,6 +83,10 @@ export default {
     };
   },
 
+  onLoad() {
+    this.getUserinfo();
+  },
+
   onShow() {
     if (!this.customer_phone || !this.customer_times) {
       this.getCustomer();
@@ -102,19 +99,16 @@ export default {
   },
 
   methods: {
-    async handleGetUserinfo() {
+    async getUserinfo() {
       const {
         data: {
           info: { gid },
         },
       } = await getUserinfoRes();
-      uni.setStorageSync(
-        "app_user",
-        JSON.stringify({
-          ...this.appUser,
-          gid: 1,
-        })
-      );
+      if (gid) {
+        this.appUser.gid = gid;
+        uni.setStorageSync("app_user", JSON.stringify(this.appUser));
+      }
     },
     handleNavTo(flag) {
       if (!this.checkLogin()) {
@@ -206,7 +200,7 @@ export default {
       image {
         width: 180rpx;
         height: 180rpx;
-        border-radius: 10rpx;
+        border-radius: 100%;
       }
       .login-tips {
         margin-top: 10rpx;

@@ -400,13 +400,14 @@ export default {
     justify-content: space-between;
     margin-top: 30rpx;
     .common {
-      width: 300rpx;
+      width: 320rpx;
       height: 120rpx;
-      background-size: 100% 100%;
       display: flex;
       flex-direction: column;
       justify-content: center;
       padding-left: 30rpx;
+      background: #fff;
+      border-radius: 10rpx;
       .deep {
         font-size: 28rpx;
         font-weight: 500;
@@ -421,11 +422,11 @@ export default {
     }
 
     .agent {
-      background: url("../../static/images/home/agent.png") no-repeat;
+      // background: url("../../static/images/home/agent.png") no-repeat;
     }
 
     .self {
-      background: url("../../static/images/home/self.png") no-repeat;
+      // background: url("../../static/images/home/self.png") no-repeat;
     }
   }
 

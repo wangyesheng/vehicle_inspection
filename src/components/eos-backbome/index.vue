@@ -41,7 +41,7 @@
 <template>
   <view
     :class="type == 'refresh' ? 'refresh' : 'backhome'"
-    @click="handleBackhome"
+    @click="handleClick"
   >
     <image :src="`../../static/images/${type}.png`" mode="widthFit" />
   </view>
@@ -56,10 +56,14 @@ export default {
     },
   },
   methods: {
-    handleBackhome() {
-      uni.switchTab({
-        url: "/pages/home/index",
-      });
+    handleClick() {
+      switch (this.type) {
+        case "home":
+          uni.switchTab({
+            url: "/pages/home/index",
+          });
+          break;
+      }
     },
   },
 };
