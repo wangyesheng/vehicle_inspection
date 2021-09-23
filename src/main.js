@@ -42,6 +42,10 @@ Vue.prototype.getSysHeight = function() {
   return uni.getSystemInfoSync().windowHeight;
 };
 
+Vue.prototype.getSysWidth = function() {
+  return uni.getSystemInfoSync().windowWidth;
+};
+
 Vue.prototype.getAuthLocation = getLocation;
 
 Vue.config.productionTip = false;

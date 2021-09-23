@@ -3,7 +3,7 @@
   position: relative;
   .bg-wrap {
     height: 480rpx;
-    background: url('https://cj.huazhe.work/images/shifting-code/bg.png');
+    background: url("https://cj.huazhe.work/images/shifting-code/bg.png");
     background-size: 100% 100%;
   }
   .form-wrap {
@@ -193,11 +193,7 @@
             placeholder="请输入验证码"
             type="number"
           />
-          <view
-            slot="right"
-            class="code"
-            @click="handleGetCode"
-          >
+          <view slot="right" class="code" @click="handleGetCode">
             <text v-if="loading">{{ codeText }}</text>
             <text v-else>获取验证码</text>
           </view>
@@ -212,10 +208,7 @@
             @click="handleShowCarPopup"
           />
         </view>
-        <view
-          class="c-content"
-          v-if="selectedCar"
-        >
+        <view class="c-content" v-if="selectedCar">
           <view class="number">{{ selectedCar.number }}</view>
           <view class="type">{{ selectedCar._type }}</view>
         </view>
@@ -242,26 +235,17 @@
         @click="handleAgree"
       />
       <text>我已阅读并同意</text>
-      <text class="link">《用户须知》</text>
+      <text class="link" @click="handleToUserProtocol">《用户须知》</text>
     </view>
     <view class="btn-wrap">
-      <u-button
-        type="warning"
-        shape="circle"
-        @click="handleSubmit"
-      >保存</u-button>
+      <u-button type="warning" shape="circle" @click="handleSubmit"
+        >保存</u-button
+      >
     </view>
-    <view
-      class="unbind"
-      @click="handleUnbind"
-    >
+    <view class="unbind" @click="handleUnbind">
       <text>解绑挪车码</text>
     </view>
-    <u-popup
-      mode="bottom "
-      v-model="carPopup.visible"
-      class="popup-wrap"
-    >
+    <u-popup mode="bottom " v-model="carPopup.visible" class="popup-wrap">
       <view class="car-wrap">
         <view class="car-header">
           <text>我的车库</text>
@@ -272,6 +256,7 @@
             class="row"
             v-for="item in cars"
             :key="item.id"
+            @click="handleSelectCar(item)"
           >
             <view class="col-left">
               <view class="number">{{ item.number }}</view>
@@ -303,15 +288,15 @@
 </template>
 
 <script>
-import timingMixin from '../../mixins/timingMixin';
+import timingMixin from "../../mixins/timingMixin";
 import {
   getCarsRes,
   bindCodeCarRes,
   getCodeInfoRes,
   unbindCodeCarRes,
   deleteCarRes,
-} from '../../api';
-import { debounce } from '../../utils/tool';
+} from "../../api";
+import { debounce } from "../../utils/tool";
 
 export default {
   mixins: [timingMixin],
@@ -322,8 +307,8 @@ export default {
       agreement: false,
       mobileForm: {
         data: {
-          mobile: '',
-          sms_vcode: '',
+          mobile: "",
+          sms_vcode: "",
         },
       },
       carPopup: {
@@ -336,13 +321,22 @@ export default {
 
   async onLoad(options) {
     this.code = options.code;
-    this.codeId = uni.getStorageSync('shifting_code_id') || 74;
+    this.codeId = uni.getStorageSync("shifting_code_id") || 74;
     this.mobileForm.data.mobile = this.getAppUser().member_mobile;
     await this.getCars();
     this.code && (await this.getCodeInfo());
   },
 
   methods: {
+    handleSelectCar(car) {
+      this.selectedCar = car;
+      this.carPopup.visible = false;
+    },
+    handleToUserProtocol() {
+      uni.navigateTo({
+        url: "/pages/auth/user-protocol",
+      });
+    },
     handleAgree() {
       this.agreement = !this.agreement;
     },
@@ -371,7 +365,7 @@ export default {
       } = await getCarsRes();
       this.cars = carList.map((x) => ({
         ...x,
-        _type: x.type == 1 ? '小型汽车(非营运)' : '小型汽车(营运)',
+        _type: x.type == 1 ? "小型汽车(非营运)" : "小型汽车(营运)",
       }));
       this.selectedCar = this.cars[0] ? this.cars[0] : null;
     },
@@ -384,8 +378,8 @@ export default {
             !this.mobileForm.data.sms_vcode
           ) {
             uni.showToast({
-              icon: 'none',
-              title: '请填写完资料再提交~',
+              icon: "none",
+              title: "请填写完资料再提交~",
             });
             return;
           }
@@ -396,17 +390,17 @@ export default {
           };
           const { code, data } = await bindCodeCarRes(reqData);
           if (code == 200) {
-            this.navTo('/pages/shifting-code/index');
+            this.navTo("/pages/shifting-code/index");
           } else {
             uni.showToast({
-              icon: 'none',
+              icon: "none",
               title: data,
             });
           }
         } else {
           uni.showToast({
-            icon: 'none',
-            title: '请先勾选用户须知~',
+            icon: "none",
+            title: "请先勾选用户须知~",
           });
         }
       },
@@ -415,8 +409,8 @@ export default {
     ),
     handleUnbind() {
       uni.showModal({
-        title: '解绑提示',
-        content: '解绑挪车码后，将清空此二维码绑定的车牌号、手机号信息...',
+        title: "解绑提示",
+        content: "解绑挪车码后，将清空此二维码绑定的车牌号、手机号信息...",
         success: async ({ confirm }) => {
           if (confirm) {
             const { code, data } = await unbindCodeCarRes({
@@ -424,11 +418,11 @@ export default {
             });
             if (code == 200) {
               uni.showToast({
-                icon: 'none',
+                icon: "none",
                 title: data,
               });
               uni.switchTab({
-                url: '/pages/home/index',
+                url: "/pages/home/index",
               });
             }
           }
@@ -437,8 +431,8 @@ export default {
     },
     handleDelete(car_id) {
       uni.showModal({
-        title: '提示',
-        content: '确认要删除该车辆吗？',
+        title: "提示",
+        content: "确认要删除该车辆吗？",
         success: async ({ confirm }) => {
           if (confirm) {
             const { code, data } = await deleteCarRes({
@@ -446,9 +440,10 @@ export default {
             });
             if (code == 200) {
               uni.showToast({
-                icon: 'none',
+                icon: "none",
                 title: data,
               });
+              this.carPopup.visible = false;
               this.getCars();
             }
           }
