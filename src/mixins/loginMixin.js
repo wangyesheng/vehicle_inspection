@@ -40,6 +40,7 @@ export default {
               provider: 'weixin',
               desc: '获取用户信息！',
               success: response => {
+                console.log('response', response)
                 resolve(response);
               },
               fail: err => {

@@ -298,3 +298,10 @@ export const getUserinfoRes = data =>
     method: 'GET',
     data,
   });
+
+export const getMyActivityRes = data =>
+  request({
+    url: '/api.php?p=/Member/getMyActivity',
+    method: 'GET',
+    data,
+  });
