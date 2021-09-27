@@ -37,7 +37,7 @@
             <text>天</text>
             <view class="extra">
               <u-tag
-                v-if="isEffectActivity"
+                v-if="item.activity_id != 0"
                 mode="plain"
                 shape="circleRight"
                 :type="item.is_check == 0 ? 'primary' : 'error'"

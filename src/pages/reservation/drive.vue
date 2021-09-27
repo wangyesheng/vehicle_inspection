@@ -1,14 +1,20 @@
 <template>
-  <view>
-    <u-tabs
-      :list="[{ name: '自驾' }, { name: '代驾' }]"
-      :is-scroll="false"
-      :current="current"
-      @change="handleTabChange"
-    />
+  <view class="wrap">
+    <view class="tabs-wrap">
+      <u-tabs
+        :list="[{ name: '自驾' }, { name: '代驾' }]"
+        :is-scroll="false"
+        :current="current"
+        @change="handleTabChange"
+      />
+    </view>
     <view
       v-if="agencies.length || myAppointments.length"
-      :style="{ minHeight: `calc(100vh - 44px)` }"
+      :style="{
+        minHeight: `calc(100vh - 55px)`,
+        marginTop: '110rpx',
+        paddingBottom: '20rpx',
+      }"
     >
       <view class="reservation-container" v-if="current == 1">
         <view class="order-wrap" v-for="item in agencies" :key="item.id">
@@ -108,7 +114,15 @@
         </view>
       </view>
     </view>
-    <view v-else class="no-data-wrap" :style="{ minHeight: `calc(100vh - 44px)` }">
+    <view
+      v-else
+      class="no-data-wrap"
+      :style="{
+        minHeight: `calc(100vh - 55px)`,
+        marginTop: '110rpx',
+        paddingBottom: '20rpx',
+      }"
+    >
       <view>
         <image
           src="https://cj.huazhe.work/images/inspection/no_appointment.png"
@@ -269,83 +283,101 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.reservation-container {
-  background: #f6f6f6;
-  .order-wrap {
-    background: #fff;
-    margin-bottom: 20rpx;
-    .gray {
-      color: #9a9a9a !important;
-    }
-    .top-wrap {
-      padding: 40rpx 32rpx;
-      border-bottom: 2rpx solid #f2f2f2;
-      position: relative;
-      .status-tag {
-        position: absolute;
-        right: 50rpx;
-        top: 36rpx;
-
-        & /deep/ .u-size-default {
-          font-size: 24rpx;
+.wrap {
+  .tabs-wrap {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 99;
+    width: 100%;
+    ::v-deep {
+      .u-tabs {
+        box-shadow: 0 4rpx 20rpx 0 #f0f0f0;
+        padding: 10rpx 0;
+        .u-tab-item {
+          font-size: 32rpx !important;
         }
       }
-      .header {
+    }
+  }
+  .reservation-container {
+    background: #f6f6f6;
+    .order-wrap {
+      background: #fff;
+      margin-bottom: 20rpx;
+      .gray {
+        color: #9a9a9a !important;
+      }
+      .top-wrap {
+        padding: 40rpx 32rpx;
+        border-bottom: 2rpx solid #f2f2f2;
+        position: relative;
+        .status-tag {
+          position: absolute;
+          right: 50rpx;
+          top: 36rpx;
+
+          & /deep/ .u-size-default {
+            font-size: 24rpx;
+          }
+        }
+        .header {
+          display: flex;
+          justify-content: space-between;
+          margin-bottom: 38rpx;
+          .station-name {
+            font-size: 36rpx;
+            font-weight: bold;
+            color: #000;
+          }
+        }
+        .content {
+          .mb20 {
+            margin-bottom: 20rpx;
+          }
+          .info-item {
+            font-size: 30rpx;
+            font-weight: 400;
+            .label {
+              color: #666666;
+              margin-right: 22rpx;
+            }
+            .value {
+              color: #343434;
+            }
+          }
+        }
+      }
+      .bottom-wrap {
         display: flex;
-        justify-content: space-between;
-        margin-bottom: 38rpx;
-        .station-name {
-          font-size: 36rpx;
-          font-weight: bold;
-          color: #000;
-        }
-      }
-      .content {
-        .mb20 {
-          margin-bottom: 20rpx;
-        }
-        .info-item {
-          font-size: 30rpx;
-          font-weight: 400;
-          .label {
-            color: #666666;
-            margin-right: 22rpx;
+        justify-content: space-around;
+        padding: 26rpx 70rpx;
+        view {
+          text-align: center;
+          width: 50%;
+          &:first-child {
+            border-right: 1px solid #f2f2f2;
           }
-          .value {
-            color: #343434;
-          }
-        }
-      }
-    }
-    .bottom-wrap {
-      display: flex;
-      justify-content: space-around;
-      padding: 26rpx 70rpx;
-      view {
-        text-align: center;
-        width: 50%;
-        &:first-child {
-          border-right: 1px solid #f2f2f2;
         }
       }
     }
   }
-}
 
-.no-data-wrap {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  image {
-    width: 199rpx;
-    height: 155rpx;
-  }
-  view {
-    font-size: 28rpx;
-    font-weight: 500;
-    color: #9a9a9a;
-    margin-top: 30rpx;
-    text-align: center;
+  .no-data-wrap {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    image {
+      width: 199rpx;
+      height: 155rpx;
+    }
+    view {
+      font-size: 28rpx;
+      font-weight: 500;
+      color: #9a9a9a;
+      margin-top: 30rpx;
+      text-align: center;
+    }
   }
 }
 </style>

@@ -38,8 +38,8 @@
           @click="handleNavTo(1)"
         />
         <u-cell-item title="我的权益" @click="handleNavTo(4)" />
-        <u-cell-item title="我的预约单" @click="handleNavTo(2)" />
-        <u-cell-item title="代驾预约单" @click="handleNavTo(3)" />
+        <u-cell-item title="我的预约单" @click="handleNavTo(3)" />
+        <!-- <u-cell-item title="代驾预约单" @click="handleNavTo(3)" /> -->
         <u-cell-item @click="handleContact">
           <view slot="title">
             <text>联系客服</text>

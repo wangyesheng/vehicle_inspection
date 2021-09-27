@@ -1,27 +1,33 @@
 <template>
   <view class="activity-wrap">
-    <view class="row" v-for="(item, index) in activities" :key="index">
-      <view class="content">
-        <view class="left">
-          <image src="../../static/images/activity/tpy.png"></image>
-        </view>
-        <view class="right">
-          <view class="title">{{ item.ac_name }}</view>
-          <view class="time">{{ item.startTime }} - {{ item.endTime }}</view>
-          <view class="status">
-            <u-tag
-              shape="circleLeft"
-              :text="item.status.label"
-              :type="item.status.type"
-            />
+    <template v-if="activities.length > 0">
+      <view class="row" v-for="(item, index) in activities" :key="index">
+        <view class="content">
+          <view class="left">
+            <image src="../../static/images/activity/tpy.png"></image>
+          </view>
+          <view class="right">
+            <view class="title">{{ item.ac_name }}</view>
+            <view class="time">{{ item.startTime }} - {{ item.endTime }}</view>
+            <view class="status">
+              <u-tag
+                shape="circleLeft"
+                :text="item.status.label"
+                :type="item.status.type"
+              />
+            </view>
           </view>
         </view>
+        <view class="detail" @click="() => (popupVisible = true)">
+          <text>查看权益详情</text>
+        </view>
       </view>
-      <view class="detail" @click="() => (popupVisible = true)">
-        <text>查看权益详情</text>
-      </view>
+    </template>
+    <view v-else class="no-permission">
+      <image src="../../static/images/activity/quanyi.png" mode="widthFit" />
+      <text>暂无优惠权益~</text>
     </view>
-    <u-popup v-model="popupVisible" mode="center" width="80%">
+    <u-popup v-model="popupVisible" mode="bottom">
       <view class="illustrate">
         <text> 1.小型私家车年检，检测费仅需240元；</text>
         <text>
@@ -62,26 +68,26 @@ export default {
       const {
         data: { info },
       } = await getMyActivityRes();
-      this.activities.push({
-        ...info,
-        startTime: this.$u.timeFormat(info.ac_start_time * 1000, "yyyy.mm.dd"),
-        endTime: this.$u.timeFormat(info.ac_end_time * 1000, "yyyy.mm.dd"),
-        status:
-          info.is_sign == 0
-            ? {
-                label: "暂无权益",
-                type: "error",
-              }
-            : info.is_sign == 1 && info.is_check == 0
-            ? {
-                type: "primary",
-                label: "未核销",
-              }
-            : {
-                type: "warning",
-                label: "已核销",
-              },
-      });
+      if (info.is_sign != 0) {
+        this.activities.push({
+          ...info,
+          startTime: this.$u.timeFormat(
+            info.ac_start_time * 1000,
+            "yyyy.mm.dd"
+          ),
+          endTime: this.$u.timeFormat(info.ac_end_time * 1000, "yyyy.mm.dd"),
+          status:
+            info.is_check == 0
+              ? {
+                  type: "primary",
+                  label: "未核销",
+                }
+              : {
+                  type: "error",
+                  label: "已核销",
+                },
+        });
+      }
     },
   },
 };
@@ -91,6 +97,23 @@ export default {
 .activity-wrap {
   background: #f5f5f5;
   min-height: 100vh;
+  .no-permission {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    image {
+      width: 120rpx;
+      height: 120rpx;
+    }
+    text {
+      display: inline-block;
+      margin-top: 10rpx;
+      color: #999;
+      font-weight: 600;
+    }
+  }
   .row {
     background: #fff;
     padding: 30rpx 30rpx 0;

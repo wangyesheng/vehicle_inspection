@@ -50,7 +50,7 @@
     {
       "path": "pages/reservation/drive",
       "style": {
-        "navigationBarTitleText": "代驾预约单"
+        "navigationBarTitleText": "我的预约单"
       }
     }, {
       "path": "pages/order/index",
@@ -60,7 +60,7 @@
     }, {
       "path": "pages/reservation/index",
       "style": {
-        "navigationBarTitleText": "我的预约单"
+        "navigationBarTitleText": "代驾预约单"
       }
     },
     {
