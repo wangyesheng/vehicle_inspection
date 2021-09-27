@@ -181,7 +181,21 @@ export default {
     },
   },
 
+  onShareTimeline(_) {
+    const appUser = this.getAppUser();
+    let query;
+    if (appUser.member_mobile) {
+      query = `sharerId=${appUser.member_id}`;
+    }
+    return {
+      query,
+      title: "汽车年审，还可以更快更简单",
+      imageUrl: `https://cj.huazhe.work/images/huodong.png?timespan=${new Date().getTime()}`,
+    };
+  },
+
   onLoad(options) {
+    console.log(options);
     this.sysHeight = this.getSysHeight();
     this.shiftingCodeCount = 0;
     // 海报分享二维码
@@ -553,9 +567,9 @@ export default {
         background: #e6e6e6;
         box-shadow: 0rpx 0rpx 20rpx 0rpx rgba(204, 204, 204, 0.3);
         border-radius: 45rpx;
-        font-size: 32rpx;
+        font-size: 30rpx;
         font-weight: 500;
-        color: #ffffff;
+        color: #999;
         text-align: center;
         line-height: 90rpx;
       }
