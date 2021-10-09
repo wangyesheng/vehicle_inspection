@@ -218,6 +218,9 @@ export default {
     if (options.sharerId) {
       uni.setStorageSync("sharer_id", options.sharerId);
     }
+    if (options.activityId) {
+      uni.setStorageSync("activity_id", options.activityId);
+    }
   },
 
   onShow() {

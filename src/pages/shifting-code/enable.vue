@@ -27,7 +27,7 @@
     }
 
     .carinfo {
-      margin-top: 54rpx;
+      margin: 20rpx 0;
       .c-header {
         display: flex;
         justify-content: space-between;
@@ -171,6 +171,30 @@
   <view class="enable-wrap">
     <view class="bg-wrap" />
     <view class="form-wrap">
+      <view class="carinfo">
+        <view class="c-header">
+          <text>绑定车辆信息</text>
+          <image
+            src="https://cj.huazhe.work/images/shifting-code/car.png"
+            mode="widthFit"
+            @click="handleShowCarPopup"
+          />
+        </view>
+        <view class="c-content" v-if="selectedCar">
+          <view class="number">{{ selectedCar.number }}</view>
+          <view class="type">{{ selectedCar._type }}</view>
+        </view>
+        <view
+          class="no-car"
+          v-else
+          @click="navTo('/pages/shifting-code/add-car')"
+        >
+          <image
+            src="https://cj.huazhe.work/images/shifting-code/add_car.png"
+            mode="widthFit"
+          />
+        </view>
+      </view>
       <u-form
         :model="mobileForm.data"
         label-position="top"
@@ -199,30 +223,6 @@
           </view>
         </u-form-item>
       </u-form>
-      <view class="carinfo">
-        <view class="c-header">
-          <text>绑定车辆信息</text>
-          <image
-            src="https://cj.huazhe.work/images/shifting-code/car.png"
-            mode="widthFit"
-            @click="handleShowCarPopup"
-          />
-        </view>
-        <view class="c-content" v-if="selectedCar">
-          <view class="number">{{ selectedCar.number }}</view>
-          <view class="type">{{ selectedCar._type }}</view>
-        </view>
-        <view
-          class="no-car"
-          v-else
-          @click="navTo('/pages/shifting-code/add-car')"
-        >
-          <image
-            src="https://cj.huazhe.work/images/shifting-code/add_car.png"
-            mode="widthFit"
-          />
-        </view>
-      </view>
     </view>
     <view class="user-protocol-wrap">
       <image
@@ -249,7 +249,12 @@
           <text @click="navTo('/pages/shifting-code/add-car')">添加车辆</text>
         </view>
         <view class="car-content">
-          <view class="row" v-for="item in cars" :key="item.id" @click="handleSelectCar(item)">
+          <view
+            class="row"
+            v-for="item in cars"
+            :key="item.id"
+            @click="handleSelectCar(item)"
+          >
             <view class="col-left">
               <view class="number">{{ item.number }}</view>
               <view class="type gray">{{ item._type }}</view>

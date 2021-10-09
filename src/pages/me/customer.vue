@@ -291,7 +291,12 @@ export default {
       this.navTo("/pages/me/company");
     },
     handleShare() {
-      const path = `/pages/home/index?sharerId=${this.appUser.member_id}`;
+      if (this.isEffectActivity) {
+        uni.setStorageSync("activityId", this.activityInfo.id);
+      }
+      const path = `/pages/home/index?
+      sharerId=${this.appUser.member_id}&
+      activityId=${this.isEffectActivity ? this.activityInfo.id : ""}`;
       return {
         path,
         title: "汽车年审，还可以更快更简单",
