@@ -1,28 +1,23 @@
 <template>
   <view class="contact-wrap">
-    <u-mask
-      :show="maskVisible"
-      :custom-style="{background: '#fefefe'}"
-    />
+    <u-mask :show="maskVisible" :custom-style="{ background: '#fefefe' }" />
     <view class="banner">
       <image
         src="https://cj.huazhe.work/images/shifting-code/mind-tips.png"
         mode="widthFit"
+        v-if="!hasInvalid"
       />
-      <view class="carnum">{{carNum}}</view>
+      <view :class="!hasInvalid ? 'carnum' : 'invalid'">
+        {{ !hasInvalid ? carNum : '该挪车码已作废~' }}
+      </view>
     </view>
-    <view class="btn-wrap">
-      <u-button
-        type="warning"
-        shape="circle"
-        @click="handleCall"
-      >拨打车主电话</u-button>
+    <view class="btn-wrap" v-if="!hasInvalid">
+      <u-button type="warning" shape="circle" @click="handleCall">
+        拨打车主电话
+      </u-button>
     </view>
-    <view class="tips"> 为了保护双方隐私，本次通话将启用虚拟号码 </view>
-    <view
-      class="pull flex-vc"
-      @click="navTo('/pages/service/outlets')"
-    >
+    <view class="tips" v-if="!hasInvalid"> 为了保护双方隐私，本次通话将启用虚拟号码 </view>
+    <view class="pull flex-vc" @click="navTo('/pages/service/outlets')">
       <text>免费领取挪车码</text>
       <image
         src="https://cj.huazhe.work/images/shifting-code/right_arrow.png"
@@ -46,6 +41,7 @@ export default {
     return {
       carNum: '',
       maskVisible: true,
+      hasInvalid: false,
     };
   },
 
@@ -86,34 +82,42 @@ export default {
         if (car_id == 0) {
           if (appUser.gid == 5) {
             // 推广员
-            if (member_id == null || member_id == 0) {
-              this.navTo(`/pages/shifting-code/promoter?codeId=${id}`);
-            } else {
+            if (+member_id > 0) {
               uni.showToast({
                 title: '该二维码已绑定过推广员...',
                 icon: 'none',
               });
+            } else {
+              this.navTo(`/pages/shifting-code/promoter?codeId=${id}`);
             }
           } else {
-            this.navTo(`/pages/shifting-code/enable?inviter_id=${member_id}`);
+            if (+member_id > 0) {
+              uni.setStorageSync('inviter_id', member_id);
+            }
+            this.navTo(`/pages/shifting-code/enable`);
           }
         } else if (car_id != 0 && uid == appUser.member_id) {
           this.navTo('/pages/shifting-code/index');
         } else if (car_id != 0 && uid != appUser.member_id) {
-          // 获取隐私电话
-          const { code: __code, data } = await getVirtualMobileRes({
-            to_id: uid,
-            code,
-          });
-          if (__code == 200) {
-            this.virtualMobile = data.xMobile;
-            this.maskVisible = false;
+          if (!uid && !number) {
+            // 绑定该挪车码的车辆被删除了，此时挪车码作废
+            this.hasInvalid = true;
           } else {
-            uni.showToast({
-              title: data,
-              icon: 'none',
+            // 获取隐私电话
+            const { code: __code, data } = await getVirtualMobileRes({
+              to_id: uid,
+              code,
             });
+            if (__code == 200) {
+              this.virtualMobile = data.xMobile;
+            } else {
+              uni.showToast({
+                title: data,
+                icon: 'none',
+              });
+            }
           }
+          this.maskVisible = false;
         }
       }
       uni.hideLoading();
@@ -122,7 +126,7 @@ export default {
       if (this.virtualMobile) {
         uni.makePhoneCall({
           phoneNumber: this.virtualMobile,
-          success: (_) => {},
+          success: _ => {},
         });
       }
     },
@@ -153,6 +157,13 @@ export default {
       position: absolute;
       top: 250rpx;
       left: 220rpx;
+    }
+    .invalid {
+      position: absolute;
+      top: 266rpx;
+      left: 220rpx;
+      font-size: 40rpx;
+      color: #f5f5f5;
     }
   }
   .btn-wrap {
