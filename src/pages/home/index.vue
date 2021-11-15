@@ -143,6 +143,8 @@ import {
   getNoticesRes,
   setCarDealRes,
   getMyCodeCountRes,
+  getHomeImageRes,
+  getShareImageRes,
 } from "../../api";
 import { BUTTON_FLAGS } from "../../constant";
 
@@ -165,32 +167,26 @@ export default {
       canShowReserveTime: false,
       reserveTime: "",
       sysHeight: 0,
+      headerBg: "",
       methodPopup: {
         visible: false,
       },
     };
   },
 
-  computed: {
-    headerBg() {
-      const timestampFormatter = this.$u.timeFormat(
-        new Date().getTime(),
-        "yyyy-mm-dd"
-      );
-      return `https://cj.huazhe.work/images/home/header-bg.jpg?timestamp=${timestampFormatter}`;
-    },
-  },
-
-  onShareTimeline(_) {
+  async onShareTimeline(_) {
     const appUser = this.getAppUser();
     let query;
     if (appUser.member_mobile) {
       query = `sharerId=${appUser.member_id}`;
     }
+    const {
+      data: { sharepic },
+    } = await getShareImageRes();
     return {
       query,
       title: "汽车年审，还可以更快更简单",
-      imageUrl: `https://cj.huazhe.work/images/huodong.png?timespan=${new Date().getTime()}`,
+      imageUrl: sharepic,
     };
   },
 
@@ -224,10 +220,21 @@ export default {
   },
 
   onShow() {
-    Promise.all([this.getCars(), this.getNotices(), this.getMyCodeCount()]);
+    Promise.all([
+      this.getCars(),
+      this.getNotices(),
+      this.getMyCodeCount(),
+      this.getHomeImage(),
+    ]);
   },
 
   methods: {
+    async getHomeImage() {
+      const {
+        data: { indexpic },
+      } = await getHomeImageRes();
+      this.headerBg = indexpic;
+    },
     handleToProcess(flag) {
       flag == 1
         ? this.navTo("/pages/home/agent")

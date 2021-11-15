@@ -130,6 +130,7 @@ import {
   getMyCompaniesRes,
   callVirtualMobileRes,
   getLatestActivityRes,
+  getShareImageRes,
 } from "../../api";
 
 import {
@@ -290,17 +291,20 @@ export default {
     handleNavTo() {
       this.navTo("/pages/me/company");
     },
-    handleShare() {
+    async handleShare() {
       if (this.isEffectActivity) {
         uni.setStorageSync("activityId", this.activityInfo.id);
       }
       const path = `/pages/home/index?
       sharerId=${this.appUser.member_id}&
       activityId=${this.isEffectActivity ? this.activityInfo.id : ""}`;
+      const {
+        data: { sharepic },
+      } = await getShareImageRes();
       return {
         path,
         title: "汽车年审，还可以更快更简单",
-        imageUrl: `https://cj.huazhe.work/images/huodong.png?timespan=${new Date().getTime()}`,
+        imageUrl: sharepic,
       };
     },
     handleShareToTimeline() {
