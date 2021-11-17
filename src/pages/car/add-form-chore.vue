@@ -324,7 +324,7 @@ export default {
     disabled() {
       let flag = false;
       for (let key in this.carForm.data) {
-         if (key == "engine_number") {
+        if (key == "engine_number") {
           continue;
         }
         if (this.carForm.data[key] === "") {
@@ -334,6 +334,14 @@ export default {
       }
       return flag;
     },
+  },
+
+  onLoad() {
+    if (!this.checkLogin()) {
+      uni.navigateTo({
+        url: "/pages/auth/login-nav?from=4",
+      });
+    }
   },
 
   onReady() {

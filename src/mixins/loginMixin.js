@@ -149,6 +149,9 @@ export default {
         case '3':
           this.navTo('/pages/shifting-code/contact');
           break;
+        case '4':
+          this.navTo('/pages/car/add-form-chore');
+          break;
       }
     },
   },
