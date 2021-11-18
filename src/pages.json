@@ -3,13 +3,23 @@
     "^u-(.*)": "@/uview-ui/components/u-$1/u-$1.vue"
   },
 
-  "pages": [
-    {
+  "pages": [{
+      "path": "pages/order/index",
+      "style": {
+        "navigationBarTitleText": "年检代办订单"
+      }
+    }, {
       "path": "pages/home/index",
       "style": {
         "navigationBarTitleText": "川B年检"
       }
-    },{
+    },
+    {
+      "path": "pages/car/add-form-chore",
+      "style": {
+        "navigationBarTitleText": "添加车辆"
+      }
+    }, {
       "path": "pages/me/customer",
       "style": {
         "navigationBarTitleText": "受邀的好友"
@@ -51,11 +61,6 @@
       "path": "pages/reservation/drive",
       "style": {
         "navigationBarTitleText": "我的预约单"
-      }
-    }, {
-      "path": "pages/order/index",
-      "style": {
-        "navigationBarTitleText": "年检代办订单"
       }
     }, {
       "path": "pages/reservation/index",
@@ -138,12 +143,6 @@
       "path": "pages/auth/user-protocol",
       "style": {
         "navigationBarTitleText": "用户服务协议"
-      }
-    },
-    {
-      "path": "pages/car/add-form-chore",
-      "style": {
-        "navigationBarTitleText": "添加车辆"
       }
     },
     {

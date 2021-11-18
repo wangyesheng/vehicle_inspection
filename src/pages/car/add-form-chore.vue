@@ -336,9 +336,9 @@ export default {
     },
   },
 
-  onLoad() {
+  onShow() {
     if (!this.checkLogin()) {
-      uni.navigateTo({
+      return uni.navigateTo({
         url: "/pages/auth/login-nav?from=4",
       });
     }
