@@ -36,14 +36,13 @@
             backgroundSize: '100% 100%',
           }"
         >
-          <view
-            class="cover-wrap"
-            v-if="!item.canAddCar"
-          >
+          <view class="cover-wrap" v-if="!item.canAddCar">
             <view class="cover-header">
               <view class="cover-header-l">
                 <view class="car-num">{{ item.number }}</view>
-                <view class="car-desc">小型汽车({{item.type==='1'?'非营运':'营运'}})</view>
+                <view class="car-desc"
+                  >小型汽车({{ item.type === "1" ? "非营运" : "营运" }})</view
+                >
               </view>
               <view class="cover-header-r">
                 <view class="tag-default">{{ item._status }}</view>
@@ -54,24 +53,22 @@
                 class="cover-footer-l"
                 :style="{ color: item.isOverdue ? '#FF474F' : '#fff' }"
               >
-                <text class="prompt-label">{{ item.prompt }}</text>
-                <text class="prompt-value">{{ `${item.days}天` }}</text>
+                <text class="prompt-label">
+                  {{ item.labelPrefix }}上线年检时间：
+                </text>
+                <text class="prompt-value">
+                  {{ item.start_time_str }} 至 {{ item.end_time_str }}
+                </text>
                 <text
                   class="btn-plain position"
-                  v-if="item.status==3||item.status==4"
+                  v-if="item.status == 3 || item.status == 4"
                   @click="handleProcessed"
                 >
                   我已办理
                 </text>
               </view>
-              <view
-                class="cover-footer-r"
-                @click="handleNavTo(item.id)"
-              >
-                <image
-                  :src="item.editIcon"
-                  mode="widthFit"
-                />
+              <view class="cover-footer-r" @click="handleNavTo(item.id)">
+                <image :src="item.editIcon" mode="widthFit" />
               </view>
             </view>
           </view>
@@ -96,7 +93,7 @@
         justifyContent: justifyContent,
         padding: `0 ${effect3d ? '74rpx' : '24rpx'}`,
       }"
-      v-if="list.length!==1"
+      v-if="list.length !== 1"
     >
       <block v-if="mode == 'rect'">
         <view
@@ -123,7 +120,9 @@
         ></view>
       </block>
       <block v-if="mode == 'number'">
-        <view class="u-indicator-item-number">{{ current + 1 }}/{{ list.length }}</view>
+        <view class="u-indicator-item-number"
+          >{{ current + 1 }}/{{ list.length }}</view
+        >
       </block>
     </view>
   </view>
@@ -131,7 +130,7 @@
 
 <script>
 export default {
-  name: 'eos-swiper',
+  name: "eos-swiper",
   props: {
     // 轮播图的数据,格式如：[{image: 'xxxx', title: 'xxxx'}，{image: 'yyyy', title: 'yyyy'}]，其中title字段可选
     list: {
@@ -165,7 +164,7 @@ export default {
     // 指示器的模式，rect|dot|number|round
     mode: {
       type: String,
-      default: 'round',
+      default: "round",
     },
     // list的高度，单位rpx
     height: {
@@ -175,7 +174,7 @@ export default {
     // 指示器的位置，topLeft|topCenter|topRight|bottomLeft|bottomCenter|bottomRight
     indicatorPos: {
       type: String,
-      default: 'bottomCenter',
+      default: "bottomCenter",
     },
     // 是否开启缩放效果
     effect3d: {
@@ -205,17 +204,17 @@ export default {
     // 图片的裁剪模式
     imgMode: {
       type: String,
-      default: 'aspectFill',
+      default: "aspectFill",
     },
     // 从list数组中读取的图片的属性名
     name: {
       type: String,
-      default: 'image',
+      default: "image",
     },
     // 背景颜色
     bgColor: {
       type: String,
-      default: '#f3f4f6',
+      default: "#f3f4f6",
     },
   },
   watch: {
@@ -231,48 +230,48 @@ export default {
   },
   computed: {
     justifyContent() {
-      if (this.indicatorPos == 'topLeft' || this.indicatorPos == 'bottomLeft')
-        return 'flex-start';
+      if (this.indicatorPos == "topLeft" || this.indicatorPos == "bottomLeft")
+        return "flex-start";
       if (
-        this.indicatorPos == 'topCenter' ||
-        this.indicatorPos == 'bottomCenter'
+        this.indicatorPos == "topCenter" ||
+        this.indicatorPos == "bottomCenter"
       )
-        return 'center';
-      if (this.indicatorPos == 'topRight' || this.indicatorPos == 'bottomRight')
-        return 'flex-end';
+        return "center";
+      if (this.indicatorPos == "topRight" || this.indicatorPos == "bottomRight")
+        return "flex-end";
     },
     titlePaddingBottom() {
       let tmp = 0;
-      if (this.mode == 'none') return '12rpx';
+      if (this.mode == "none") return "12rpx";
       if (
-        ['bottomLeft', 'bottomCenter', 'bottomRight'].indexOf(
+        ["bottomLeft", "bottomCenter", "bottomRight"].indexOf(
           this.indicatorPos
         ) >= 0 &&
-        this.mode == 'number'
+        this.mode == "number"
       ) {
-        tmp = '60rpx';
+        tmp = "60rpx";
       } else if (
-        ['bottomLeft', 'bottomCenter', 'bottomRight'].indexOf(
+        ["bottomLeft", "bottomCenter", "bottomRight"].indexOf(
           this.indicatorPos
         ) >= 0 &&
-        this.mode != 'number'
+        this.mode != "number"
       ) {
-        tmp = '40rpx';
+        tmp = "40rpx";
       } else {
-        tmp = '12rpx';
+        tmp = "12rpx";
       }
       return tmp;
     },
   },
   methods: {
     listClick(index) {
-      this.$emit('click', index);
+      this.$emit("click", index);
     },
     change(e) {
       let current = e.detail.current;
       this.current = current;
       // 发出change事件，表示当前自动切换的index，从0开始
-      this.$emit('change', current);
+      this.$emit("change", current);
     },
     // 头条小程序不支持animationfinish事件，改由change事件
     // 暂不监听此事件，因为不再给swiper绑定current属性
@@ -285,7 +284,7 @@ export default {
       this.navTo(`/pages/car/edit-form-chore?id=${id}`);
     },
     handleProcessed() {
-      this.$emit('on-processed');
+      this.$emit("on-processed");
     },
   },
 };
@@ -412,7 +411,7 @@ export default {
     .cover-header {
       display: flex;
       justify-content: space-between;
-      margin-bottom: 68rpx;
+      margin-bottom: 55rpx;
       .cover-header-l {
         .car-desc {
           font-size: 28rpx;
@@ -435,14 +434,18 @@ export default {
       justify-content: space-between;
       align-items: center;
       .cover-footer-l {
+        display: flex;
+        flex-direction: column;
+
         .prompt-label {
           font-weight: 400;
           font-size: 28rpx;
+          margin-bottom: 10rpx;
         }
+
         .prompt-value {
           font-weight: bold;
-          font-size: 48rpx;
-          margin-left: 10rpx;
+          font-size: 28rpx;
         }
         .position {
           position: relative;

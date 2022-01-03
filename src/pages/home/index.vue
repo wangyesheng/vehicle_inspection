@@ -300,49 +300,57 @@ export default {
           }
         }
 
-        switch (x.status) {
+        if (x.now < x.start_time || x.now > x.end_time) {
           // 未到期，不可预约
-          case 0:
-            layer.prompt = "距上线年检还剩";
-            layer.isOverdue = false;
-            layer.buttonFlag = 0;
-            break;
-          // 已预约
-          case 1:
-            if (layer.is_pass == 0) {
-              // 未逾期
-              layer.prompt = "距年检逾期还剩";
-              layer.isOverdue = false;
-            } else {
-              layer.prompt = "年检已逾期";
-              layer.isOverdue = true;
-            }
-            layer.buttonFlag = 1;
-            break;
-          // 已办理
-          case 2:
-            layer.prompt = "距上线年检还剩";
-            layer.isOverdue = false;
-            layer.buttonFlag = 0;
-            break;
-          // 可预约
-          case 3:
-            layer.prompt = "距年检逾期还剩";
-            layer.isOverdue = false;
-            layer.buttonFlag = 2;
-            layer.appointmentDates = getDiffDate(x.start_time, x.end_time);
-            break;
-          // 已逾期
-          case 4:
-            layer.prompt = "年检已逾期";
-            layer.isOverdue = true;
-            layer.buttonFlag = 2;
-            const date = getDateByDays(30 - x.days);
-            console.log(date, currentFormatDate);
-            // 2020-12-29 2020-12-29
-            layer.appointmentDates = getDiffDate(currentFormatDate, date);
-            break;
+          layer.labelPrefix = "下次";
+          layer.buttonFlag = 0;
+        } else if (x.now > x.start_time && x.now < x.end_time) {
+          layer.labelPrefix = "此次";
+          layer.buttonFlag = 2;
         }
+        // switch (x.status) {
+        //   // 未到期，不可预约
+        //   case 0:
+        //     layer.prompt = "距上线年检还剩";
+        //     layer.isOverdue = false;
+        //     layer.buttonFlag = 0;
+        //     break;
+        //   // 已预约
+        //   case 1:
+        //     if (layer.is_pass == 0) {
+        //       // 未逾期
+        //       layer.prompt = "距年检逾期还剩";
+        //       layer.isOverdue = false;
+        //     } else {
+        //       layer.prompt = "年检已逾期";
+        //       layer.isOverdue = true;
+        //     }
+        //     layer.buttonFlag = 1;
+        //     break;
+        //   // 已办理
+        //   case 2:
+        //     layer.prompt = "距上线年检还剩";
+        //     layer.isOverdue = false;
+        //     layer.buttonFlag = 0;
+        //     break;
+        //   // 可预约
+        //   case 3:
+        //     layer.prompt = "距年检逾期还剩";
+        //     layer.isOverdue = false;
+        //     layer.buttonFlag = 2;
+        //     layer.appointmentDates = getDiffDate(x.start_time, x.end_time);
+        //     break;
+        //   // 已逾期
+        //   case 4:
+        //     layer.prompt = "年检已逾期";
+        //     layer.isOverdue = true;
+        //     layer.buttonFlag = 2;
+        //     const date = getDateByDays(30 - x.days);
+        //     console.log(date, currentFormatDate);
+        //     // 2020-12-29 2020-12-29
+        //     layer.appointmentDates = getDiffDate(currentFormatDate, date);
+        //     break;
+        // }
         return layer;
       });
       uni.setStorageSync("app_user_cars", this.cars);

@@ -8,19 +8,34 @@ const weekdays = [
   '星期六',
 ];
 const holidays = [
-  '2021-06-12',
-  '2021-06-13',
-  '2021-06-14',
-  '2021-09-19',
-  '2021-09-20',
-  '2021-09-21',
-  '2021-10-01',
-  '2021-10-02',
-  '2021-10-03',
-  '2021-10-04',
-  '2021-10-05',
-  '2021-10-06',
-  '2021-10-07',
+  '2022-01-31',
+  '2022-02-01',
+  '2022-02-02',
+  '2022-02-03',
+  '2022-02-04',
+  '2022-02-05',
+  '2022-02-06',
+  '2022-04-03',
+  '2022-04-04',
+  '2022-04-05',
+  '2022-04-30',
+  '2022-05-01',
+  '2022-05-02',
+  '2022-05-03',
+  '2022-05-04',
+  '2022-06-03',
+  '2022-06-04',
+  '2022-06-05',
+  '2022-09-10',
+  '2022-09-11',
+  '2022-09-12',
+  '2022-10-01',
+  '2022-10-02',
+  '2022-10-03',
+  '2022-10-04',
+  '2022-10-05',
+  '2022-10-06',
+  '2022-10-07',
 ];
 
 const currentDate = new Date();
@@ -138,6 +153,8 @@ function getDate(dateStr) {
   return date;
 }
 
+console.log(getDate('2021-01-18').getTime())
+
 export function getDiffDate(start, end) {
   var startTime = getDate(start);
   var endTime = getDate(end);
@@ -172,10 +189,12 @@ export function getDiffDate(start, end) {
       var transformDate = new Date(Date.parse(date));
       var weekday = weekdays[transformDate.getDay()];
       if (
-        date == '2021-09-26' ||
-        (weekday !== '星期日' && !holidays.includes(date))
+        weekday !== '星期日' && !holidays.includes(date)
       ) {
-        dates.push({ value: date, label: date + ' ' + weekday });
+        dates.push({
+          value: date,
+          label: date + ' ' + weekday
+        });
       }
     }
 
