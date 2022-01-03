@@ -143,6 +143,8 @@ import {
   getNoticesRes,
   setCarDealRes,
   getMyCodeCountRes,
+  getHomeImageRes,
+  getShareImageRes,
 } from "../../api";
 import { BUTTON_FLAGS } from "../../constant";
 
@@ -165,23 +167,31 @@ export default {
       canShowReserveTime: false,
       reserveTime: "",
       sysHeight: 0,
+      headerBg: "",
       methodPopup: {
         visible: false,
       },
     };
   },
 
-  computed: {
-    headerBg() {
-      const timestampFormatter = this.$u.timeFormat(
-        new Date().getTime(),
-        "yyyy-mm-dd"
-      );
-      return `https://cj.huazhe.work/images/home/header-bg.jpg?timestamp=${timestampFormatter}`;
-    },
+  async onShareTimeline(_) {
+    const appUser = this.getAppUser();
+    let query;
+    if (appUser.member_mobile) {
+      query = `sharerId=${appUser.member_id}`;
+    }
+    const {
+      data: { sharepic },
+    } = await getShareImageRes();
+    return {
+      query,
+      title: "汽车年审，还可以更快更简单",
+      imageUrl: sharepic,
+    };
   },
 
   onLoad(options) {
+    console.log(options);
     this.sysHeight = this.getSysHeight();
     this.shiftingCodeCount = 0;
     // 海报分享二维码
@@ -204,13 +214,27 @@ export default {
     if (options.sharerId) {
       uni.setStorageSync("sharer_id", options.sharerId);
     }
+    if (options.activityId) {
+      uni.setStorageSync("activity_id", options.activityId);
+    }
   },
 
   onShow() {
-    Promise.all([this.getCars(), this.getNotices(), this.getMyCodeCount()]);
+    Promise.all([
+      this.getCars(),
+      this.getNotices(),
+      this.getMyCodeCount(),
+      this.getHomeImage(),
+    ]);
   },
 
   methods: {
+    async getHomeImage() {
+      const {
+        data: { indexpic },
+      } = await getHomeImageRes();
+      this.headerBg = indexpic;
+    },
     handleToProcess(flag) {
       flag == 1
         ? this.navTo("/pages/home/agent")
@@ -553,9 +577,9 @@ export default {
         background: #e6e6e6;
         box-shadow: 0rpx 0rpx 20rpx 0rpx rgba(204, 204, 204, 0.3);
         border-radius: 45rpx;
-        font-size: 32rpx;
+        font-size: 30rpx;
         font-weight: 500;
-        color: #ffffff;
+        color: #999;
         text-align: center;
         line-height: 90rpx;
       }

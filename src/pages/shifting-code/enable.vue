@@ -3,7 +3,7 @@
   position: relative;
   .bg-wrap {
     height: 480rpx;
-    background: url("https://cj.huazhe.work/images/shifting-code/bg.png");
+    background: url('https://cj.huazhe.work/images/shifting-code/bg.png');
     background-size: 100% 100%;
   }
   .form-wrap {
@@ -27,7 +27,7 @@
     }
 
     .carinfo {
-      margin-top: 54rpx;
+      margin: 20rpx 0;
       .c-header {
         display: flex;
         justify-content: space-between;
@@ -171,6 +171,30 @@
   <view class="enable-wrap">
     <view class="bg-wrap" />
     <view class="form-wrap">
+      <view class="carinfo">
+        <view class="c-header">
+          <text>绑定车辆信息</text>
+          <image
+            src="https://cj.huazhe.work/images/shifting-code/car.png"
+            mode="widthFit"
+            @click="handleShowCarPopup"
+          />
+        </view>
+        <view class="c-content" v-if="selectedCar">
+          <view class="number">{{ selectedCar.number }}</view>
+          <view class="type">{{ selectedCar._type }}</view>
+        </view>
+        <view
+          class="no-car"
+          v-else
+          @click="navTo('/pages/shifting-code/add-car')"
+        >
+          <image
+            src="https://cj.huazhe.work/images/shifting-code/add_car.png"
+            mode="widthFit"
+          />
+        </view>
+      </view>
       <u-form
         :model="mobileForm.data"
         label-position="top"
@@ -199,30 +223,6 @@
           </view>
         </u-form-item>
       </u-form>
-      <view class="carinfo">
-        <view class="c-header">
-          <text>绑定车辆信息</text>
-          <image
-            src="https://cj.huazhe.work/images/shifting-code/car.png"
-            mode="widthFit"
-            @click="handleShowCarPopup"
-          />
-        </view>
-        <view class="c-content" v-if="selectedCar">
-          <view class="number">{{ selectedCar.number }}</view>
-          <view class="type">{{ selectedCar._type }}</view>
-        </view>
-        <view
-          class="no-car"
-          v-else
-          @click="navTo('/pages/shifting-code/add-car')"
-        >
-          <image
-            src="https://cj.huazhe.work/images/shifting-code/add_car.png"
-            mode="widthFit"
-          />
-        </view>
-      </view>
     </view>
     <view class="user-protocol-wrap">
       <image
@@ -249,7 +249,12 @@
           <text @click="navTo('/pages/shifting-code/add-car')">添加车辆</text>
         </view>
         <view class="car-content">
-          <view class="row" v-for="item in cars" :key="item.id" @click="handleSelectCar(item)">
+          <view
+            class="row"
+            v-for="item in cars"
+            :key="item.id"
+            @click="handleSelectCar(item)"
+          >
             <view class="col-left">
               <view class="number">{{ item.number }}</view>
               <view class="type gray">{{ item._type }}</view>
@@ -280,14 +285,14 @@
 </template>
 
 <script>
-import timingMixin from "../../mixins/timingMixin";
+import timingMixin from '../../mixins/timingMixin';
 import {
   getCarsRes,
   bindCodeCarRes,
   deleteCarRes,
   bindInviterRes,
-} from "../../api";
-import { debounce } from "../../utils/tool";
+} from '../../api';
+import { debounce } from '../../utils/tool';
 
 export default {
   mixins: [timingMixin],
@@ -298,8 +303,8 @@ export default {
       agreement: false,
       mobileForm: {
         data: {
-          mobile: "",
-          sms_vcode: "",
+          mobile: '',
+          sms_vcode: '',
         },
       },
       carPopup: {
@@ -309,10 +314,10 @@ export default {
     };
   },
 
-  async onLoad(ops) {
-    this.codeId = uni.getStorageSync("shifting_code_id");
+  async onLoad() {
+    this.codeId = uni.getStorageSync('shifting_code_id');
+    this.inviter_id = uni.getStorageSync('inviter_id');
     this.mobileForm.data.mobile = this.getAppUser().member_mobile;
-    this.inviter_id = ops.inviter_id;
     await this.getCars();
   },
 
@@ -323,7 +328,7 @@ export default {
     },
     handleToUserProtocol() {
       uni.navigateTo({
-        url: "/pages/auth/user-protocol",
+        url: '/pages/auth/user-protocol',
       });
     },
     handleAgree() {
@@ -339,14 +344,14 @@ export default {
       const {
         data: { carList },
       } = await getCarsRes();
-      this.cars = carList.map((x) => ({
+      this.cars = carList.map(x => ({
         ...x,
-        _type: x.type == 1 ? "小型汽车(非营运)" : "小型汽车(营运)",
+        _type: x.type == 1 ? '小型汽车(非营运)' : '小型汽车(营运)',
       }));
       this.selectedCar = this.cars[0] ? this.cars[0] : null;
     },
     handleSubmit: debounce(
-      async function () {
+      async function() {
         if (this.agreement) {
           if (
             !this.selectedCar ||
@@ -354,8 +359,8 @@ export default {
             !this.mobileForm.data.sms_vcode
           ) {
             uni.showToast({
-              icon: "none",
-              title: "请填写完资料再提交~",
+              icon: 'none',
+              title: '请填写完资料再提交~',
             });
             return;
           }
@@ -371,30 +376,31 @@ export default {
               const bindRes = await bindInviterRes({
                 inviter_id: this.inviter_id,
               });
-              console.log("bindRes", bindRes);
-              const { _code, _data } = bindRes;
+              console.log('bindRes', bindRes);
+              const { code: _code, data: _data } = bindRes;
               if (_code == 200) {
-                this.navTo("/pages/shifting-code/enable-success");
+                uni.setStorageSync('inviter_id', '');
+                this.navTo('/pages/shifting-code/enable-success');
               } else {
                 uni.showToast({
-                  icon: "none",
+                  icon: 'none',
                   title: _data,
                 });
               }
             } else {
               // 推广员自己绑定挪车码
-              this.navTo("/pages/shifting-code/enable-success");
+              this.navTo('/pages/shifting-code/enable-success');
             }
           } else {
             uni.showToast({
-              icon: "none",
+              icon: 'none',
               title: data,
             });
           }
         } else {
           uni.showToast({
-            icon: "none",
-            title: "请先勾选用户须知~",
+            icon: 'none',
+            title: '请先勾选用户须知~',
           });
         }
       },
@@ -403,8 +409,8 @@ export default {
     ),
     handleUnbind() {
       uni.showModal({
-        title: "解绑提示",
-        content: "解绑挪车码后，将清空此二维码绑定的车牌号、手机号信息...",
+        title: '解绑提示',
+        content: '解绑挪车码后，将清空此二维码绑定的车牌号、手机号信息...',
         success: async ({ confirm }) => {
           if (confirm) {
             const { code, data } = await unbindCodeCarRes({
@@ -412,11 +418,11 @@ export default {
             });
             if (code == 200) {
               uni.showToast({
-                icon: "none",
+                icon: 'none',
                 title: data,
               });
               uni.switchTab({
-                url: "/pages/home/index",
+                url: '/pages/home/index',
               });
             }
           }
@@ -425,8 +431,8 @@ export default {
     },
     handleDelete(car_id) {
       uni.showModal({
-        title: "提示",
-        content: "确认要删除该车辆吗？",
+        title: '提示',
+        content: '确认要删除该车辆吗？',
         success: async ({ confirm }) => {
           if (confirm) {
             const { code, data } = await deleteCarRes({
@@ -434,7 +440,7 @@ export default {
             });
             if (code == 200) {
               uni.showToast({
-                icon: "none",
+                icon: 'none',
                 title: data,
               });
               this.carPopup.visible = false;

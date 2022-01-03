@@ -1,17 +1,8 @@
 <template>
   <view class="car-form-container">
-    <view
-      class="photo-wrap flex-center"
-      v-if="driverLicenseSrc"
-    >
-      <view
-        class="image-wrap"
-        @click="handlePreview"
-      >
-        <image
-          :src="driverLicenseSrc"
-          mode="widthFit"
-        />
+    <view class="photo-wrap flex-center" v-if="driverLicenseSrc">
+      <view class="image-wrap" @click="handlePreview">
+        <image :src="driverLicenseSrc" mode="widthFit" />
         <view class="shadow">查看大图</view>
       </view>
       <view class="ext">
@@ -19,11 +10,7 @@
         <text>识别信息有误可手动调整</text>
       </view>
     </view>
-    <view
-      v-else
-      class="driver-license-wrap"
-      @click="handleTakePhoto"
-    />
+    <view v-else class="driver-license-wrap" @click="handleTakePhoto" />
     <view class="form-wrap">
       <u-form
         ref="carForm"
@@ -31,15 +18,12 @@
         label-align="center"
         :model="carForm.data"
         :label-style="{
-        color: '#000',
-        fontSize: '28rpx',
-        fontWeight: 600,
-      }"
+          color: '#000',
+          fontSize: '28rpx',
+          fontWeight: 600,
+        }"
       >
-        <u-form-item
-          label="车牌号码"
-          prop="number"
-        >
+        <u-form-item label="车牌号码" prop="number">
           <u-input
             disabled
             placeholder="请填写车牌号码"
@@ -47,10 +31,7 @@
             @click="handleShowCarKeyboard"
           />
         </u-form-item>
-        <u-form-item
-          label="号牌种类"
-          prop="type"
-        >
+        <u-form-item label="号牌种类" prop="type">
           <u-input
             type="select"
             placeholder="请选择号牌种类"
@@ -58,10 +39,7 @@
             @click="handleShowTypeSelect"
           />
         </u-form-item>
-        <u-form-item
-          label="发动机号"
-          prop="engine_number"
-        >
+        <u-form-item label="发动机号（选填）" prop="engine_number">
           <u-input
             disabled
             placeholder="请填写发动机号"
@@ -69,20 +47,14 @@
             @click="handleShowEngineKeyboard"
           />
         </u-form-item>
-        <u-form-item
-          label="所有人"
-          prop="owner"
-        >
+        <u-form-item label="所有人" prop="owner">
           <u-input
             v-model="carForm.data.owner"
             placeholder="请填写所有人"
             @blur="handleBlur"
           />
         </u-form-item>
-        <u-form-item
-          label="注册登记日期"
-          prop="register_date"
-        >
+        <u-form-item label="注册登记日期" prop="register_date">
           <u-input
             type="select"
             placeholder="请选择注册登记日期"
@@ -90,24 +62,18 @@
             @click="handleShowDateSelect"
           />
         </u-form-item>
-        <u-form-item
-          label="手机号"
-          prop="mobile"
-        >
+        <u-form-item label="手机号" prop="mobile">
           <u-input
             type="number"
             v-model="carForm.data.mobile"
             placeholder="请填写手机号"
           />
         </u-form-item>
-        <u-form-item
-          label="验证码"
-          prop="sms_vcode"
-        >
+        <u-form-item label="验证码" prop="sms_vcode">
           <u-button
             slot="left"
             size="medium"
-            :custom-style="{padding:'18rpx 20rpx'}"
+            :custom-style="{ padding: '18rpx 20rpx' }"
             @click="handleGetCode"
           >
             <text v-if="loading">{{ codeText }}</text>
@@ -127,7 +93,8 @@
         shape="circle"
         :disabled="disabled"
         @click="handleSubmit"
-      >提交</u-button>
+        >提交</u-button
+      >
     </view>
     <u-select
       v-model="typeSelect.visible"
@@ -152,11 +119,7 @@
       @change="handleCarNumChange"
       @backspace="handleCarNumBackspace"
     />
-    <u-popup
-      mode="bottom"
-      :mask="false"
-      v-model="keyboard.engineVisible"
-    >
+    <u-popup mode="bottom" :mask="false" v-model="keyboard.engineVisible">
       <eos-abc-keyboard
         ref="abcKeyboard"
         @change="handleEngineNumChange"
@@ -168,86 +131,86 @@
 </template>
 
 <script>
-import { getDateInterval } from '../../utils/time';
-import { editCarRes, getCarInfoRes } from '../../api';
-import EOSABCKeyboard from '../../components/eos-abc-keyboard';
-import carFormMixin from '../../mixins/carFormMixin';
-import timingMixin from '../../mixins/timingMixin';
-import { debounce } from '../../utils/tool';
+import { getDateInterval } from "../../utils/time";
+import { editCarRes, getCarInfoRes } from "../../api";
+import EOSABCKeyboard from "../../components/eos-abc-keyboard";
+import carFormMixin from "../../mixins/carFormMixin";
+import timingMixin from "../../mixins/timingMixin";
+import { debounce } from "../../utils/tool";
 
 const { years, months, defaultDate } = getDateInterval();
 
 export default {
   components: {
-    'eos-abc-keyboard': EOSABCKeyboard,
+    "eos-abc-keyboard": EOSABCKeyboard,
   },
 
   data() {
     return {
       carForm: {
         data: {
-          number: '',
-          type: '',
-          engine_number: '',
-          owner: '',
-          register_date: '',
-          mobile: '',
-          sms_vcode: '',
+          number: "",
+          type: "",
+          engine_number: "",
+          owner: "",
+          register_date: "",
+          mobile: "",
+          sms_vcode: "",
           noCode: 0,
         },
         rules: {
           number: [
             {
               required: true,
-              message: '请填写车牌号码',
-              trigger: 'change',
+              message: "请填写车牌号码",
+              trigger: "change",
             },
           ],
           type: [
             {
               required: true,
-              message: '请选择号牌种类',
-              trigger: 'change',
+              message: "请选择号牌种类",
+              trigger: "change",
             },
           ],
-          engine_number: [
-            {
-              required: true,
-              message: '请填写发动机号',
-              trigger: 'change',
-            },
-          ],
+          // engine_number: [
+          //   {
+          //     required: true,
+          //     message: "请填写发动机号",
+          //     trigger: "change",
+          //   },
+          // ],
           owner: [
             {
               required: true,
-              message: '请填写所有人',
-              trigger: 'change',
+              message: "请填写所有人",
+              trigger: "change",
             },
           ],
           register_date: [
             {
               required: true,
-              message: '请选择注册登记日期',
-              trigger: 'change',
+              message: "请选择注册登记日期",
+              trigger: "change",
             },
           ],
           mobile: [
             {
               required: true,
-              message: '请填写手机号',
-              trigger: 'change',
+              message: "请填写手机号",
+              trigger: "change",
             },
             {
               pattern: /^1[3456789]\d{9}$/,
-              message: '手机号格式错误',
-              trigger: 'change',
+              message: "手机号格式错误",
+              trigger: "change",
             },
           ],
           sms_vcode: [
             {
               required: true,
-              message: '请填写验证码',
-              trigger: 'change',
+              message: "请填写验证码",
+              trigger: "change",
             },
           ],
         },
@@ -257,11 +220,11 @@ export default {
         types: [
           {
             value: 1,
-            label: '小型汽车(非营运)',
+            label: "小型汽车(非营运)",
           },
           {
             value: 2,
-            label: '小型汽车(营运)',
+            label: "小型汽车(营运)",
           },
         ],
         selectedType: 1,
@@ -272,7 +235,7 @@ export default {
         dateSource: [years, months],
         defaultDate,
       },
-      driverLicenseSrc: '',
+      driverLicenseSrc: "",
     };
   },
 
@@ -280,7 +243,10 @@ export default {
     disabled() {
       let flag = false;
       for (let key in this.carForm.data) {
-        if (this.carForm.data[key] === '') {
+        if (key == "engine_number") {
+          continue;
+        }
+        if (this.carForm.data[key] === "") {
           flag = true;
           break;
         }
@@ -317,22 +283,22 @@ export default {
     handleTakePhoto() {
       if (!this.checkLogin()) {
         uni.navigateTo({
-          url: '/pages/auth/login-nav?from=2',
+          url: "/pages/auth/login-nav?from=2",
         });
         return;
       }
       uni.chooseImage({
         count: 1,
-        sizeType: ['original', 'compressed'],
+        sizeType: ["original", "compressed"],
         success: (res) => {
           uni.showLoading({
-            title: '正在识别中...',
+            title: "正在识别中...",
             mask: true,
           });
           const errFn = () =>
             uni.showToast({
-              title: '行驶证识别失败~',
-              icon: 'none',
+              title: "行驶证识别失败~",
+              icon: "none",
             });
           const { path } = res.tempFiles[0];
           uni.compressImage({
@@ -344,7 +310,7 @@ export default {
                 url: `https://cj.huazhe.work/api.php?p=/code/uploadCarCard&key=${
                   this.getAppUser().token
                 }`,
-                name: 'cardFile',
+                name: "cardFile",
                 filePath: this.driverLicenseSrc,
                 success: ({ statusCode, data }) => {
                   if (statusCode == 200) {
@@ -352,13 +318,16 @@ export default {
                     if (response.code == 200) {
                       const info = response.data;
                       // 只做小型车的平台
-                      if (info.lstypename.indexOf('小型') != -1) {
-                        let type = '';
-                        if (info.usetype == '非营运') {
-                          type = '小型汽车(非营运)';
+                      if (
+                        info.lstypename.indexOf("小型") != -1 ||
+                        info.lstypename.indexOf("微型") != -1
+                      ) {
+                        let type = "";
+                        if (info.usetype == "非营运") {
+                          type = "小型汽车(非营运)";
                           this.typeSelect.selectedType = 1;
                         } else {
-                          type = '小型汽车(营运)';
+                          type = "小型汽车(营运)";
                           this.typeSelect.selectedType = 2;
                         }
                         console.log(this.getAppUser());
@@ -375,8 +344,8 @@ export default {
                         this.disabled = false;
                       } else {
                         uni.showToast({
-                          title: '行驶证识别失败~',
-                          icon: 'none',
+                          title: "行驶证识别失败~",
+                          icon: "none",
                         });
                       }
                     } else {
@@ -413,7 +382,7 @@ export default {
       } = await getCarInfoRes({ car_id: this.carId });
       this.carForm.data.number = carInfo.number;
       this.carForm.data.type =
-        carInfo.type === '1' ? '小型汽车(非营运)' : '小型汽车(营运)';
+        carInfo.type === "1" ? "小型汽车(非营运)" : "小型汽车(营运)";
       this.typeSelect.selectedType = +carInfo.type;
       this.typeSelect.defaultSelectTypes = [+carInfo.type - 1];
       this.carForm.data.engine_number = carInfo.engine_number;
@@ -421,10 +390,10 @@ export default {
       this.carForm.data.register_date = carInfo.register_date.slice(0, 7);
       this.carForm.data.mobile = carInfo.mobile;
       this.driverLicenseSrc = carInfo.driver_license;
-      const dates = this.carForm.data.register_date.split('-').slice(0, 2);
+      const dates = this.carForm.data.register_date.split("-").slice(0, 2);
       const _dates = [];
       dates.forEach((d) => {
-        if (d.startsWith('0')) {
+        if (d.startsWith("0")) {
           d = d.charAt(d.length - 1);
         }
         _dates.push(+d);
@@ -447,11 +416,11 @@ export default {
             const { code, data } = await editCarRes(reqData);
             if (code === 200) {
               uni.switchTab({
-                url: '/pages/home/index',
+                url: "/pages/home/index",
               });
             } else {
               uni.showToast({
-                icon: 'none',
+                icon: "none",
                 title: data,
               });
             }
@@ -468,7 +437,7 @@ export default {
 <style lang="scss" scoped>
 .car-form-container {
   height: 480rpx;
-  background: url('https://cj.huazhe.work/images/shifting-code/bg.png');
+  background: url("https://cj.huazhe.work/images/shifting-code/bg.png");
   background-size: 100% 100%;
   padding: 50rpx 30rpx;
 
@@ -482,7 +451,7 @@ export default {
 
   .driver-license-wrap {
     height: 300rpx;
-    background: url('https://cj.huazhe.work/images/shifting-code/scan.png');
+    background: url("https://cj.huazhe.work/images/shifting-code/scan.png");
     background-size: 100% 100%;
   }
 
