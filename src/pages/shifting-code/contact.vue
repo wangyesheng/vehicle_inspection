@@ -8,7 +8,7 @@
         v-if="!hasInvalid"
       />
       <view :class="!hasInvalid ? 'carnum' : 'invalid'">
-        {{ !hasInvalid ? carNum : '该挪车码已作废~' }}
+        {{ !hasInvalid ? carNum : "该挪车码已作废~" }}
       </view>
     </view>
     <view class="btn-wrap" v-if="!hasInvalid">
@@ -16,7 +16,9 @@
         拨打车主电话
       </u-button>
     </view>
-    <view class="tips" v-if="!hasInvalid"> 为了保护双方隐私，本次通话将启用虚拟号码 </view>
+    <view class="tips" v-if="!hasInvalid">
+      为了保护双方隐私，本次通话将启用虚拟号码
+    </view>
     <view class="pull flex-vc" @click="navTo('/pages/service/outlets')">
       <text>免费领取挪车码</text>
       <image
@@ -29,8 +31,8 @@
 </template>
 
 <script>
-import { getCodeInfoRes, getVirtualMobileRes } from '../../api';
-import EOSBackhome from '../../components/eos-backbome';
+import { getCodeInfoRes, getVirtualMobileRes } from "../../api";
+import EOSBackhome from "../../components/eos-backbome";
 
 export default {
   components: {
@@ -39,7 +41,7 @@ export default {
 
   data() {
     return {
-      carNum: '',
+      carNum: "",
       maskVisible: true,
       hasInvalid: false,
     };
@@ -48,11 +50,11 @@ export default {
   onLoad(options) {
     let code;
     if (Object.keys(options).length == 0) {
-      code = uni.getStorageSync('shifting_code_value');
+      code = uni.getStorageSync("shifting_code_value");
     } else {
-      const urls = decodeURIComponent(options.q).split('/');
+      const urls = decodeURIComponent(options.q).split("/");
       code = urls[urls.length - 1];
-      uni.setStorageSync('shifting_code_value', code);
+      uni.setStorageSync("shifting_code_value", code);
     }
     this.getCodeInfo(code);
   },
@@ -62,42 +64,40 @@ export default {
       // this.navTo(`/pages/shifting-code/promoter?codeId=178`);
       // return;
       uni.showLoading({
-        title: '正在识别中...',
+        title: "正在识别中...",
       });
       const appUser = this.getAppUser();
-      console.log('appUser', appUser);
+      console.log("appUser", appUser);
       if (!appUser.member_mobile) {
-        this.navTo('/pages/auth/login-nav?from=3');
+        this.navTo("/pages/auth/login-nav?from=3");
       }
       const { code: _code, data } = await getCodeInfoRes({
         code,
       });
-      console.log('getCodeInfoRes', data);
+      console.log("getCodeInfoRes", data);
       if (_code == 200) {
         const {
           codeInfo: { uid, id, car_id, number, member_id },
         } = data;
         this.carNum = number;
-        uni.setStorageSync('shifting_code_id', id);
+        uni.setStorageSync("shifting_code_id", id);
         if (car_id == 0) {
           if (appUser.gid == 5) {
             // 推广员
             if (+member_id > 0) {
-              uni.showToast({
-                title: '该二维码已绑定过推广员...',
-                icon: 'none',
-              });
+              uni.setStorageSync("inviter_id", member_id);
+              this.navTo(`/pages/shifting-code/enable`);
             } else {
               this.navTo(`/pages/shifting-code/promoter?codeId=${id}`);
             }
           } else {
             if (+member_id > 0) {
-              uni.setStorageSync('inviter_id', member_id);
+              uni.setStorageSync("inviter_id", member_id);
             }
             this.navTo(`/pages/shifting-code/enable`);
           }
         } else if (car_id != 0 && uid == appUser.member_id) {
-          this.navTo('/pages/shifting-code/index');
+          this.navTo("/pages/shifting-code/index");
         } else if (car_id != 0 && uid != appUser.member_id) {
           if (!uid && !number) {
             // 绑定该挪车码的车辆被删除了，此时挪车码作废
@@ -113,7 +113,7 @@ export default {
             } else {
               uni.showToast({
                 title: data,
-                icon: 'none',
+                icon: "none",
               });
             }
           }
@@ -126,7 +126,7 @@ export default {
       if (this.virtualMobile) {
         uni.makePhoneCall({
           phoneNumber: this.virtualMobile,
-          success: _ => {},
+          success: (_) => {},
         });
       }
     },
@@ -139,7 +139,7 @@ export default {
   position: relative;
   .banner {
     height: 458rpx;
-    background: url('https://cj.huazhe.work/images/shifting-code/contact.png');
+    background: url("https://cj.huazhe.work/images/shifting-code/contact.png");
     background-size: 100% 100%;
     position: relative;
     font-size: 60rpx;

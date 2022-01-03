@@ -3,7 +3,7 @@ import { getAppUser } from './auth';
 
 const BASE_URL =
   process.env.NODE_ENV === 'development'
-    ? 'https://cj.huazhe.work'
+    ? 'https://cjdev.huazhe.work'
     : 'https://cj.huazhe.work';
 
 export function request(options) {

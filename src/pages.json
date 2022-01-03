@@ -4,14 +4,19 @@
   },
 
   "pages": [{
+      "path": "pages/home/index",
+      "style": {
+        "navigationBarTitleText": "川B年检"
+      }
+    }, {
       "path": "pages/order/index",
       "style": {
         "navigationBarTitleText": "年检代办订单"
       }
     }, {
-      "path": "pages/home/index",
+      "path": "pages/shifting-code/apply",
       "style": {
-        "navigationBarTitleText": "川B年检"
+        "navigationBarTitleText": "申领挪车码"
       }
     },
     {
@@ -83,11 +88,6 @@
       "path": "pages/shifting-code/bind-edit",
       "style": {
         "navigationBarTitleText": "编辑绑定信息"
-      }
-    }, {
-      "path": "pages/shifting-code/apply",
-      "style": {
-        "navigationBarTitleText": "申领挪车码"
       }
     },
     {
