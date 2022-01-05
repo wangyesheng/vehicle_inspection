@@ -153,8 +153,6 @@ function getDate(dateStr) {
   return date;
 }
 
-console.log(getDate('2021-01-18').getTime())
-
 export function getDiffDate(start, end) {
   var startTime = getDate(start);
   var endTime = getDate(end);

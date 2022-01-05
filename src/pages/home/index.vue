@@ -53,6 +53,7 @@
         mode="widthFit"
       />
     </view> -->
+    <u-button @click="onClick">click</u-button>
     <view class="code-wrap flex-01" @click="handleNavTo(3)">
       <image
         src="https://cj.huazhe.work/images/home/code.png"
@@ -229,6 +230,20 @@ export default {
   },
 
   methods: {
+    onClick() {
+      uni.navigateToMiniProgram({
+        appId: "wxe897189e473d3762",
+        path: "pages/shop/buy_card?code=D82C8D1619AD8176D665453CFB2E55F08ADPHYSVHU19HZAPYL",
+        envVersion: "release", // 打开正式版
+        success(res) {
+          console.log(res)
+          // 打开成功
+        },
+        fail: function (err) {
+          console.log(err);
+        },
+      });
+    },
     async getHomeImage() {
       const {
         data: { indexpic },
@@ -307,6 +322,17 @@ export default {
         } else if (x.now > x.start_time && x.now < x.end_time) {
           layer.labelPrefix = "此次";
           layer.buttonFlag = 2;
+          layer.appointmentDates = getDiffDate(
+            x.start_time_str,
+            x.end_time_str
+          );
+          console.log(layer.appointmentDates);
+        } else if (
+          Number(x.reserve_time) > x.start_time &&
+          Number(x.reserve_time) < x.end_time
+        ) {
+          layer.labelPrefix = "此次";
+          layer.buttonFlag = 1;
         }
         // switch (x.status) {
         //   // 未到期，不可预约

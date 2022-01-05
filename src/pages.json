@@ -9,6 +9,11 @@
         "navigationBarTitleText": "川B年检"
       }
     }, {
+      "path": "pages/me/customer",
+      "style": {
+        "navigationBarTitleText": "受邀的好友"
+      }
+    }, {
       "path": "pages/order/index",
       "style": {
         "navigationBarTitleText": "年检代办订单"
@@ -23,11 +28,6 @@
       "path": "pages/car/add-form-chore",
       "style": {
         "navigationBarTitleText": "添加车辆"
-      }
-    }, {
-      "path": "pages/me/customer",
-      "style": {
-        "navigationBarTitleText": "受邀的好友"
       }
     }, {
       "path": "pages/shifting-code/contact",
