@@ -1,5 +1,8 @@
 <template>
-  <view class="order-form-container" :style="{ minHeight: `${sysHeight}px` }">
+  <view
+    class="order-form-container"
+    :style="{ minHeight: `${sysHeight}px` }"
+  >
     <view class="banner-wrap">
       <view class="b-l">送检车辆</view>
       <view class="b-r">
@@ -10,9 +13,7 @@
           />
           <text class="num">{{ carInfo.number }}</text>
         </view>
-        <view class="desc"
-          >小型汽车（{{ carInfo.type === "1" ? "非营运" : "营运" }}）</view
-        >
+        <view class="desc">小型汽车（{{ carInfo.type === "1" ? "非营运" : "营运" }}）</view>
       </view>
     </view>
     <view class="content-wrap">
@@ -45,39 +46,9 @@
             />
           </u-form-item> -->
           <u-form-item label="联系人">
-            <u-input v-model="orderForm.linkname" placeholder="请填写联系人" />
-          </u-form-item>
-          <u-form-item label="检测站">
             <u-input
-              type="select"
-              v-model="selectedStationLabel"
-              placeholder="请选择检测站"
-              @click="handleShowStationSelect"
-            />
-          </u-form-item>
-          <u-form-item label="取车位置">
-            <u-input
-              type="select"
-              v-model="orderForm.pick_address"
-              placeholder="请填写取车位置"
-              @click="handleSearchPois('pick')"
-            />
-          </u-form-item>
-          <view class="switch-wrap">
-            <u-form-item label="还车位置与取车位置一致">
-              <u-switch
-                v-model="orderForm.isSame"
-                active-color="#5E93EC"
-                @change="handleSwitchChange"
-              ></u-switch>
-            </u-form-item>
-          </view>
-          <u-form-item label="还车位置" v-if="!orderForm.isSame">
-            <u-input
-              type="select"
-              v-model="orderForm.return_address"
-              placeholder="请填写还车位置"
-              @click="handleSearchPois('return')"
+              v-model="orderForm.linkname"
+              placeholder="请填写联系人"
             />
           </u-form-item>
           <u-form-item label="联系电话">
@@ -103,6 +74,42 @@
               placeholder="请填写验证码"
             />
           </u-form-item>
+          <u-form-item label="监测站">
+            <u-input
+              type="select"
+              v-model="selectedStationLabel"
+              placeholder="请选择监测站"
+              @click="handleShowStationSelect"
+            />
+          </u-form-item>
+          <u-form-item label="取车位置">
+            <u-input
+              type="select"
+              v-model="orderForm.pick_address"
+              placeholder="请填写取车位置"
+              @click="handleSearchPois('pick')"
+            />
+          </u-form-item>
+          <view class="switch-wrap">
+            <u-form-item label="还车位置与取车位置一致">
+              <u-switch
+                v-model="orderForm.isSame"
+                active-color="#5E93EC"
+                @change="handleSwitchChange"
+              ></u-switch>
+            </u-form-item>
+          </view>
+          <u-form-item
+            label="还车位置"
+            v-if="!orderForm.isSame"
+          >
+            <u-input
+              type="select"
+              v-model="orderForm.return_address"
+              placeholder="请填写还车位置"
+              @click="handleSearchPois('return')"
+            />
+          </u-form-item>
         </u-form>
       </view>
       <!-- <view class="notice-wrap">
@@ -126,10 +133,11 @@
       </view> -->
       <view class="service-charge">
         <text class="label">代办服务费</text>
-        <text class="value">主城区不超过50元</text>
+        <text class="value">限时免费</text>
       </view>
       <view class="tips">
-        小、微型私家车预约自驾到站年检，一般检测耗时不超过1小时，现场同样有专人免费服务，建议您预约自驾到站年检。
+        订单费用仅包含代驾费用及代检费用，不包含检测站检测工本费。
+        检测工本费由代办人验车后根据发票收取。
       </view>
     </view>
     <view class="footer-wrap">
@@ -181,7 +189,10 @@
           />
         </view>
 
-        <scroll-view scroll-y="true" style="height: 880rpx">
+        <scroll-view
+          scroll-y="true"
+          style="height: 880rpx;"
+        >
           <view class="pois-wrap">
             <view
               class="row"
@@ -202,47 +213,44 @@
             </view>
           </view>
         </scroll-view>
+
       </view>
     </u-popup>
   </view>
 </template>
 
 <script>
-import QQMapWX from "./qqmap-wx-jssdk.min.js";
+import QQMapWX from './qqmap-wx-jssdk.min.js';
 const qqmapsdk = new QQMapWX({
-  key: "V3FBZ-XHZCF-QBMJT-JCCEG-GT4OT-BVFSP",
+  key: 'V3FBZ-XHZCF-QBMJT-JCCEG-GT4OT-BVFSP',
 });
-import { addCarAgencyRes, getStationsRes } from "../../api";
-import timingMixin from "../../mixins/timingMixin";
-import { debounce } from "../../utils/tool";
+import { addCarAgencyRes, getStationsRes } from '../../api';
+import timingMixin from '../../mixins/timingMixin';
+import { debounce } from '../../utils/tool';
 
 export default {
   data() {
     return {
       sysHeight: 0,
-      selectedStationLabel: "",
+      selectedStationLabel: '',
       orderForm: {
-        pid: "",
-        linkname: "",
-        mobile: "",
-        sms_vcode: "",
-        appoint_date: "",
-        pick_address: "",
-        return_address: "",
-        pick_lng: "",
-        pick_lat: "",
-        return_lng: "",
-        return_lat: "",
+        pid: '',
+        linkname: '',
+        mobile: '',
+        sms_vcode: '',
+        appoint_date: '',
+        pick_address: '',
+        return_address: '',
         isSame: true,
       },
       appointmentDateSelect: {
         visible: false,
-        selectedDate: "",
+        selectedDate: '',
       },
       appointmentTimeSelect: {
         visible: false,
         times: [],
-        selectedTime: "",
+        selectedTime: '',
       },
       stationSelect: {
         visible: false,
@@ -251,7 +259,7 @@ export default {
       carInfo: {},
       addressPopup: {
         visible: false,
-        keyword: "",
+        keyword: '',
         pois: [],
       },
     };
@@ -263,9 +271,9 @@ export default {
     this.sysHeight = this.getSysHeight();
     this.carId = options.carId;
     this.carInfo =
-      uni.getStorageSync("app_user_cars").find((x) => x.id == this.carId) || {};
+      uni.getStorageSync('app_user_cars').find((x) => x.id == this.carId) || {};
     this.orderForm.mobile = this.carInfo.mobile;
-    const storageOrder = uni.getStorageSync("order_form_data");
+    const storageOrder = uni.getStorageSync('order_form_data');
     if (storageOrder && Object.keys(storageOrder).length > 0) {
       this.orderForm = {
         ...this.orderForm,
@@ -275,7 +283,7 @@ export default {
         pick_address: storageOrder.pick_address,
         return_address: storageOrder.return_address,
       };
-      uni.setStorageSync("order_form_data", {});
+      uni.setStorageSync('order_form_data', {});
     }
     this.getStations();
   },
@@ -320,7 +328,7 @@ export default {
     },
     getLocation() {
       uni.showLoading({
-        title: "玩命加载中...",
+        title: '玩命加载中...',
       });
       this.getAuthLocation(({ latitude, longitude }) => {
         this.latitude = latitude;
@@ -336,8 +344,8 @@ export default {
           },
           fail: (error) => {
             uni.showToast({
-              icon: "none",
-              title: "获取失败，请重试",
+              icon: 'none',
+              title: '获取失败，请重试',
             });
           },
         });
@@ -345,7 +353,7 @@ export default {
     },
     handleSearch() {
       uni.showLoading({
-        title: "玩命加载中...",
+        title: '玩命加载中...',
       });
       qqmapsdk.search({
         keyword: this.addressPopup.keyword, //搜索关键词
@@ -357,40 +365,27 @@ export default {
         },
         fail: (res) => {
           uni.showToast({
-            icon: "none",
-            title: "获取失败，请重试",
+            icon: 'none',
+            title: '获取失败，请重试',
           });
         },
       });
     },
     onAddressSelect(value) {
-      console.log(value);
-      const {
-        title,
-        location: { lng, lat },
-      } = value;
-      if (this.tag == "pick") {
-        this.orderForm.pick_address = title;
-        this.orderForm.pick_lng = lng;
-        this.orderForm.pick_lat = lat;
+      if (this.tag == 'pick') {
+        this.orderForm.pick_address = value.title;
         if (this.orderForm.isSame) {
-          this.orderForm.return_address = title;
-          this.orderForm.return_lng = lng;
-          this.orderForm.return_lat = lat;
+          this.orderForm.return_address = value.title;
         }
       } else {
-        this.orderForm.return_address = title;
-        this.orderForm.return_lng = lng;
-        this.orderForm.return_lat = lat;
+        this.orderForm.return_address = value.title;
       }
       this.addressPopup.visible = false;
     },
     handleSwitchChange(value) {
-      if (value) {
-        this.orderForm.return_address = this.orderForm.pick_address;
-        this.orderForm.return_lng = this.orderForm.pick_lng;
-        this.orderForm.return_lat = this.orderForm.pick_lat;
-      }
+      this.orderForm.return_address = value
+        ? this.orderForm.pick_address
+        : this.orderForm.return_address;
     },
     handleShowDateSelect() {
       this.appointmentDateSelect.visible = true;
@@ -412,21 +407,21 @@ export default {
           delete reqData.isSame;
           const { code, data } = await addCarAgencyRes(reqData);
           if (code == 200) {
-            uni.setStorageSync("agent_appointment_order", reqData);
+            uni.setStorageSync('agent_appointment_order', reqData);
             uni.navigateTo({
-              url: "/pages/order/status",
+              url: '/pages/order/status',
             });
           } else {
             uni.showToast({
               title: data,
-              icon: "none",
+              icon: 'none',
             });
           }
         };
         if (!this.canSubmit) {
           uni.showToast({
-            title: "请填写完信息再提交！",
-            icon: "none",
+            title: '请填写完信息再提交！',
+            icon: 'none',
           });
           return;
         }
@@ -440,7 +435,7 @@ export default {
     },
     handleSearchPois(tag) {
       this.tag = tag;
-      this.addressPopup.keyword = "";
+      this.addressPopup.keyword = '';
       this.addressPopup.visible = true;
       this.getLocation();
     },

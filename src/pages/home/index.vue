@@ -53,7 +53,6 @@
         mode="widthFit"
       />
     </view> -->
-    <u-button @click="onClick">click</u-button>
     <view class="code-wrap flex-01" @click="handleNavTo(3)">
       <image
         src="https://cj.huazhe.work/images/home/code.png"
@@ -326,7 +325,6 @@ export default {
             x.start_time_str,
             x.end_time_str
           );
-          console.log(layer.appointmentDates);
         } else if (
           Number(x.reserve_time) > x.start_time &&
           Number(x.reserve_time) < x.end_time
@@ -389,7 +387,7 @@ export default {
       }
       this.selectedCar = this.cars[0];
       this.buttonFlag = this.cars[0].buttonFlag;
-      this.canShowReserveTime = this.selectedCar.status == 1 ? true : false;
+      this.canShowReserveTime = this.buttonFlag == 1 ? true : false;
       this.reserveTime = this.selectedCar.reserve_date;
     },
     handleNavTo(flag) {
@@ -428,7 +426,7 @@ export default {
       const scope = this.cars.find((x, idx) => value === idx);
       this.selectedCar = scope;
       this.buttonFlag = scope.buttonFlag;
-      this.canShowReserveTime = scope.status == 1 ? true : false;
+      this.canShowReserveTime = scope.buttonFlag == 1 ? true : false;
       this.reserveTime = scope.reserve_date;
     },
     async handleConfirm() {
