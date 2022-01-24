@@ -46,7 +46,7 @@
 
       <view class="station-wrap mt30">
         <view class="header">
-          已为您匹配最近监测站
+          已为您匹配最近检测站
         </view>
         <view
           class="content"

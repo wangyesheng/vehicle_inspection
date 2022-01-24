@@ -305,3 +305,17 @@ export const getMyActivityRes = data =>
     method: 'GET',
     data,
   });
+
+export const getShareImageRes = data =>
+  request({
+    url: '/api.php?p=/Member/getShareImage',
+    method: 'GET',
+    data,
+  });
+
+export const getHomeImageRes = data =>
+  request({
+    url: '/api.php?p=/Member/getIndexImage',
+    method: 'GET',
+    data,
+  });

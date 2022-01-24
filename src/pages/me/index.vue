@@ -88,9 +88,7 @@ export default {
   },
 
   onShow() {
-    if (!this.customer_phone || !this.customer_times) {
-      this.getCustomer();
-    }
+    this.getCustomer();
     const storageAppUser = this.getAppUser();
     if (storageAppUser.member_mobile) {
       this.appUser = storageAppUser;

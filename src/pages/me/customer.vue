@@ -31,10 +31,9 @@
             :key="carItem.id"
           >
             <text class="car-num">{{ carItem.number }}</text>
-            <text class="car-status red">{{ carItem.status_desc }}</text>
-            <text class="car-prompt">{{ carItem.prompt }}</text>
-            <text class="red">{{ carItem.days }}</text>
-            <text>天</text>
+            <text :class="['car-status', carItem.wantedCall ? 'red' : '']">
+              年检时间：{{ carItem.start_time_str }} 至 {{ carItem.end_time_str }}
+            </text>
             <view class="extra">
               <u-tag
                 v-if="item.activity_id != 0"
@@ -43,18 +42,19 @@
                 :type="item.is_check == 0 ? 'primary' : 'error'"
                 :text="item.is_check == 0 ? '权益未使用' : '权益已使用'"
               />
-              <view
-                class="phone-call"
-                v-if="
-                  (carItem.status == 3 ||
-                    (carItem.status == 1 && carItem.is_pass == 0)) &&
-                  carItem.days <= 30
-                "
-              >
+              <view class="phone-call" v-if="carItem.wantedCall">
                 <image
                   src="../../static/images/phone.png"
                   mode="widthFit"
                   @click="handleCall(carItem.member_id, carItem.mobile)"
+                />
+              </view>
+              <view v-if="carItem.hasReserved">
+                <u-tag
+                  mode="plain"
+                  shape="circleRight"
+                  type="warning"
+                  text="已预约"
                 />
               </view>
             </view>
@@ -130,6 +130,7 @@ import {
   getMyCompaniesRes,
   callVirtualMobileRes,
   getLatestActivityRes,
+  getShareImageRes,
 } from "../../api";
 
 import {
@@ -248,36 +249,22 @@ export default {
         .filter((x) => x.usermobile !== "")
         .map((y) => {
           y.clist.forEach((z) => {
-            switch (z.status) {
-              // 未到期，不可预约
-              case 0:
-                z.prompt = "距上线年检还剩";
-                break;
-              // 已预约
-              case 1:
-                if (z.is_pass == 0) {
-                  // 未逾期
-                  z.prompt = "距年检逾期还剩";
-                } else {
-                  z.prompt = "年检已逾期";
-                }
-                break;
-              // 已办理
-              case 2:
-                z.prompt = "距上线年检还剩";
-                break;
-              // 可预约
-              case 3:
-                z.prompt = "距年检逾期还剩";
-                break;
-              // 已逾期
-              case 4:
-                z.prompt = "年检已逾期";
-                break;
+            if (z.now < z.start_time || z.now > z.end_time) {
+              z.labelPrefix = "下次";
+            } else if (z.now > z.start_time && z.now < z.end_time) {
+              z.labelPrefix = "此次";
+              z.wantedCall = true;
+            } else if (
+              Number(z.reserve_time) > z.start_time &&
+              Number(z.reserve_time) < z.end_time
+            ) {
+              z.labelPrefix = "此次";
+              z.hasReserved = true;
             }
           });
           return y;
         });
+      console.log(_customers);
       this.customers =
         this.pageIndex == 1 ? _customers : [...this.customers, ..._customers];
     },
@@ -290,12 +277,20 @@ export default {
     handleNavTo() {
       this.navTo("/pages/me/company");
     },
-    handleShare() {
-      const path = `/pages/home/index?sharerId=${this.appUser.member_id}`;
+    async handleShare() {
+      if (this.isEffectActivity) {
+        uni.setStorageSync("activityId", this.activityInfo.id);
+      }
+      const path = `/pages/home/index?
+      sharerId=${this.appUser.member_id}&
+      activityId=${this.isEffectActivity ? this.activityInfo.id : ""}`;
+      const {
+        data: { sharepic },
+      } = await getShareImageRes();
       return {
         path,
         title: "汽车年审，还可以更快更简单",
-        imageUrl: `https://cj.huazhe.work/images/huodong.png?timespan=${new Date().getTime()}`,
+        imageUrl: sharepic,
       };
     },
     handleShareToTimeline() {

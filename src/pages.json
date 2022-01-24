@@ -3,16 +3,31 @@
     "^u-(.*)": "@/uview-ui/components/u-$1/u-$1.vue"
   },
 
-  "pages": [
-    {
+  "pages": [{
       "path": "pages/home/index",
       "style": {
         "navigationBarTitleText": "川B年检"
       }
-    },{
+    }, {
       "path": "pages/me/customer",
       "style": {
         "navigationBarTitleText": "受邀的好友"
+      }
+    }, {
+      "path": "pages/order/index",
+      "style": {
+        "navigationBarTitleText": "年检代办订单"
+      }
+    }, {
+      "path": "pages/shifting-code/apply",
+      "style": {
+        "navigationBarTitleText": "申领挪车码"
+      }
+    },
+    {
+      "path": "pages/car/add-form-chore",
+      "style": {
+        "navigationBarTitleText": "添加车辆"
       }
     }, {
       "path": "pages/shifting-code/contact",
@@ -53,11 +68,6 @@
         "navigationBarTitleText": "我的预约单"
       }
     }, {
-      "path": "pages/order/index",
-      "style": {
-        "navigationBarTitleText": "年检代办订单"
-      }
-    }, {
       "path": "pages/reservation/index",
       "style": {
         "navigationBarTitleText": "代驾预约单"
@@ -78,11 +88,6 @@
       "path": "pages/shifting-code/bind-edit",
       "style": {
         "navigationBarTitleText": "编辑绑定信息"
-      }
-    }, {
-      "path": "pages/shifting-code/apply",
-      "style": {
-        "navigationBarTitleText": "申领挪车码"
       }
     },
     {
@@ -138,12 +143,6 @@
       "path": "pages/auth/user-protocol",
       "style": {
         "navigationBarTitleText": "用户服务协议"
-      }
-    },
-    {
-      "path": "pages/car/add-form-chore",
-      "style": {
-        "navigationBarTitleText": "添加车辆"
       }
     },
     {

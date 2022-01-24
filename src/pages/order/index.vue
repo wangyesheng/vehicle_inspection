@@ -74,11 +74,11 @@
               placeholder="请填写验证码"
             />
           </u-form-item>
-          <u-form-item label="监测站">
+          <u-form-item label="检测站">
             <u-input
               type="select"
               v-model="selectedStationLabel"
-              placeholder="请选择监测站"
+              placeholder="请选择检测站"
               @click="handleShowStationSelect"
             />
           </u-form-item>

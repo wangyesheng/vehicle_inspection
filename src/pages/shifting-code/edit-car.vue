@@ -115,7 +115,7 @@
             @click="handleShowTypeSelect"
           />
         </u-form-item>
-        <u-form-item label="发动机号" prop="engine_number">
+        <u-form-item label="发动机号（选填）" prop="engine_number">
           <u-input
             disabled
             placeholder="请填写发动机号"
@@ -221,13 +221,13 @@ export default {
               trigger: "change",
             },
           ],
-          engine_number: [
-            {
-              required: true,
-              message: "请填写发动机号",
-              trigger: "change",
-            },
-          ],
+          // engine_number: [
+          //   {
+          //     required: true,
+          //     message: "请填写发动机号",
+          //     trigger: "change",
+          //   },
+          // ],
           owner: [
             {
               required: true,
@@ -347,7 +347,10 @@ export default {
                     if (response.code == 200) {
                       const info = response.data;
                       // 只做小型车的平台
-                      if (info.lstypename.indexOf("小型") != -1) {
+                      if (
+                        info.lstypename.indexOf("小型") != -1 ||
+                        info.lstypename.indexOf("微型") != -1
+                      ) {
                         let type = "";
                         if (info.usetype == "非营运") {
                           type = "小型汽车(非营运)";

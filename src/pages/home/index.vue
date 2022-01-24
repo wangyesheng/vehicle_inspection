@@ -53,6 +53,20 @@
         mode="widthFit"
       />
     </view> -->
+    <view class="code-wrap flex-01" @click="navToMiniProgram">
+      <image src="../../static/images/home/wash1.png" mode="widthFit" />
+      <view class="tips">
+        <view>1元自助洗车</view>
+        <view>
+          <text>绵阳</text>
+          <text>24小时共享自助洗车</text>
+        </view>
+      </view>
+      <image
+        src="https://cj.huazhe.work/images/home/arrow_right.png"
+        mode="widthFit"
+      />
+    </view>
     <view class="code-wrap flex-01" @click="handleNavTo(3)">
       <image
         src="https://cj.huazhe.work/images/home/code.png"
@@ -143,6 +157,8 @@ import {
   getNoticesRes,
   setCarDealRes,
   getMyCodeCountRes,
+  getHomeImageRes,
+  getShareImageRes,
 } from "../../api";
 import { BUTTON_FLAGS } from "../../constant";
 
@@ -165,23 +181,31 @@ export default {
       canShowReserveTime: false,
       reserveTime: "",
       sysHeight: 0,
+      headerBg: "",
       methodPopup: {
         visible: false,
       },
     };
   },
 
-  computed: {
-    headerBg() {
-      const timestampFormatter = this.$u.timeFormat(
-        new Date().getTime(),
-        "yyyy-mm-dd"
-      );
-      return `https://cj.huazhe.work/images/home/header-bg.jpg?timestamp=${timestampFormatter}`;
-    },
+  async onShareTimeline(_) {
+    const appUser = this.getAppUser();
+    let query;
+    if (appUser.member_mobile) {
+      query = `sharerId=${appUser.member_id}`;
+    }
+    const {
+      data: { sharepic },
+    } = await getShareImageRes();
+    return {
+      query,
+      title: "汽车年审，还可以更快更简单",
+      imageUrl: sharepic,
+    };
   },
 
   onLoad(options) {
+    console.log(options);
     this.sysHeight = this.getSysHeight();
     this.shiftingCodeCount = 0;
     // 海报分享二维码
@@ -204,13 +228,60 @@ export default {
     if (options.sharerId) {
       uni.setStorageSync("sharer_id", options.sharerId);
     }
+    if (options.activityId) {
+      uni.setStorageSync("activity_id", options.activityId);
+    }
   },
 
   onShow() {
-    Promise.all([this.getCars(), this.getNotices(), this.getMyCodeCount()]);
+    if (uni.getStorageSync("wantedNavToMiniProgram")) {
+      uni.navigateToMiniProgram({
+        appId: "wxe897189e473d3762",
+        path: "pages/shop/buy_card?code=D82C8D1619AD8176D665453CFB2E55F08ADPHYSVHU19HZAPYL",
+        envVersion: "release",
+        fail: (error) => {
+          console.log("navigateToMiniProgram", error);
+        },
+      });
+      uni.setStorageSync("wantedNavToMiniProgram", false);
+    }
+    Promise.all([
+      this.getCars(),
+      this.getNotices(),
+      this.getMyCodeCount(),
+      this.getHomeImage(),
+    ]);
   },
 
   methods: {
+    navToMiniProgram() {
+      if (!this.checkLogin()) {
+        uni.navigateTo({
+          url: "/pages/auth/login-nav?from=1",
+        });
+        return;
+      }
+      if (this.cars.length > 1) {
+        // 已经添加车辆的直接跳转
+        uni.navigateToMiniProgram({
+          appId: "wxe897189e473d3762",
+          path: "pages/shop/buy_card?code=D82C8D1619AD8176D665453CFB2E55F08ADPHYSVHU19HZAPYL",
+          envVersion: "release",
+          fail: (error) => {
+            console.log("navigateToMiniProgram", error);
+          },
+        });
+      } else {
+        // 进入录入车辆页面
+        this.navTo("/pages/car/add-form-chore?from=1");
+      }
+    },
+    async getHomeImage() {
+      const {
+        data: { indexpic },
+      } = await getHomeImageRes();
+      this.headerBg = indexpic;
+    },
     handleToProcess(flag) {
       flag == 1
         ? this.navTo("/pages/home/agent")
@@ -276,49 +347,67 @@ export default {
           }
         }
 
-        switch (x.status) {
+        if (x.now < x.start_time || x.now > x.end_time) {
           // 未到期，不可预约
-          case 0:
-            layer.prompt = "距上线年检还剩";
-            layer.isOverdue = false;
-            layer.buttonFlag = 0;
-            break;
-          // 已预约
-          case 1:
-            if (layer.is_pass == 0) {
-              // 未逾期
-              layer.prompt = "距年检逾期还剩";
-              layer.isOverdue = false;
-            } else {
-              layer.prompt = "年检已逾期";
-              layer.isOverdue = true;
-            }
-            layer.buttonFlag = 1;
-            break;
-          // 已办理
-          case 2:
-            layer.prompt = "距上线年检还剩";
-            layer.isOverdue = false;
-            layer.buttonFlag = 0;
-            break;
-          // 可预约
-          case 3:
-            layer.prompt = "距年检逾期还剩";
-            layer.isOverdue = false;
-            layer.buttonFlag = 2;
-            layer.appointmentDates = getDiffDate(x.start_time, x.end_time);
-            break;
-          // 已逾期
-          case 4:
-            layer.prompt = "年检已逾期";
-            layer.isOverdue = true;
-            layer.buttonFlag = 2;
-            const date = getDateByDays(30 - x.days);
-            console.log(date, currentFormatDate);
-            // 2020-12-29 2020-12-29
-            layer.appointmentDates = getDiffDate(currentFormatDate, date);
-            break;
+          layer.labelPrefix = "下次";
+          layer.buttonFlag = 0;
+        } else if (x.now > x.start_time && x.now < x.end_time) {
+          layer.labelPrefix = "此次";
+          layer.buttonFlag = 2;
+          layer.appointmentDates = getDiffDate(
+            x.start_time_str,
+            x.end_time_str
+          );
+        } else if (
+          Number(x.reserve_time) > x.start_time &&
+          Number(x.reserve_time) < x.end_time
+        ) {
+          layer.labelPrefix = "此次";
+          layer.buttonFlag = 1;
         }
+        // switch (x.status) {
+        //   // 未到期，不可预约
+        //   case 0:
+        //     layer.prompt = "距上线年检还剩";
+        //     layer.isOverdue = false;
+        //     layer.buttonFlag = 0;
+        //     break;
+        //   // 已预约
+        //   case 1:
+        //     if (layer.is_pass == 0) {
+        //       // 未逾期
+        //       layer.prompt = "距年检逾期还剩";
+        //       layer.isOverdue = false;
+        //     } else {
+        //       layer.prompt = "年检已逾期";
+        //       layer.isOverdue = true;
+        //     }
+        //     layer.buttonFlag = 1;
+        //     break;
+        //   // 已办理
+        //   case 2:
+        //     layer.prompt = "距上线年检还剩";
+        //     layer.isOverdue = false;
+        //     layer.buttonFlag = 0;
+        //     break;
+        //   // 可预约
+        //   case 3:
+        //     layer.prompt = "距年检逾期还剩";
+        //     layer.isOverdue = false;
+        //     layer.buttonFlag = 2;
+        //     layer.appointmentDates = getDiffDate(x.start_time, x.end_time);
+        //     break;
+        //   // 已逾期
+        //   case 4:
+        //     layer.prompt = "年检已逾期";
+        //     layer.isOverdue = true;
+        //     layer.buttonFlag = 2;
+        //     const date = getDateByDays(30 - x.days);
+        //     console.log(date, currentFormatDate);
+        //     // 2020-12-29 2020-12-29
+        //     layer.appointmentDates = getDiffDate(currentFormatDate, date);
+        //     break;
+        // }
         return layer;
       });
       uni.setStorageSync("app_user_cars", this.cars);
@@ -331,7 +420,7 @@ export default {
       }
       this.selectedCar = this.cars[0];
       this.buttonFlag = this.cars[0].buttonFlag;
-      this.canShowReserveTime = this.selectedCar.status == 1 ? true : false;
+      this.canShowReserveTime = this.buttonFlag == 1 ? true : false;
       this.reserveTime = this.selectedCar.reserve_date;
     },
     handleNavTo(flag) {
@@ -370,7 +459,7 @@ export default {
       const scope = this.cars.find((x, idx) => value === idx);
       this.selectedCar = scope;
       this.buttonFlag = scope.buttonFlag;
-      this.canShowReserveTime = scope.status == 1 ? true : false;
+      this.canShowReserveTime = scope.buttonFlag == 1 ? true : false;
       this.reserveTime = scope.reserve_date;
     },
     async handleConfirm() {
@@ -398,7 +487,6 @@ export default {
   .method-wrap {
     display: flex;
     justify-content: space-between;
-    margin-top: 30rpx;
     .common {
       width: 320rpx;
       height: 120rpx;
@@ -553,9 +641,9 @@ export default {
         background: #e6e6e6;
         box-shadow: 0rpx 0rpx 20rpx 0rpx rgba(204, 204, 204, 0.3);
         border-radius: 45rpx;
-        font-size: 32rpx;
+        font-size: 30rpx;
         font-weight: 500;
-        color: #ffffff;
+        color: #999;
         text-align: center;
         line-height: 90rpx;
       }
@@ -581,6 +669,7 @@ export default {
     background: #ffffff;
     box-shadow: 0 0 20rpx 0 rgba(94, 147, 236, 0.2);
     border-radius: 8rpx;
+    margin-bottom: 30rpx;
 
     image:first-child {
       width: 100rpx;
