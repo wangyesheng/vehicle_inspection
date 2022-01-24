@@ -53,6 +53,20 @@
         mode="widthFit"
       />
     </view> -->
+    <view class="code-wrap flex-01" @click="navToMiniProgram">
+      <image src="../../static/images/home/wash1.png" mode="widthFit" />
+      <view class="tips">
+        <view>1元自助洗车</view>
+        <view>
+          <text>绵阳</text>
+          <text>24小时共享自助洗车</text>
+        </view>
+      </view>
+      <image
+        src="https://cj.huazhe.work/images/home/arrow_right.png"
+        mode="widthFit"
+      />
+    </view>
     <view class="code-wrap flex-01" @click="handleNavTo(3)">
       <image
         src="https://cj.huazhe.work/images/home/code.png"
@@ -220,6 +234,17 @@ export default {
   },
 
   onShow() {
+    if (uni.getStorageSync("wantedNavToMiniProgram")) {
+      uni.navigateToMiniProgram({
+        appId: "wxe897189e473d3762",
+        path: "pages/shop/buy_card?code=D82C8D1619AD8176D665453CFB2E55F08ADPHYSVHU19HZAPYL",
+        envVersion: "release",
+        fail: (error) => {
+          console.log("navigateToMiniProgram", error);
+        },
+      });
+      uni.setStorageSync("wantedNavToMiniProgram", false);
+    }
     Promise.all([
       this.getCars(),
       this.getNotices(),
@@ -229,19 +254,27 @@ export default {
   },
 
   methods: {
-    onClick() {
-      uni.navigateToMiniProgram({
-        appId: "wxe897189e473d3762",
-        path: "pages/shop/buy_card?code=D82C8D1619AD8176D665453CFB2E55F08ADPHYSVHU19HZAPYL",
-        envVersion: "release", // 打开正式版
-        success(res) {
-          console.log(res)
-          // 打开成功
-        },
-        fail: function (err) {
-          console.log(err);
-        },
-      });
+    navToMiniProgram() {
+      if (!this.checkLogin()) {
+        uni.navigateTo({
+          url: "/pages/auth/login-nav?from=1",
+        });
+        return;
+      }
+      if (this.cars.length > 1) {
+        // 已经添加车辆的直接跳转
+        uni.navigateToMiniProgram({
+          appId: "wxe897189e473d3762",
+          path: "pages/shop/buy_card?code=D82C8D1619AD8176D665453CFB2E55F08ADPHYSVHU19HZAPYL",
+          envVersion: "release",
+          fail: (error) => {
+            console.log("navigateToMiniProgram", error);
+          },
+        });
+      } else {
+        // 进入录入车辆页面
+        this.navTo("/pages/car/add-form-chore?from=1");
+      }
     },
     async getHomeImage() {
       const {
@@ -454,7 +487,6 @@ export default {
   .method-wrap {
     display: flex;
     justify-content: space-between;
-    margin-top: 30rpx;
     .common {
       width: 320rpx;
       height: 120rpx;
@@ -637,6 +669,7 @@ export default {
     background: #ffffff;
     box-shadow: 0 0 20rpx 0 rgba(94, 147, 236, 0.2);
     border-radius: 8rpx;
+    margin-bottom: 30rpx;
 
     image:first-child {
       width: 100rpx;

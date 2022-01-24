@@ -127,10 +127,10 @@
             @click="handleShowEngineKeyboard"
           />
         </u-form-item>
-        <u-form-item label="注册日期" prop="register_date">
+        <u-form-item label="注册登记日期" prop="register_date">
           <u-input
             type="select"
-            placeholder="请选择注册日期"
+            placeholder="请选择注册登记日期"
             v-model="carForm.data.register_date"
             @click="handleShowDateSelect"
           />
@@ -166,6 +166,7 @@
           />
         </u-form-item>
       </u-form>
+      <!-- <u-button @click="onClick">Click</u-button> -->
     </view>
     <view class="btn-wrap">
       <u-button
@@ -336,6 +337,13 @@ export default {
     },
   },
 
+  onLoad(ops) {
+    if (ops.from == 1) {
+      // 点击一元洗车板块进入
+      this.wantedNavToMiniProgram = true;
+    }
+  },
+
   onShow() {
     if (!this.checkLogin()) {
       return uni.navigateTo({
@@ -349,6 +357,12 @@ export default {
   },
 
   methods: {
+    onClick() {
+      uni.setStorageSync("wantedNavToMiniProgram", true);
+      uni.switchTab({
+        url: "/pages/home/index",
+      });
+    },
     handleShowTypeSelect() {
       this.typeSelect.visible = true;
     },
@@ -471,6 +485,9 @@ export default {
               };
               const { code, data } = await addCarRes(reqData);
               if (code === 200) {
+                if (this.wantedNavToMiniProgram) {
+                  uni.setStorageSync("wantedNavToMiniProgram", true);
+                }
                 uni.switchTab({
                   url: "/pages/home/index",
                 });

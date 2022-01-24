@@ -50,7 +50,7 @@ export default {
         } = await getStationsRes({
           lng: res.longitude,
           lat: res.latitude,
-        });eeee
+        });
         if (code === 200) {
           this.stations = carList.map((x) => ({
             ...x,
